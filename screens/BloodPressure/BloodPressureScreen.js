@@ -210,14 +210,14 @@ const styles = StyleSheet.create({
     },
     dateContainer: {
         width: '100%',
-        height: '20%',
+        height: '35%',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10
+        marginBottom: 5
     },
     dataContainer: {
         width: '100%',
-        height: '70%',
+        height: '65%',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',

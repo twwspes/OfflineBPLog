@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState, useContext } from 'react';
-import { Alert, Linking } from 'react-native';
+import { Alert, StatusBar } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavigationContainer} from '@react-navigation/native';
 
@@ -16,6 +16,8 @@ const AppNavigator = props => {
             Alert.alert(t('error_occur'), error, [{ text: t('okay'), onPress: () => setError(null) }]);
         }
     }, [error]);
+
+    StatusBar.setBarStyle('default');
 
     return (
         <NavigationContainer ref={navigationRef}>

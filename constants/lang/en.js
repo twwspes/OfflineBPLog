@@ -1,7 +1,7 @@
 export default {
     appName: 'Blood Pressure Log',
     //AppNavigator
-    pressure: 'Blood Pressure',
+    pressure: 'Log',
     dashboard: 'Dashboard',
     //BloodPressureScreen
     blood_pressure_long: 'Blood Pressure',
@@ -19,6 +19,7 @@ export default {
     scan_bpmonitor: 'Scan BP Monitor',
     require_input_warning: 'Required field',
     ocr_demo: 'OCR Demo',
+    input: 'Messure your BP',
     //Dashboard
     avg: 'Avg.',
     min: 'Min.',
@@ -33,6 +34,7 @@ export default {
     all: 'All',
     systolic_short: 'Sys.',
     diastolic_short: 'Dias.',
+    pulse_short: 'Pul.',
     blood_pressure_records_since_last: 'Past Blood Pressure Log',
     and: 'and',
     or: 'or',
@@ -57,10 +59,13 @@ export default {
     email_for_data: 'Email for receiving log',
     send: 'Send in csv format',
     blood_pressure_record_csv: 'Blood Pressure Log in csv',
+    send_email_to_developer: 'Suggestions',
+    privacy_policy: 'Terms and Conditions / Privacy Policy',
     //Alert
     notice: 'Notice',
     error_occur: 'An Error Occurs',
     okay: 'Okay',
     wrong_input: 'Wrong input!',
     please_check_the_errors_in_the_form: 'Please check the errors in the form',
+    you_may_forget_to_select_bp_values: 'You may forget to select bp values',
 };

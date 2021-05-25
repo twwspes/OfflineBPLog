@@ -5,10 +5,13 @@ import moment from "moment/min/moment-with-locales";
 
 import * as bloodPressureActions from '../../store/actions/bloodPressure'; // for HKU server
 
+import pkg from '../../app.json';
 import MainButton from '../../components/UI/MainButton';
+import MainButtonClear from '../../components/UI/MainButtonClear';
 import { LocalizationContext } from '../../constants/Localisation';
 import Input from '../../components/UI/Input';
 import Colors from '../../constants/Colors';
+import FontSize from '../../constants/FontSize';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
@@ -45,6 +48,7 @@ const RecordOutputScreen = props => {
     const [bloodPressuresReverseText, setBloodPressuresReverseText] = useState(''); // for HKU server
     const bloodPressuresUpdateIndicator = useSelector(state => state.bloodPressure.update); // for HKU server
     moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : 'en');
+    const privacyPolicyWebsite = locale.includes('zh') ? 'https://sites.google.com/connect.hku.hk/offlinebplog-zh/home' : locale.includes('fr') ? 'https://sites.google.com/connect.hku.hk/offlinebplog-fr/home' : 'https://sites.google.com/connect.hku.hk/offlinebplog/home';
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {
@@ -153,7 +157,23 @@ const RecordOutputScreen = props => {
                 )
                 }
             </View>
-            {/* <Text>{bloodPressuresReverseText}</Text> */}
+            <View style={styles.buttonContainer}>
+                <MainButton onPress={() => {
+                    Linking.openURL('mailto:spes@connect.hku.hk?subject=An improvement advice for Offline BP Log');
+                }}>
+                    {t('send_email_to_developer')}
+                </MainButton>
+            </View>
+            <Text>BP Log v.{pkg.expo.version}</Text>
+            <Text style={{ fontSize: 12 }}>© 2021 Tak Wai WONG</Text>
+            <MainButtonClear
+                onPress={() => {
+                    Linking.openURL(privacyPolicyWebsite);
+                }}
+                buttonText={{ fontSize: FontSize.veryvarySmallContent }}
+            >
+                {t('privacy_policy')}
+            </MainButtonClear>
         </View>
     );
 };

@@ -1,14 +1,14 @@
 export default {
     appName: '血壓記錄',
     //AppNavigator
-    pressure: '血壓',
+    pressure: '記錄',
     dashboard: '統計',
     //BloodPressureScreen
     blood_pressure_long: '血壓',
     no_record: '無記錄',
     heartbeat: '心跳',
     press: '按',
-    health_parameters_description: '输入健康指数记录',
+    health_parameters_description: '輸入血壓記錄',
     //BloodPressureInputScreen
     systolic_blood_pressure: '上壓',
     diastolic_blood_pressure: '下壓',
@@ -19,6 +19,7 @@ export default {
     scan_bpmonitor: '閱讀血壓計',
     require_input_warning: '必須輸入',
     ocr_demo: '示範',
+    input: '量度血壓',
     //Dashboard
     avg: '平均',
     min: '最小',
@@ -33,6 +34,7 @@ export default {
     all: '所有',
     systolic_short: '上壓',
     diastolic_short: '下壓',
+    pulse_short: '心跳',
     blood_pressure_records_since_last: '過去血壓記錄',
     and: '及',
     or: '或',
@@ -51,16 +53,19 @@ export default {
     high_blood_pressure_stage_1: '高血壓\n第一期',
     high_blood_pressure_stage_2: '高血壓\n第二期',
     hypertensive_crisis: '高血壓危險期',
-    heart_org_button: '瀏覧heart.org，了解血壓讀數 (包括中文圖表)',
+    heart_org_button: '瀏覽heart.org，了解血壓讀數 (包括中文圖表)',
     //RecordOutput
     output: '傳送資料',
     email_for_data: '傳送資料到此電郵地址',
     send: '傳送csv格式資料',
     blood_pressure_record_csv: '血壓記錄csv檔案',
+    send_email_to_developer: '分享意見',
+    privacy_policy: '私隱政策',
     //Alert
     notice: '告示',
     error_occur: '錯誤',
     okay: '確定',
     wrong_input: '格式錯誤!',
     please_check_the_errors_in_the_form: '請檢查資料格式是否正確',
+    you_may_forget_to_select_bp_values: '請選擇血壓數字',
 };

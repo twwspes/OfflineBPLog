@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     button: {
-        backgroundColor: Colors.transparent,
+        backgroundColor: 'transparent',
         paddingVertical: 12,
         paddingHorizontal: 30,
         borderRadius: 10,

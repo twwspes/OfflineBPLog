@@ -240,12 +240,12 @@ const DashboardScreen = props => {
     }, [bloodPressures, bloodPressuresAvgMaxMin]);
 
     useEffect(() => {
-        if (bloodPressures.length > 0) {
+        if (bloodPressures.length > 0 && bloodPressuresPeriodForTable !== 'none') {
             setShowBloodPressureCategory(true);
         } else {
             setShowBloodPressureCategory(false);
         }
-    }, [bloodPressures]);
+    }, [bloodPressures, bloodPressuresPeriodForTable]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -301,37 +301,40 @@ const DashboardScreen = props => {
 
                     </MainButtonClearImage>
                 </View>}
-                {showBloodPressureCategory && <View style={styles.categoryContainer}>
-                    {bloodPressures ?
-                        <View style={styles.otherProfileBtnContainer}>
-                            <View style={{ width: "95%" }}>
-                                <Text style={{ fontSize: FontSize.subsubtitle, textAlign: 'center', }}>{t('blood_pressure_records_since_last')}</Text>
-                                <Dropdown
-                                    id="bloodPressureTablePeriod"
-                                    onItemSelected={(inputIdentifier, inputValue, inputValidity) => {
-                                        setBloodPressuresPeriodForTable(inputValue);
-                                    }}
-                                    items={[
-                                        { label: t('one_day'), value: 'one_day' },
-                                        { label: t('one_week'), value: 'one_week' },
-                                        { label: t('one_month'), value: 'one_month' },
-                                        { label: t('three_months'), value: 'three_months' },
-                                        { label: t('six_months'), value: 'six_months' },
-                                        { label: t('one_year'), value: 'one_year' },
-                                        { label: t('all'), value: 'all' },
-                                    ]}
-                                    placeholder={{
-                                        label: t('please_select'),
-                                        value: 'none',
-                                    }}
-                                    style={styles.picker}
-                                    initialValue={'one_day'}
-                                    initialIsValid={true}
-                                />
-                            </View>
+
+                {bloodPressures ?
+                    <View style={styles.otherProfileBtnContainer}>
+                        <View style={{ width: "95%" }}>
+                            <Text style={{ fontSize: FontSize.subsubtitle, textAlign: 'center', }}>{t('blood_pressure_records_since_last')}</Text>
+                            <Dropdown
+                                id="bloodPressureTablePeriod"
+                                onItemSelected={(inputIdentifier, inputValue, inputValidity) => {
+                                    setBloodPressuresPeriodForTable(inputValue);
+                                }}
+                                items={[
+                                    { label: t('one_day'), value: 'one_day' },
+                                    { label: t('one_week'), value: 'one_week' },
+                                    { label: t('one_month'), value: 'one_month' },
+                                    { label: t('three_months'), value: 'three_months' },
+                                    { label: t('six_months'), value: 'six_months' },
+                                    { label: t('one_year'), value: 'one_year' },
+                                    { label: t('all'), value: 'all' },
+                                ]}
+                                placeholder={{
+                                    label: t('please_select'),
+                                    value: 'none',
+                                }}
+                                style={styles.picker}
+                                initialValue={'one_day'}
+                                initialIsValid={true}
+                            />
                         </View>
-                        : <View></View>
-                    }
+                    </View>
+                    : <View></View>
+                }
+
+                {showBloodPressureCategory && <View style={styles.categoryContainer}>
+
 
                     {bloodPressuresAvgMaxMin ? !!bloodPressuresAvgMaxMin[0] ?
                         <View style={styles.flatListContainer}>
@@ -492,7 +495,7 @@ const DashboardScreen = props => {
                     }
 
                     <View style={{ ...styles.bloodPressureRangeTable, backgroundColor: Colors.lightGrey }}>
-                        <View style={{ ...styles.bloodPressureRangeTableTitleContainer, backgroundColor: Colors.blur}}>
+                        <View style={{ ...styles.bloodPressureRangeTableTitleContainer, backgroundColor: Colors.blur }}>
                             <View style={{ ...styles.bloodPressureRangeTableTitleTextContainer, backgroundColor: Colors.blur }}>
                                 <Text style={{ ...styles.bloodPressureRangeTableTitleText }}>{t('systolic')}</Text>
                             </View>
@@ -606,7 +609,7 @@ const DashboardScreen = props => {
                             </View>
                         </View>
                     </View>
-                    <MainButtonClear onPress={()=>{
+                    <MainButtonClear onPress={() => {
                         Linking.openURL("https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings");
                     }}>
                         {t('heart_org_button')}
@@ -780,13 +783,13 @@ const styles = StyleSheet.create({
     bloodPressureRangeTable: {
         alignItems: 'center', width: '100%', marginTop: 30
     },
-    bloodPressureRangeTableTitleContainer:{
+    bloodPressureRangeTableTitleContainer: {
         alignItems: 'center', height: 100, width: '100%', flexDirection: 'row'
     },
     bloodPressureRangeTableTitleTextContainer: {
         justifyContent: 'center', alignItems: 'center', height: 30, width: '50%'
     },
-    bloodPressureRangeTableTitleText:{
+    bloodPressureRangeTableTitleText: {
         fontSize: FontSize.smallContent
     },
     bloodPressureRangeTableRowContainer: {
@@ -805,13 +808,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center', alignItems: 'center', height: 70, width: '100%', flexDirection: 'row'
     },
     bloodPressureRangeTableRowContentTextContainer: {
-        justifyContent: 'center', alignItems: 'flex-end', height: 30, width: '50%'
+        justifyContent: 'center', alignItems: 'flex-end', height: 60, width: '50%'
     },
     bloodPressureRangeTableRowContentText: {
-        fontSize: FontSize.smallContent, textAlign: 'right'
+        fontSize: FontSize.varySmallContent, textAlign: 'right'
     },
     bloodPressureRangeTableRowContentDigitContainer: {
-        justifyContent: 'center', alignItems: 'center', height: 30, width: '50%'
+        justifyContent: 'center', alignItems: 'center', height: 45, width: '50%'
     },
     bloodPressureRangeTableRowContentDigit: {
         fontSize: FontSize.title

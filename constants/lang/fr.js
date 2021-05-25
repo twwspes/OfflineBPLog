@@ -1,7 +1,7 @@
 export default {
     appName: 'Le tableau de tension artérielle',
     //AppNavigator
-    pressure: 'La tension artérielle',
+    pressure: 'Tableau',
     dashboard: 'Statistique',
     //BloodPressureScreen
     blood_pressure_long: 'La tension artérielle',
@@ -16,9 +16,10 @@ export default {
     diastolic: 'Diastolique',
     save: 'Sauver',
     delete: 'Supprimer',
-    scan_bpmonitor: 'Récupérer les valeurs',
+    scan_bpmonitor: 'lire un tensiomètre',
     require_input_warning: 'Required field',
     ocr_demo: 'Comment utiliser ROC',
+    input: 'Mesurez votre tension',
     //Dashboard
     avg: 'Moy.',
     min: 'Min.',
@@ -33,6 +34,7 @@ export default {
     all: 'toutes',
     systolic_short: 'Sys.',
     diastolic_short: 'Dias.',
+    pulse_short: 'Pul.',
     blood_pressure_records_since_last: 'Le journal de tension artérielle',
     and: 'et',
     or: 'ou',
@@ -57,10 +59,13 @@ export default {
     email_for_data: 'Le courrier électronique',
     send: 'Envoyer des données csv',
     blood_pressure_record_csv: 'Le tableau de tension artérielle csv',
+    send_email_to_developer: 'Votre avis',
+    privacy_policy: 'Les conditions générales / Les règles de confidentialité',
     //Alert
     notice: 'Attention',
     error_occur: 'Une erreur se produit',
     okay: 'D\'accord',
-    wrong_input: 'Une mauvaise entrée!',
+    wrong_input: 'Une mauvaise donnée!',
     please_check_the_errors_in_the_form: 'Veuillez vérifier votre saisie et réessayer',
+    you_may_forget_to_select_bp_values: 'Vous oubliez de choisir les valeurs de tension artérielle',
 };

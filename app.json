@@ -7,7 +7,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.0",
+    "version": "0.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -23,8 +23,17 @@
     ],
     "ios": {
       "bundleIdentifier": "com.spesnaiad.bplog",
-      "buildNumber": "1.0.0",
-      "supportsTablet": true
+      "buildNumber": "0.2.0",
+      "supportsTablet": true,
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
+      }
+    },
+    "locales": {
+      "zh-Hant": "./constants/lang/zhHK.json",
+      "zh-Hans": "./constants/lang/zhCN.json",
+      "en": "./constants/lang/en.json",
+      "fr": "./constants/lang/fr.json"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,10 +41,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.spesnaiad.bplog",
-      "versionCode": 1,
-      "permissions":[
-        "CAMERA"
-      ]
+      "versionCode": 1
     }
   }
 }

@@ -16,19 +16,22 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import moment from "moment/min/moment-with-locales";
+// import { useNetInfo } from "@react-native-community/netinfo";
 
 import CardOpacity from '../../components/UI/CardOpacity';
-import OCRPicker from '../../components/Tools/OCRPicker';
+// import OCRPicker from '../../components/Tools/OCRPicker';
 import Input from '../../components/UI/Input';
 import MainButton from '../../components/UI/MainButton';
 import MainButtonOutline from '../../components/UI/MainButtonOutline';
 import Colors from '../../constants/Colors';
-import * as OCRAPIActions from '../../store/actions/OCRAPI';
+// import * as OCRAPIActions from '../../store/actions/OCRAPI';
 import * as bloodPressureActions from '../../store/actions/bloodPressure'; // for HKU server
 import { LocalizationContext } from '../../constants/Localisation';
 import FontSize from '../../constants/FontSize';
 import DateAndTimePicker from '../../components/UI/DateAndTimePicker';
-import ModalBottom from '../../components/UI/ModalBottom';
+// import ModalBottom from '../../components/UI/ModalBottom';
+// import Dropdown from '../../components/UI/Dropdown';
+import DropdownList from '../../components/MultipleChoice/DropdownList';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 const FORM_INPUT_UPDATE_BLE = 'FORM_INPUT_UPDATE_BLE';
@@ -84,15 +87,16 @@ const BloodPressureInputScreen = props => {
     const [error, setError] = useState();
     const { t, locale } = useContext(LocalizationContext);
     const oldID = props.route.params ? props.route.params.id : "";
-    const oldSys = props.route.params ? props.route.params.systolic : "";
-    const oldDia = props.route.params ? props.route.params.diastolic : "";
-    const oldPul = props.route.params ? props.route.params.pulse : "";
+    const oldSys = props.route.params ? props.route.params.systolic.toString() : "113";
+    const oldDia = props.route.params ? props.route.params.diastolic.toString() : "79";
+    const oldPul = props.route.params ? props.route.params.pulse.toString() : "63";
     const oldDate = props.route.params ? new Date(parseInt(oldID)).toISOString() : new Date().toISOString();
     const oldTime = props.route.params ? new Date(parseInt(oldID)).toISOString() : new Date().toISOString();
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
-    const [showModalButton, setShowModalButton] = useState(false);
+    // const [showModalButton, setShowModalButton] = useState(false);
     moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : 'en');
+    // const netInfo = useNetInfo();
 
     const dispatch = useDispatch();
 
@@ -128,6 +132,27 @@ const BloodPressureInputScreen = props => {
     const saveNewBloodPressureHandler = async () => {
         if (!formState.formIsValid) {
             Alert.alert(t('wrong_input'), t('please_check_the_errors_in_the_form'), [
+                { text: t('okay') }
+            ]);
+            return;
+        }
+        if (typeof formState.inputValues.systolic === "undefined" ||
+            typeof formState.inputValues.diastolic === "undefined" ||
+            typeof formState.inputValues.pulse === "undefined"
+        ) {
+            Alert.alert(t('wrong_input'), t('please_check_the_errors_in_the_form'), [
+                { text: t('okay') }
+            ]);
+            return;
+        }
+        if (formState.inputValues.systolic === "" ||
+            formState.inputValues.diastolic === "" ||
+            formState.inputValues.pulse === "" ||
+            formState.inputValues.systolic === "0" ||
+            formState.inputValues.diastolic === "0" ||
+            formState.inputValues.pulse === "0"
+        ) {
+            Alert.alert(t('wrong_input'), t('you_may_forget_to_select_bp_values'), [
                 { text: t('okay') }
             ]);
             return;
@@ -206,44 +231,155 @@ const BloodPressureInputScreen = props => {
         [dispatchFormState]
     );
 
-    const imageTakenHandler = async (imagePath) => {
-        setError(null);
-        setIsLoading(true);
-        console.log("OCR Image Path");
-        console.log(imagePath);
-        try {
-            const responseArray = await OCRAPIActions.sendPictureToGetNumberBack(imagePath);
-            console.log("OCR result to UI js preparing for UI update");
-            console.log(responseArray);
-            bluetoothInputChangeHandler(responseArray[0], responseArray[1], responseArray[2]);
-        } catch (e) {
-            setError(e);
+    // const imageTakenHandler = async (imagePath) => {
+    //     setError(null);
+    //     setIsLoading(true);
+    //     console.log("OCR Image Path");
+    //     console.log(imagePath);
+    //     try {
+    //         const responseArray = await OCRAPIActions.sendPictureToGetNumberBack(imagePath);
+    //         console.log("OCR result to UI js preparing for UI update");
+    //         console.log(responseArray);
+    //         bluetoothInputChangeHandler(responseArray[0], responseArray[1], responseArray[2]);
+    //     } catch (e) {
+    //         setError(e);
+    //     }
+    //     setIsLoading(false);
+    // };
+
+    const minMax = (numberInString) => {
+        if (numberInString === "" || numberInString === "NaN" || numberInString === null) {
+            return "100";
         }
-        setIsLoading(false);
+        const minMaxValue = Math.min(Math.max(parseInt(numberInString), 30), 220);
+        return minMaxValue.toString();
     };
 
     const bluetoothInputChangeHandler = useCallback(
         (sys, dia, pul) => {
             console.log("going to update form state" + sys + " " + dia + " " + pul);
+            const minMaxSys = minMax(sys.toString());
+            const minMaxDia = minMax(dia.toString());
+            const minMaxPul = minMax(pul.toString());
             dispatchFormState({
                 type: FORM_INPUT_UPDATE_BLE,
-                sys: sys.toString(),
-                dia: dia.toString(),
-                pul: pul.toString()
+                sys: minMaxSys,
+                dia: minMaxDia,
+                pul: minMaxPul
             });
         },
         [dispatchFormState]
     );
 
+    const [systolicRange, setsystolicRange] = useState([]);
+    const [diastolicRange, setdiastolicRange] = useState([]);
+    const [pulseRange, setpulseRange] = useState([]);
+
+    useEffect(() => {
+        var systolicRangeTemp = [{ label: t('systolic_short'), value: "0" }];
+        for (let i = 20; i < 250; i++) {
+            systolicRangeTemp.push({ label: i.toString(), value: i.toString() });
+        }
+        setsystolicRange(systolicRangeTemp);
+    }, []);
+
+    useEffect(() => {
+        var diastolicRangeTemp = [{ label: t('diastolic_short'), value: "" }];
+        for (let i = 20; i < 250; i++) {
+            diastolicRangeTemp.push({ label: i.toString(), value: i.toString() });
+        }
+        setdiastolicRange(diastolicRangeTemp);
+    }, []);
+
+    useEffect(() => {
+        var pulseRangeTemp = [{ label: t('pulse_short'), value: "" }];
+        for (let i = 20; i < 250; i++) {
+            pulseRangeTemp.push({ label: i.toString(), value: i.toString() });
+        }
+        setpulseRange(pulseRangeTemp);
+    }, []);
+
     return (
-        <ScrollView>
+        // <ScrollView>
             <View
                 // keyboardVerticalOffset={-100}
                 // behavior={Platform.OS == "ios" ? "padding" : "height"}
                 style={styles.screen}
             >
                 <View style={styles.loginInputAndButtonContainer}>
-                    <Input
+                    <CardOpacity style={styles.bpContainer}>
+                        <View style={styles.bpTitlesContainer}>
+                            <View style={styles.bpTitleContainer}>
+                                <Text style={styles.bpTitlesText}>
+                                    {t('systolic_short')}
+                                </Text>
+                            </View>
+                            <View style={styles.bpTitleContainer}>
+                                <Text style={styles.bpTitlesText}>
+                                    {t('diastolic_short')}
+                                </Text>
+                            </View>
+                            <View style={styles.bpTitleContainer}>
+                                <Text style={styles.bpTitlesText}>
+                                    {t('pulse_short')}
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={styles.bpValuesContainer}>
+                            <View style={styles.dropdownContainerStyle}>
+                                <DropdownList
+                                    scrollEnabled={false}
+                                    id='systolic'
+                                    items={systolicRange}
+                                    onItemSelected={inputChangeHandler}
+                                    initialValue={formState.inputValues.systolic.toString()}
+                                    buttonTextStyle={{ fontSize: FontSize.varyBigTitle }}
+                                />
+                            </View>
+                            <View style={styles.dropdownContainerStyle}>
+                                <DropdownList
+                                    scrollEnabled={false}
+                                    id='diastolic'
+                                    items={diastolicRange}
+                                    onItemSelected={inputChangeHandler}
+                                    initialValue={formState.inputValues.diastolic.toString()}
+                                    buttonTextStyle={{ fontSize: FontSize.varyBigTitle }}
+                                />
+                            </View>
+                            <View style={styles.dropdownContainerStyle}>
+                                <DropdownList
+                                    scrollEnabled={false}
+                                    id='pulse'
+                                    items={pulseRange}
+                                    onItemSelected={inputChangeHandler}
+                                    initialValue={formState.inputValues.pulse.toString()}
+                                    buttonTextStyle={{ fontSize: FontSize.varyBigTitle }}
+                                />
+                            </View>
+                        </View>
+                    </CardOpacity>
+
+                    {/* <Dropdown
+                            id="pulse"
+                            onItemSelected={inputChangeHandler}
+                            // items={[ // for firebase
+                            //     { label: t('every_day'), value: 'every_day' },
+                            //     { label: t('every_week'), value: 'every_week' },
+                            //     { label: t('every_month'), value: 'every_month' },
+                            //     { label: t('every_year'), value: 'every_year' },
+                            // ]}
+                            // placeholder={{ // for firebase
+                            //     label: t('never_repeat'),
+                            //     value: 'never_repeat',
+                            // }}
+                            items={pulseRange.slice(1)} // for HKU server
+                            placeholder={{ label: t('heartbeat'), value: "" }} // for HKU server
+                            style={styles.picker}
+                            containerStyle={styles.dropdownContainerStyle}
+                            initialValue={formState.inputValues.pulse.toString()}
+                            initialIsValid={formState.inputValues.pulse.toString() === '' ? false : true}
+                        /> */}
+                    {/* <Input
                         id="systolic"
                         placeholder={t('systolic_blood_pressure')}
                         keyboardType="numeric"
@@ -254,8 +390,8 @@ const BloodPressureInputScreen = props => {
                         style={styles.input}
                         required
                         isNumber
-                    />
-                    <Input
+                    /> */}
+                    {/* <Input
                         id="diastolic"
                         placeholder={t('diastolic_blood_pressure')}
                         keyboardType="numeric"
@@ -266,8 +402,8 @@ const BloodPressureInputScreen = props => {
                         style={styles.input}
                         required
                         isNumber
-                    />
-                    <Input
+                    /> */}
+                    {/* <Input
                         id="pulse"
                         placeholder={t('heartbeat')}
                         keyboardType="numeric"
@@ -278,7 +414,8 @@ const BloodPressureInputScreen = props => {
                         style={styles.input}
                         required
                         isNumber
-                    />
+                    /> */}
+
                     <View style={styles.buttonContainer}>
                         {isLoading ? (
                             <ActivityIndicator size='small' color={Colors.primary} />
@@ -290,9 +427,9 @@ const BloodPressureInputScreen = props => {
                         }
                     </View>
 
-                    {!!(oldID && oldSys === formState.inputValues.systolic
-                        && oldDia === formState.inputValues.diastolic
-                        && oldPul === formState.inputValues.pulse
+                    {(!!oldID && oldSys.toString() === formState.inputValues.systolic
+                        && oldDia.toString() === formState.inputValues.diastolic
+                        && oldPul.toString() === formState.inputValues.pulse
                     ) && <View style={styles.buttonContainer}>
                             {isLoading ? (
                                 <View />
@@ -358,7 +495,7 @@ const BloodPressureInputScreen = props => {
                         />
                     )}
 
-                    <View style={{
+                    {/* {netInfo.isInternetReachable && <View style={{
                         width: '100%',
                         flexDirection: 'row',
                         justifyContent: 'space-between',
@@ -368,27 +505,27 @@ const BloodPressureInputScreen = props => {
                             onImageTaken={imageTakenHandler}
                             imagePickerStyles={styles.imagePickerStyles}
                         />
-                    </View>
+                    </View>} */}
 
-                    <View style={styles.buttonContainer}>
+                    {/* <View style={styles.buttonContainer}>
                         <MainButton onPress={() => { setShowModalButton(true) }} style={styles.button}>
                             {t('ocr_demo')}
                         </MainButton>
-                    </View>
+                    </View> */}
 
-                    {!!showModalButton &&
+                    {/* {!!showModalButton &&
                         <ModalBottom
                             onClose={() => {
                                 setShowModalButton(false);
                             }}
                             text={t('ocr_demo')}
                         />
-                    }
+                    } */}
 
-                    <View style={{ height: 300 }} />
+                    {/* <View style={{ height: 500 }} /> */}
                 </View>
             </View>
-        </ScrollView>
+        // </ScrollView>
 
     );
 };
@@ -465,10 +602,44 @@ const styles = StyleSheet.create({
     },
     dateTimeButton: {
         width: '100%',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         paddingHorizontal: 18,
         marginVertical: 7,
-    }
+    },
+    picker: {
+        borderWidth: 0,
+        backgroundColor: 'yellow',
+        paddingHorizontal: 0,
+        paddingVertical: 0,
+        fontSize: FontSize.varyBigTitle,
+        borderRadius: 30,
+        marginVertical: 0,
+        width: '100%'
+    },
+    bpValuesContainer: {
+        width: '100%',
+        flexDirection: 'row',
+    },
+    dropdownContainerStyle: {
+        width: '33%',
+    },
+    bpContainer: {
+        width: '100%',
+        paddingHorizontal: 30,
+        paddingVertical: 7,
+        marginVertical: 7,
+    },
+    bpTitlesContainer: {
+        width: '100%',
+        flexDirection: 'row',
+    },
+    bpTitleContainer: {
+        width: '33%',
+    },
+    bpTitlesText: {
+        textAlign: 'center',
+        fontSize: FontSize.content,
+    },
 });
 
 export default BloodPressureInputScreen;

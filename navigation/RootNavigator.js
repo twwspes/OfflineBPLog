@@ -149,7 +149,7 @@ export const BloodPressureNavigator = () => {
                 options={() => {
                     return {
                         ...defaultNavOptions,
-                        headerTitle: t('pressure'),
+                        headerTitle: t('input'),
                         // ...userScreenOptions
                     };
                 }}

@@ -13,7 +13,7 @@ const Card = props => {
 
 const styles = StyleSheet.create({
     card:{
-        borderRadius: 10, // make TouchableNativeFeedback ripple effect match the shape of button
+        borderRadius: 30, // make TouchableNativeFeedback ripple effect match the shape of button
         overflow: 'hidden',
         backgroundColor: Colors.transparent,
         borderColor: Colors.grey,

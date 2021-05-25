@@ -41,7 +41,7 @@ export default function App() {
   const [locale, setLocale] = React.useState(
     () => {
       console.log("Localization.locale value");
-      const localeToBeSet = Localization.locale.includes('zh') ? (Localization.locale.includes('CN') ? 'zh_CN' : 'zh_HK') : Localization.locale.includes('fr') ? 'fr' : 'en';
+      const localeToBeSet = Localization.locale.includes('zh') ? ((Localization.locale.includes('CN') || Localization.locale.includes('Hans')) ? 'zh_CN' : 'zh_HK') : Localization.locale.includes('fr') ? 'fr' : 'en';
       console.log(localeToBeSet);
       return localeToBeSet;
     }
