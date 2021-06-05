@@ -67,12 +67,14 @@ export const bloodPressureColorStyle = (systolic, diastolic) => {
 
 export const systolicColorStyle = (systolic) => {
     if (systolic !== null && !isNaN(systolic)) {
-        if (systolic >= 110 && systolic < 136) {
+        if (systolic < 120) {
             return greenStyles;
-        } else if (systolic >= 90 && systolic < 110) {
+        } else if (systolic < 130) {
+            return yellowStyles;
+        } else if (systolic < 140) {
             return orangeStyles;
-        } else if (systolic >= 136 && systolic < 160) {
-            return orangeStyles;
+        } else if (systolic < 180) {
+            return pinkStyles;
         } else {
             return redStyles;
         }
@@ -83,12 +85,12 @@ export const systolicColorStyle = (systolic) => {
 
 export const diastolicColorStyle = (diastolic) => {
     if (diastolic !== null && !isNaN(diastolic)) {
-        if (diastolic >= 60 && diastolic < 86) {
+        if (diastolic < 80) {
             return greenStyles;
-        } else if (diastolic >= 86 && diastolic < 100) {
+        } else if (diastolic < 90) {
             return orangeStyles;
-        } else if (diastolic >= 50 && diastolic < 60) {
-            return orangeStyles;
+        } else if (diastolic < 120) {
+            return pinkStyles;
         } else {
             return redStyles;
         }

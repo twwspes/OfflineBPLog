@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback, useReducer } from 'react';
-import { View, Text, StyleSheet, Linking, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, Linking, ActivityIndicator, Alert, TouchableOpacity, Keyboard } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from "moment/min/moment-with-locales";
 
@@ -132,14 +132,17 @@ const RecordOutputScreen = props => {
     }
 
     return (
-        <View style={styles.screen}>
+        <TouchableOpacity style={styles.screen}
+            onPress={Keyboard.dismiss}
+            activeOpacity={1}
+        >
             <View style={styles.inputContainer}>
                 <Input
                     id="email"
                     placeholder={t('email_for_data')}
                     keyboardType="email-address"
                     autoCapitalize="none"
-                    errorText={t('require_input_warning')}
+                    errorText={t('email_address_is_needed')}
                     onInputChange={inputChangeHandler}
                     style={styles.input}
                     required
@@ -174,7 +177,7 @@ const RecordOutputScreen = props => {
             >
                 {t('privacy_policy')}
             </MainButtonClear>
-        </View>
+        </TouchableOpacity>
     );
 };
 

@@ -67,5 +67,6 @@ export default {
     okay: 'Okay',
     wrong_input: 'Wrong input!',
     please_check_the_errors_in_the_form: 'Please check the errors in the form',
+    email_address_is_needed: 'Please input an email address',
     you_may_forget_to_select_bp_values: 'You may forget to select bp values',
 };

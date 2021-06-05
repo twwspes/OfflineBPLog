@@ -67,5 +67,6 @@ export default {
     okay: '确定',
     wrong_input: '格式错误!',
     please_check_the_errors_in_the_form: '请检查资料格式是否正确',
+    email_address_is_needed: '请输入电邮地址',
     you_may_forget_to_select_bp_values: '请选择血压数字',
 };

@@ -17,7 +17,7 @@ const AppNavigator = props => {
         }
     }, [error]);
 
-    StatusBar.setBarStyle('default');
+    StatusBar.setBarStyle('dark-content');
 
     return (
         <NavigationContainer ref={navigationRef}>
