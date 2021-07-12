@@ -1,5 +1,5 @@
 export default {
-    appName: 'Le tableau de tension artérielle',
+    appName: 'Le journal de tension artérielle',
     //AppNavigator
     pressure: 'Tableau',
     dashboard: 'Statistique',
