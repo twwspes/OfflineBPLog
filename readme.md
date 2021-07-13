@@ -1,0 +1,13 @@
+BP Log was created out of the need of my mum to log her daily blood pressure on her smartphone.  I had fed up with the currently available apps with "advanced" fancy features bombarded with ads.  All we need is just a simple log which store all blood pressure records on the phone, with the option to output the data via email.  In short, an app never compromises the privacy and security. 
+
+Localised Languages
+The app currently support English, French, Traditional Chinese and Simplified Chinese.  I am still working on the Spanish version.  All of the localisation work is done by me alone, of course with the help with Google (Don't get it wrong I did not brainlessly use Google translate).  Some of the translations may not be accurate in the perspective of native speakers.  You are more than welcome to suggest any improvement on the usage of language.
+
+Expo managed workflow
+To simplify the maintenance process, we choose to apply expo over react-native and let expo to manage the building process.  This allows me to focus more time on the matters on user experience rather than dealing with tangled messy npm packages.  One shortcoming is that the compiled app tends to be bigger in size (around 30 mB, compared with native apps of similar category with just a few mB).
+
+Expo release channel
+v1.0.0 (Android version code 3) - default
+v1.0.1 (Android version code 4) - prod-v1
+
+expo publish --release-channel prod-v1

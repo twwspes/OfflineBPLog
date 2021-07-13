@@ -19,6 +19,7 @@ import {
 import Colors from '../../constants/Colors';
 import { LocalizationContext } from '../../constants/Localisation';
 import FontSize from '../../constants/FontSize';
+import DropdownList from '../../components/MultipleChoice/DropdownList';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 
@@ -41,7 +42,7 @@ const DashboardScreen = props => {
     const [bloodPressuresPercent2, setBloodPressuresPercent2] = useState([]);
     const [bloodPressuresPercent3, setBloodPressuresPercent3] = useState([]);
     const [bloodPressuresPercent4, setBloodPressuresPercent4] = useState([]);
-    moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : 'en');
+    moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : locale.includes('es') ? 'es' : 'en');
 
     function periodValueMapping(period) {
         switch (period) {
@@ -73,7 +74,8 @@ const DashboardScreen = props => {
     useEffect(() => {  // for HKU server
         const downloadItems = async () => {
             setError(null);
-            setIsLoading(true);
+            // console.log("setIsLoading true");
+            // setIsLoading(true);
             console.log("download the latest bloodPressures items");
 
             const date = new Date();
@@ -94,6 +96,7 @@ const DashboardScreen = props => {
                 }
                 // return;
             }
+            console.log("setIsLoading false");
             setIsLoading(false);
         };
 
@@ -105,7 +108,8 @@ const DashboardScreen = props => {
     useEffect(() => {  // for HKU server
         const downloadItems = async () => {
             setError(null);
-            setIsLoading(true);
+            // console.log("setIsLoading true");
+            // setIsLoading(true);
             console.log("download bloodPressures graph items");
 
             const date = new Date();
@@ -133,6 +137,7 @@ const DashboardScreen = props => {
                 }
                 // return;
             }
+            console.log("setIsLoading false");
             setIsLoading(false);
             console.log("BloodPressuresAvgMaxMin");
             console.log(bloodPressuresAvgMaxMin);
@@ -306,9 +311,11 @@ const DashboardScreen = props => {
                     <View style={styles.otherProfileBtnContainer}>
                         <View style={{ width: "95%" }}>
                             <Text style={{ fontSize: FontSize.subsubtitle, textAlign: 'center', }}>{t('blood_pressure_records_since_last')}</Text>
-                            <Dropdown
+                            {/* <Dropdown
                                 id="bloodPressureTablePeriod"
                                 onItemSelected={(inputIdentifier, inputValue, inputValidity) => {
+                                    console.log("Dropdown inputValue");
+                                    console.log(inputValue);
                                     setBloodPressuresPeriodForTable(inputValue);
                                 }}
                                 items={[
@@ -327,6 +334,30 @@ const DashboardScreen = props => {
                                 style={styles.picker}
                                 initialValue={'one_day'}
                                 initialIsValid={true}
+                            /> */}
+                            <View style={{ height: 10 }} />
+                            <DropdownList
+                                scrollEnabled={false}
+                                id='bloodPressureTablePeriod'
+                                items={[{
+                                    label: t('please_select'),
+                                    value: 'none',
+                                },
+                                { label: t('one_day'), value: 'one_day' },
+                                { label: t('one_week'), value: 'one_week' },
+                                { label: t('one_month'), value: 'one_month' },
+                                { label: t('three_months'), value: 'three_months' },
+                                { label: t('six_months'), value: 'six_months' },
+                                { label: t('one_year'), value: 'one_year' },
+                                { label: t('all'), value: 'all' },
+                                ]}
+                                onItemSelected={(inputIdentifier, inputValue, inputValidity) => {
+                                    console.log("Dropdown inputValue");
+                                    console.log(inputValue);
+                                    setBloodPressuresPeriodForTable(inputValue);
+                                }}
+                                initialValue={'one_day'}
+                                buttonTextStyle={{ fontSize: FontSize.varyBigTitle }}
                             />
                         </View>
                     </View>
@@ -610,7 +641,13 @@ const DashboardScreen = props => {
                         </View>
                     </View>
                     <MainButtonClear onPress={() => {
-                        Linking.openURL("https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings");
+                        locale.includes('zh') ?
+                            Linking.openURL("https://www.heart.org/-/media/files/health-topics/high-blood-pressure/hbp-rainbow-chart-chinese.pdf") :
+                            locale.includes('fr') ?
+                                Linking.openURL("https://www.hirslanden.ch/fr/corporate/themes-en-ligne-de-mire/coeur-en-rythme/tension-arterielle.html") :
+                                locale.includes('es') ?
+                                    Linking.openURL("https://www.heart.org/-/media/files/health-topics/high-blood-pressure/hbp-rainbow-chart-spanish.pdf") :
+                                    Linking.openURL("https://www.heart.org/-/media/files/health-topics/high-blood-pressure/hbp-rainbow-chart-english.pdf");
                     }}>
                         {t('heart_org_button')}
                     </MainButtonClear>

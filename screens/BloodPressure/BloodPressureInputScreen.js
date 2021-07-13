@@ -95,7 +95,7 @@ const BloodPressureInputScreen = props => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
     // const [showModalButton, setShowModalButton] = useState(false);
-    moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : 'en');
+    moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : locale.includes('es') ? 'es' : 'en');
     // const netInfo = useNetInfo();
 
     const dispatch = useDispatch();

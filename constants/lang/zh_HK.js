@@ -53,7 +53,7 @@ export default {
     high_blood_pressure_stage_1: '高血壓\n第一期',
     high_blood_pressure_stage_2: '高血壓\n第二期',
     hypertensive_crisis: '高血壓危險期',
-    heart_org_button: '瀏覽heart.org，了解血壓讀數 (包括中文圖表)',
+    heart_org_button: '瀏覽heart.org，了解血壓讀數',
     //RecordOutput
     output: '傳送資料',
     email_for_data: '傳送資料到此電郵地址',

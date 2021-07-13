@@ -25,7 +25,7 @@ const HealthParametersScreen = props => {
     const [bloodPressures, setBloodPressures] = useState([]); // for HKU server
     const [bloodPressuresReverse, setBloodPressuresReverse] = useState([]); // for HKU server
     const bloodPressuresUpdateIndicator = useSelector(state => state.bloodPressure.update); // for HKU server
-    moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : 'en');
+    moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : locale.includes('es') ? 'es' : 'en');
 
     useEffect(() => {
         if (error) {

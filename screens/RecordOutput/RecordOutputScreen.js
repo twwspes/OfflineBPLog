@@ -47,8 +47,14 @@ const RecordOutputScreen = props => {
     const [bloodPressuresReverse, setBloodPressuresReverse] = useState([]); // for HKU server
     const [bloodPressuresReverseText, setBloodPressuresReverseText] = useState(''); // for HKU server
     const bloodPressuresUpdateIndicator = useSelector(state => state.bloodPressure.update); // for HKU server
-    moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : 'en');
-    const privacyPolicyWebsite = locale.includes('zh') ? 'https://sites.google.com/connect.hku.hk/offlinebplog-zh/home' : locale.includes('fr') ? 'https://sites.google.com/connect.hku.hk/offlinebplog-fr/home' : 'https://sites.google.com/connect.hku.hk/offlinebplog/home';
+    moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : locale.includes('es') ? 'es' : 'en');
+    const privacyPolicyWebsite = locale.includes('zh') ?
+        'https://sites.google.com/connect.hku.hk/offlinebplog-zh/home' :
+        locale.includes('fr') ?
+            'https://sites.google.com/connect.hku.hk/offlinebplog-fr/home' :
+            locale.includes('es') ?
+                'https://sites.google.com/connect.hku.hk/offlinebplog-es/home' :
+                'https://sites.google.com/connect.hku.hk/offlinebplog/home';
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {

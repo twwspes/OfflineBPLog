@@ -6,8 +6,14 @@ import { min } from 'moment';
 
 const ChartAxis = props => {
     const { locale } = useContext(LocalizationContext);
-    moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : 'en');
-    const localeChiEng = locale.includes('zh') ? (locale.includes('CN') ? 'zh' : 'zh') : locale.includes('fr') ? 'fr' : 'en';
+    moment.locale(locale.includes('zh') ?
+        (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ?
+            'fr' : locale.includes('es') ?
+                'es' : 'en');
+    const localeChiEng = locale.includes('zh') ?
+        (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ?
+            'fr' : locale.includes('es') ?
+                'es' : 'en';
 
     function periodValueMapping(period) {
         switch (period) {
@@ -52,7 +58,11 @@ const ChartAxis = props => {
                 return (moment(t).format("MMM D") + "\n" + (Math.abs(maxValue - minValue) > periodValueMapping('one_week') ?
                     moment(t).format("YYYY")
                     :
-                    localeChiEng === 'en' ? moment(t).format("ha") : localeChiEng === 'fr' ? moment(t).format("kk[h]") : moment(t).format("ah點"))
+                    localeChiEng === 'zh-cn' ?
+                        moment(t).format("ah点") : localeChiEng === 'zh-hk' ?
+                            moment(t).format("ah點") : localeChiEng === 'fr' ?
+                                moment(t).format("kk[h]") : localeChiEng === 'es' ?
+                                    moment(t).format("kk[h]") : moment(t).format("ha"))
                 );
             }}
             style={{

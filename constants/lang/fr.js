@@ -1,5 +1,5 @@
 export default {
-    appName: 'Le journal de tension artérielle',
+    appName: 'Tableau de tension artérielle',
     //AppNavigator
     pressure: 'Tableau',
     dashboard: 'Statistique',
@@ -35,7 +35,7 @@ export default {
     systolic_short: 'Sys.',
     diastolic_short: 'Dias.',
     pulse_short: 'Pul.',
-    blood_pressure_records_since_last: 'Le journal de tension artérielle',
+    blood_pressure_records_since_last: 'Tableau de tension artérielle',
     and: 'et',
     or: 'ou',
     and_or: 'et/ou',
@@ -53,12 +53,12 @@ export default {
     high_blood_pressure_stage_1: 'Hypertension\nDegré 1',
     high_blood_pressure_stage_2: 'Hypertension\nDegré 2',
     hypertensive_crisis: 'Hypertension sévère',
-    heart_org_button: 'Comment lire les valeurs de tension artérielle sur heart.org (en anglais)',
+    heart_org_button: 'Comment lire les valeurs de tension artérielle sur www.hirslanden.ch',
     //RecordOutput
     output: 'Sortie',
     email_for_data: 'Le courrier électronique',
     send: 'Envoyer des données csv',
-    blood_pressure_record_csv: 'Le tableau de tension artérielle csv',
+    blood_pressure_record_csv: 'Tableau de tension artérielle csv',
     send_email_to_developer: 'Votre avis',
     privacy_policy: 'Les conditions générales / Les règles de confidentialité',
     //Alert
