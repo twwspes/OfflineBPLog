@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LocalizationContext } from '../constants/Localisation';
 
 import BloodPressureInputScreen from '../screens/BloodPressure/BloodPressureInputScreen';
+import BloodPressureInputModal from '../screens/BloodPressure/BloodPressureInputModal';
 import BloodPressureScreen from '../screens/BloodPressure/BloodPressureScreen';
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
 import RecordOutputScreen from '../screens/RecordOutput/RecordOutputScreen';
@@ -71,18 +72,19 @@ export const BottomTabNavigator = () => {
 
     return (
         <Tab.Navigator
-            tabBarOptions={{
-                activeTintColor: Colors.focus,
-                inactiveTintColor: Colors.grey,
-                style: {
+            initialRouteName="BloodPressureStack"
+            screenOptions={({ route }) => ({
+                headerShown: false,
+                tabBarActiveTintColor: Colors.focus,
+                tabBarInactiveTintColor: Colors.grey,
+                tabBarStyle: {
                     shadowColor: 'transparent',
                     elevation: 0,
                     shadowOpacity: 0,
                     shadowOffset: { width: 0, height: 0 },
                     height: '10%'
                 },
-            }}
-            initialRouteName="BloodPressureStack"
+            })}
         >
             <Tab.Screen name="BloodPressureStack" component={BloodPressureNavigator} options={{
                 tabBarIcon: ({ focused }) => {
@@ -130,30 +132,51 @@ export const BloodPressureNavigator = () => {
     };
 
     return (
-        <BloodPressureStackNavigator.Navigator initialRouteName="BloodPressure" >
-            <BloodPressureStackNavigator.Screen
-                name="BloodPressure"
-                component={BloodPressureScreen}
-                options={() => {
-                    return {
-                        ...defaultNavOptions,
-                        headerTitle: t('pressure'),
-                        headerShown: false,
-                        // ...userScreenOptions
-                    }
-                }}
-            />
-            <BloodPressureStackNavigator.Screen
-                name="BloodPressureInput"
-                component={BloodPressureInputScreen}
-                options={() => {
-                    return {
-                        ...defaultNavOptions,
-                        headerTitle: t('input'),
-                        // ...userScreenOptions
-                    };
-                }}
-            />
+        <BloodPressureStackNavigator.Navigator
+            initialRouteName="BloodPressure"
+
+        >
+            <BloodPressureStackNavigator.Group>
+                <BloodPressureStackNavigator.Screen
+                    name="BloodPressure"
+                    component={BloodPressureScreen}
+                    options={() => {
+                        return {
+                            ...defaultNavOptions,
+                            headerTitle: t('pressure'),
+                            headerShown: false,
+                            // ...userScreenOptions
+                        }
+                    }}
+                />
+                <BloodPressureStackNavigator.Screen
+                    name="BloodPressureInput"
+                    component={BloodPressureInputScreen}
+                    options={() => {
+                        return {
+                            ...defaultNavOptions,
+                            headerTitle: t('input'),
+                            // ...userScreenOptions
+                        };
+                    }}
+                />
+            </BloodPressureStackNavigator.Group>
+            <BloodPressureStackNavigator.Group screenOptions={{ presentation: 'transparentModal' }}>
+                <BloodPressureStackNavigator.Screen
+                    name="BloodPressureInputModal"
+                    component={BloodPressureInputModal}
+                    options={() => {
+                        return {
+                            ...defaultNavOptions,
+                            headerTitle: t('input'),
+                            headerShown: false,
+                            cardOverlayEnabled: true,
+                            gestureEnabled: true,
+                            // ...userScreenOptions
+                        };
+                    }}
+                />
+            </BloodPressureStackNavigator.Group>
         </BloodPressureStackNavigator.Navigator>
     );
 };

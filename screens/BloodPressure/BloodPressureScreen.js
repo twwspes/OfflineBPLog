@@ -96,7 +96,7 @@ const HealthParametersScreen = props => {
                         data={bloodPressuresReverse}
                         keyExtractor={item => item.id.toString()}
                         renderItem={itemData => <MainButtonOutlineImage onPress={() => {
-                            props.navigation.navigate('BloodPressureInput', {
+                            props.navigation.navigate('BloodPressureInputModal', {
                                 id: itemData.item.id.toString(),
                                 systolic: itemData.item.systolic_blood_pressure,
                                 diastolic: itemData.item.diastolic_blood_pressure,
@@ -151,7 +151,7 @@ const HealthParametersScreen = props => {
                 <ActivityIndicatorWithModal />
             }
             <TouchableOpacity onPress={() => {
-                props.navigation.navigate('BloodPressureInput');
+                props.navigation.navigate('BloodPressureInputModal');
             }} style={styles.fab}>
                 <Text style={styles.fabIcon}>+</Text>
             </TouchableOpacity>
