@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useReducer, useCallback } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, Alert, FlatList, Dimensions, ActivityIndicator, Linking, SafeAreaView } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, Alert, FlatList, Dimensions, Platform, Linking, SafeAreaView } from 'react-native';
 import moment from "moment/min/moment-with-locales";
 import { useSelector, useDispatch } from 'react-redux';
 import { VictoryChart, VictoryLine, VictoryTheme, VictoryAxis, VictoryLegend, VictoryPie, VictoryArea, VictoryLabel, VictoryScatter } from "victory-native";
@@ -251,6 +251,12 @@ const DashboardScreen = props => {
             setShowBloodPressureCategory(false);
         }
     }, [bloodPressures, bloodPressuresPeriodForTable]);
+
+    const openWebLinkHandler = (url) => {
+        Linking.openURL(Platform.OS === 'android' ? 'https://docs.google.com/gview?embedded=true&url=' + url
+            :
+            url);
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -642,12 +648,12 @@ const DashboardScreen = props => {
                     </View>
                     <MainButtonClear onPress={() => {
                         locale.includes('zh') ?
-                            Linking.openURL("https://www.heart.org/-/media/files/health-topics/high-blood-pressure/hbp-rainbow-chart-chinese.pdf") :
+                            openWebLinkHandler("https://www.heart.org/-/media/files/health-topics/high-blood-pressure/hbp-rainbow-chart-chinese.pdf") :
                             locale.includes('fr') ?
                                 Linking.openURL("https://www.hirslanden.ch/fr/corporate/themes-en-ligne-de-mire/coeur-en-rythme/tension-arterielle.html") :
                                 locale.includes('es') ?
-                                    Linking.openURL("https://www.heart.org/-/media/files/health-topics/high-blood-pressure/hbp-rainbow-chart-spanish.pdf") :
-                                    Linking.openURL("https://www.heart.org/-/media/files/health-topics/high-blood-pressure/hbp-rainbow-chart-english.pdf");
+                                    openWebLinkHandler("https://www.heart.org/-/media/files/health-topics/high-blood-pressure/hbp-rainbow-chart-spanish.pdf") :
+                                    openWebLinkHandler("https://www.heart.org/-/media/files/health-topics/high-blood-pressure/hbp-rainbow-chart-english.pdf");
                     }}>
                         {t('heart_org_button')}
                     </MainButtonClear>
