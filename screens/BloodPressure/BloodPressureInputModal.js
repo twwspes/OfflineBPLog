@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     StyleSheet,
-    Button,
+    Dimensions,
     ActivityIndicator,
     Alert,
     Modal,
@@ -34,6 +34,8 @@ import DateAndTimePicker from '../../components/UI/DateAndTimePicker';
 // import ModalBottom from '../../components/UI/ModalBottom';
 // import Dropdown from '../../components/UI/Dropdown';
 import DropdownList from '../../components/MultipleChoice/DropdownList';
+
+const screenHeight = Math.round(Dimensions.get('window').height);
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 const FORM_INPUT_UPDATE_BLE = 'FORM_INPUT_UPDATE_BLE';
@@ -102,6 +104,12 @@ const BloodPressureInputScreen = props => {
     // const netInfo = useNetInfo();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const modalHeightTransform = useRef(new Animated.Value(0)).current;
+    // const [modalHeight, setModalHeight] = useState(screenHeight*0.5);
+    const [firstTouchPoint, setFirstTouchPoint ]= useState(0);
+    const [currentTouchPoint, setCurrentTouchPoint] = useState(0);
+    const [onRelease, setOnRelease] = useState(true);
+
     const { current } = useCardAnimation();
     const dispatch = useDispatch();
 
@@ -308,7 +316,7 @@ const BloodPressureInputScreen = props => {
         // Will change fadeAnim value to 1 in 5 seconds
         Animated.timing(fadeAnim, {
             toValue: 0.1,
-            duration: 5000,
+            duration: 300,
             useNativeDriver: true
         }).start();
         return (() => {
@@ -319,6 +327,39 @@ const BloodPressureInputScreen = props => {
             }).start();
         })
     }, []);
+
+    useEffect(()=>{
+        if (!onRelease){
+            if (currentTouchPoint-firstTouchPoint>=0){
+                Animated.timing(modalHeightTransform, {
+                    toValue: currentTouchPoint-firstTouchPoint,
+                    duration: 1,
+                    useNativeDriver: true
+                }).start();
+            }
+            // setModalHeight(screenHeight*0.5+firstTouchPoint-currentTouchPoint);
+        }
+    }, [firstTouchPoint, currentTouchPoint]);
+
+    useEffect(()=>{
+        if (onRelease){
+            console.log("modalHeightTransform");
+            console.log(modalHeightTransform);
+            console.log(firstTouchPoint);
+            console.log(currentTouchPoint);
+            if (currentTouchPoint-firstTouchPoint>screenHeight*0.5*0.5){
+                props.navigation.goBack();
+            } else {
+                Animated.timing(modalHeightTransform, {
+                    toValue: 0,
+                    duration: 150,
+                    useNativeDriver: true
+                }).start();
+                setFirstTouchPoint(0);
+                setCurrentTouchPoint(0);
+            }
+        }
+    }, [modalHeightTransform, onRelease]);
 
     return (
         <Animated.View
@@ -349,26 +390,50 @@ const BloodPressureInputScreen = props => {
                         }}
                     />
                     <Animated.View
+                        pointerEvents='auto'
+                        onStartShouldSetResponder={(evt)=>{
+                            console.log("onStartShouldSetResponder");
+                            console.log(evt.nativeEvent.pageY);
+                            setOnRelease(false);
+                            setFirstTouchPoint(evt.nativeEvent.pageY);
+                            setCurrentTouchPoint(evt.nativeEvent.pageY);
+                            return true;
+                        }}
+                        onMoveShouldSetResponder={()=>{
+                            console.log("onMoveShouldSetResponder");
+                            return true;
+                        }}
+                        onResponderMove={ (evt) => {
+                            console.log("pageY");
+                            setCurrentTouchPoint(evt.nativeEvent.pageY);
+                            console.log(evt.nativeEvent.pageY);
+                        }}
+                        onResponderRelease={(evt)=>{
+                            console.log("onResponderRelease pageY");
+                            console.log(evt.nativeEvent.pageY);
+                            setOnRelease(true);
+                        }}
+                        onResponderTerminationRequest={()=>{
+                            console.log("onResponderTerminationRequest");
+                            return true;
+                        }}
+                        onResponderTerminate={(evt)=>{
+                            console.log("onResponderTerminate");
+                        }}
                         style={{
                             padding: 16,
                             width: '100%',
                             maxWidth: 400,
+                            minHeight: 500,
                             borderRadius: 3,
                             backgroundColor: 'white',
+                            height: screenHeight*0.5,
                             borderTopLeftRadius: 30,
                             borderTopRightRadius: 30,
-                            transform: [
-                                {
-                                    scale: current.progress.interpolate({
-                                        inputRange: [0, 1],
-                                        outputRange: [1, 1],
-                                        extrapolate: 'clamp',
-                                    }),
-                                },
-                            ],
+                            transform: [{ translateY: modalHeightTransform },] 
                         }}
                     >
-                        <View style={styles.loginInputAndButtonContainer}>
+                        
                             <CardOpacity style={styles.bpContainer}>
                                 <View style={styles.bpTitlesContainer}>
                                     <View style={styles.bpTitleContainer}>
@@ -501,7 +566,7 @@ const BloodPressureInputScreen = props => {
                             )}
 
                             {/* <View style={{ height: 500 }} /> */}
-                        </View>
+                        
                     </Animated.View>
                     {/* </View> */}
                 </View>
@@ -550,9 +615,9 @@ const styles = StyleSheet.create({
         color: Colors.primary
     },
     loginInputAndButtonContainer: {
-        // backgroundColor: 'yellow',
+        backgroundColor: 'yellow',
         width: '100%',
-        height: '70%',
+        height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
         borderTopRightRadius: 30,
