@@ -106,7 +106,7 @@ const BloodPressureInputScreen = props => {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const modalHeightTransform = useRef(new Animated.Value(0)).current;
     // const [modalHeight, setModalHeight] = useState(screenHeight*0.5);
-    const [firstTouchPoint, setFirstTouchPoint ]= useState(0);
+    const [firstTouchPoint, setFirstTouchPoint] = useState(0);
     const [currentTouchPoint, setCurrentTouchPoint] = useState(0);
     const [onRelease, setOnRelease] = useState(true);
 
@@ -328,11 +328,11 @@ const BloodPressureInputScreen = props => {
         })
     }, []);
 
-    useEffect(()=>{
-        if (!onRelease){
-            if (currentTouchPoint-firstTouchPoint>=0){
+    useEffect(() => {
+        if (!onRelease) {
+            if (currentTouchPoint - firstTouchPoint >= 0) {
                 Animated.timing(modalHeightTransform, {
-                    toValue: currentTouchPoint-firstTouchPoint,
+                    toValue: currentTouchPoint - firstTouchPoint,
                     duration: 1,
                     useNativeDriver: true
                 }).start();
@@ -341,13 +341,13 @@ const BloodPressureInputScreen = props => {
         }
     }, [firstTouchPoint, currentTouchPoint]);
 
-    useEffect(()=>{
-        if (onRelease){
+    useEffect(() => {
+        if (onRelease) {
             console.log("modalHeightTransform");
             console.log(modalHeightTransform);
             console.log(firstTouchPoint);
             console.log(currentTouchPoint);
-            if (currentTouchPoint-firstTouchPoint>screenHeight*0.5*0.5){
+            if (currentTouchPoint - firstTouchPoint > screenHeight * 0.5 * 0.5) {
                 props.navigation.goBack();
             } else {
                 Animated.timing(modalHeightTransform, {
@@ -377,6 +377,7 @@ const BloodPressureInputScreen = props => {
                 transparent
                 visible={true}
                 style={styles.container}
+                useNativeDriver={true}
                 onShow={() => { setOnShow(true) }}
             >
                 <View style={styles.container}>
@@ -391,33 +392,44 @@ const BloodPressureInputScreen = props => {
                     />
                     <Animated.View
                         pointerEvents='auto'
-                        onStartShouldSetResponder={(evt)=>{
-                            console.log("onStartShouldSetResponder");
+                        // onStartShouldSetResponder={(evt) => {
+                        //     console.log("onStartShouldSetResponder");
+                        //     console.log(evt.nativeEvent.pageY);
+                        //     setOnRelease(false);
+                        //     setFirstTouchPoint(evt.nativeEvent.pageY);
+                        //     setCurrentTouchPoint(evt.nativeEvent.pageY);
+                        //     return true;
+                        // }}
+                        // onMoveShouldSetResponder={(evt) => {
+                        //     console.log("onMoveShouldSetResponder");
+                        //     setOnRelease(false);
+                        //     setFirstTouchPoint(evt.nativeEvent.pageY);
+                        //     setCurrentTouchPoint(evt.nativeEvent.pageY);
+                        //     return true;
+                        // }}
+                        onResponderGrant={(evt) => {
+                            console.log("onResponderGrant");
                             console.log(evt.nativeEvent.pageY);
                             setOnRelease(false);
                             setFirstTouchPoint(evt.nativeEvent.pageY);
                             setCurrentTouchPoint(evt.nativeEvent.pageY);
                             return true;
                         }}
-                        onMoveShouldSetResponder={()=>{
-                            console.log("onMoveShouldSetResponder");
-                            return true;
-                        }}
-                        onResponderMove={ (evt) => {
+                        onResponderMove={(evt) => {
                             console.log("pageY");
                             setCurrentTouchPoint(evt.nativeEvent.pageY);
                             console.log(evt.nativeEvent.pageY);
                         }}
-                        onResponderRelease={(evt)=>{
+                        onResponderRelease={(evt) => {
                             console.log("onResponderRelease pageY");
                             console.log(evt.nativeEvent.pageY);
                             setOnRelease(true);
                         }}
-                        onResponderTerminationRequest={()=>{
+                        onResponderTerminationRequest={() => {
                             console.log("onResponderTerminationRequest");
                             return true;
                         }}
-                        onResponderTerminate={(evt)=>{
+                        onResponderTerminate={(evt) => {
                             console.log("onResponderTerminate");
                         }}
                         style={{
@@ -427,146 +439,148 @@ const BloodPressureInputScreen = props => {
                             minHeight: 500,
                             borderRadius: 3,
                             backgroundColor: 'white',
-                            height: screenHeight*0.5,
+                            height: screenHeight * 0.5,
                             borderTopLeftRadius: 30,
                             borderTopRightRadius: 30,
-                            transform: [{ translateY: modalHeightTransform },] 
+                            transform: [{ translateY: modalHeightTransform },]
                         }}
                     >
-                        
-                            <CardOpacity style={styles.bpContainer}>
-                                <View style={styles.bpTitlesContainer}>
-                                    <View style={styles.bpTitleContainer}>
-                                        <Text style={styles.bpTitlesText}>
-                                            {t('systolic_short')}
-                                        </Text>
-                                    </View>
-                                    <View style={styles.bpTitleContainer}>
-                                        <Text style={styles.bpTitlesText}>
-                                            {t('diastolic_short')}
-                                        </Text>
-                                    </View>
-                                    <View style={styles.bpTitleContainer}>
-                                        <Text style={styles.bpTitlesText}>
-                                            {t('pulse_short')}
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={styles.bpValuesContainer}>
-                                    <View style={styles.dropdownContainerStyle}>
-                                        <DropdownList
-                                            scrollEnabled={false}
-                                            id='systolic'
-                                            items={systolicRange}
-                                            onItemSelected={inputChangeHandler}
-                                            initialValue={formState.inputValues.systolic.toString()}
-                                            buttonTextStyle={{ fontSize: FontSize.varyBigTitle }}
-                                        />
-                                    </View>
-                                    <View style={styles.dropdownContainerStyle}>
-                                        <DropdownList
-                                            scrollEnabled={false}
-                                            id='diastolic'
-                                            items={diastolicRange}
-                                            onItemSelected={inputChangeHandler}
-                                            initialValue={formState.inputValues.diastolic.toString()}
-                                            buttonTextStyle={{ fontSize: FontSize.varyBigTitle }}
-                                        />
-                                    </View>
-                                    <View style={styles.dropdownContainerStyle}>
-                                        <DropdownList
-                                            scrollEnabled={false}
-                                            id='pulse'
-                                            items={pulseRange}
-                                            onItemSelected={inputChangeHandler}
-                                            initialValue={formState.inputValues.pulse.toString()}
-                                            buttonTextStyle={{ fontSize: FontSize.varyBigTitle }}
-                                        />
-                                    </View>
-                                </View>
-                            </CardOpacity>
 
-                            <View style={styles.buttonContainer}>
+                        <CardOpacity style={styles.bpContainer}>
+                            <View style={styles.bpTitlesContainer}>
+                                <View style={styles.bpTitleContainer}>
+                                    <Text style={styles.bpTitlesText}>
+                                        {t('systolic_short')}
+                                    </Text>
+                                </View>
+                                <View style={styles.bpTitleContainer}>
+                                    <Text style={styles.bpTitlesText}>
+                                        {t('diastolic_short')}
+                                    </Text>
+                                </View>
+                                <View style={styles.bpTitleContainer}>
+                                    <Text style={styles.bpTitlesText}>
+                                        {t('pulse_short')}
+                                    </Text>
+                                </View>
+                            </View>
+                            <View style={styles.bpValuesContainer}>
+                                <View style={styles.dropdownContainerStyle}>
+                                    <DropdownList
+                                        scrollEnabled={false}
+                                        id='systolic'
+                                        items={systolicRange}
+                                        onItemSelected={inputChangeHandler}
+                                        initialValue={formState.inputValues.systolic.toString()}
+                                        buttonTextStyle={{ fontSize: FontSize.varyBigTitle }}
+                                    />
+                                </View>
+                                <View style={styles.dropdownContainerStyle}>
+                                    <DropdownList
+                                        scrollEnabled={false}
+                                        id='diastolic'
+                                        items={diastolicRange}
+                                        onItemSelected={inputChangeHandler}
+                                        initialValue={formState.inputValues.diastolic.toString()}
+                                        buttonTextStyle={{ fontSize: FontSize.varyBigTitle }}
+                                    />
+                                </View>
+                                <View style={styles.dropdownContainerStyle}>
+                                    <DropdownList
+                                        scrollEnabled={false}
+                                        id='pulse'
+                                        items={pulseRange}
+                                        onItemSelected={inputChangeHandler}
+                                        initialValue={formState.inputValues.pulse.toString()}
+                                        buttonTextStyle={{ fontSize: FontSize.varyBigTitle }}
+                                    />
+                                </View>
+                            </View>
+                        </CardOpacity>
+
+                        <View style={styles.buttonContainer}>
+                            {isLoading ? (
+                                <ActivityIndicator size='small' color={Colors.primary} />
+                            ) : (
+                                <MainButton
+                                    onPress={saveNewBloodPressureHandler}
+                                    style={styles.button}>
+                                    {t('save')}
+                                </MainButton>
+                            )
+                            }
+                        </View>
+
+                        {(!!oldID && oldSys.toString() === formState.inputValues.systolic
+                            && oldDia.toString() === formState.inputValues.diastolic
+                            && oldPul.toString() === formState.inputValues.pulse
+                        ) && <View style={styles.buttonContainer}>
                                 {isLoading ? (
-                                    <ActivityIndicator size='small' color={Colors.primary} />
+                                    <View />
                                 ) : (
-                                    <MainButton onPress={saveNewBloodPressureHandler} style={styles.button}>
-                                        {t('save')}
+                                    <MainButton onPress={deleteBloodPressureHandler} style={styles.button}>
+                                        {t('delete')}
                                     </MainButton>
                                 )
                                 }
-                            </View>
+                            </View>}
 
-                            {(!!oldID && oldSys.toString() === formState.inputValues.systolic
-                                && oldDia.toString() === formState.inputValues.diastolic
-                                && oldPul.toString() === formState.inputValues.pulse
-                            ) && <View style={styles.buttonContainer}>
-                                    {isLoading ? (
-                                        <View />
-                                    ) : (
-                                        <MainButton onPress={deleteBloodPressureHandler} style={styles.button}>
-                                            {t('delete')}
-                                        </MainButton>
-                                    )
+                        <MainButtonOutline onPress={() => { setShowDatePicker(true) }} style={styles.dateTimeButton}>
+                            {!!formState.inputValues.date ?
+                                <Text style={{ fontSize: FontSize.content }}>{moment(formState.inputValues.date).format('ll')}</Text> :
+                                <Text style={{ color: '#bbb', fontSize: FontSize.content }}>{t('click_to_choose')}</Text>
+                            }
+                        </MainButtonOutline>
+                        {showDatePicker && (
+                            <DateAndTimePicker
+                                date={!!formState.inputValues.date ? parseISOString(formState.inputValues.date) : new Date()}
+                                onClose={date => {
+                                    if (date && Platform.OS !== 'iOS') {
+                                        setShowDatePicker(false);
+                                        inputChangeHandler('date', date.toISOString(), true);
+                                    } else {
+                                        setShowDatePicker(false);
                                     }
-                                </View>}
+                                }}
+                                onChange={d => {
+                                    inputChangeHandler('date', d.toISOString(), true);
+                                }}
+                            />
+                        )}
 
-                            <MainButtonOutline onPress={() => { setShowDatePicker(true) }} style={styles.dateTimeButton}>
-                                {!!formState.inputValues.date ?
-                                    <Text style={{ fontSize: FontSize.content }}>{moment(formState.inputValues.date).format('ll')}</Text> :
-                                    <Text style={{ color: '#bbb', fontSize: FontSize.content }}>{t('click_to_choose')}</Text>
-                                }
-                            </MainButtonOutline>
-                            {showDatePicker && (
-                                <DateAndTimePicker
-                                    date={!!formState.inputValues.date ? parseISOString(formState.inputValues.date) : new Date()}
-                                    onClose={date => {
-                                        if (date && Platform.OS !== 'iOS') {
-                                            setShowDatePicker(false);
-                                            inputChangeHandler('date', date.toISOString(), true);
-                                        } else {
-                                            setShowDatePicker(false);
-                                        }
-                                    }}
-                                    onChange={d => {
-                                        inputChangeHandler('date', d.toISOString(), true);
-                                    }}
-                                />
-                            )}
+                        <View style={{
+                            width: '100%',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
 
-                            <View style={{
-                                width: '100%',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
+                        }}></View>
 
-                            }}></View>
+                        <MainButtonOutline onPress={() => { setShowTimePicker(true) }} style={styles.dateTimeButton}>
+                            {!!formState.inputValues.time ?
+                                <Text style={{ fontSize: FontSize.content }}>{moment(formState.inputValues.time).format('LT')}</Text> :
+                                <Text style={{ color: '#bbb', fontSize: FontSize.content }}>{t('click_to_choose')}</Text>
+                            }
+                        </MainButtonOutline>
+                        {showTimePicker && (
+                            <DateAndTimePicker
+                                date={!!formState.inputValues.time ? parseISOString(formState.inputValues.time) : dateWithSpecificTime(7, 0, false, false)}
+                                mode="time"
+                                onClose={date => {
+                                    if (date && Platform.OS !== 'iOS') {
+                                        setShowTimePicker(false);
+                                        inputChangeHandler('time', date.toISOString(), true);
+                                    } else {
+                                        setShowTimePicker(false);
+                                    }
+                                }}
+                                onChange={d => {
+                                    inputChangeHandler('time', d.toISOString(), true);
+                                }}
+                            />
+                        )}
 
-                            <MainButtonOutline onPress={() => { setShowTimePicker(true) }} style={styles.dateTimeButton}>
-                                {!!formState.inputValues.time ?
-                                    <Text style={{ fontSize: FontSize.content }}>{moment(formState.inputValues.time).format('LT')}</Text> :
-                                    <Text style={{ color: '#bbb', fontSize: FontSize.content }}>{t('click_to_choose')}</Text>
-                                }
-                            </MainButtonOutline>
-                            {showTimePicker && (
-                                <DateAndTimePicker
-                                    date={!!formState.inputValues.time ? parseISOString(formState.inputValues.time) : dateWithSpecificTime(7, 0, false, false)}
-                                    mode="time"
-                                    onClose={date => {
-                                        if (date && Platform.OS !== 'iOS') {
-                                            setShowTimePicker(false);
-                                            inputChangeHandler('time', date.toISOString(), true);
-                                        } else {
-                                            setShowTimePicker(false);
-                                        }
-                                    }}
-                                    onChange={d => {
-                                        inputChangeHandler('time', d.toISOString(), true);
-                                    }}
-                                />
-                            )}
+                        {/* <View style={{ height: 500 }} /> */}
 
-                            {/* <View style={{ height: 500 }} /> */}
-                        
                     </Animated.View>
                     {/* </View> */}
                 </View>
