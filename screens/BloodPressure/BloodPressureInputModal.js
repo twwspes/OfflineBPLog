@@ -207,16 +207,6 @@ const BloodPressureInputScreen = props => {
         const minutes = new Date(formState.inputValues.time).getMinutes();
         date.setHours(hours);
         date.setMinutes(minutes);
-        // if (!!props.route.params) {
-        //     console.log(oldID);
-        //     date = new Date(parseInt(oldID));
-        // }
-        // const updatedbloodPressureData = {
-        //     id: date.valueOf(),
-        //     systolic: parseInt(formState.inputValues.systolic),
-        //     diastolic: parseInt(formState.inputValues.diastolic),
-        //     pulse: parseInt(formState.inputValues.pulse)
-        // }; // for firebase
         const updatedbloodPressureData = {
             timestamp: date.toISOString(),
             systolic: parseInt(formState.inputValues.systolic),
@@ -326,10 +316,11 @@ const BloodPressureInputScreen = props => {
             console.log("pan.y");
             console.log(pan.y);
             console.log(screenHeight * 0.5 * 0.3);
+            console.log(screenHeight);
             if (pan.y._value > screenHeight * 0.5 * 0.3) {
                 console.log("pan.y > screenHeight");
                 Animated.timing(pan.y, {
-                    toValue: screenHeight * 0.7,
+                    toValue: screenHeight,
                     duration: 150,
                     useNativeDriver: true
                 }).start();
@@ -389,7 +380,8 @@ const BloodPressureInputScreen = props => {
                             minHeight: 500,
                             borderRadius: 3,
                             backgroundColor: 'white',
-                            height: screenHeight * 0.5,
+                            margin: -1 * (screenHeight * (0.000731 * screenHeight - 0.254878)),
+                            height: screenHeight,
                             borderTopLeftRadius: 30,
                             borderTopRightRadius: 30,
                             transform: [{ translateY: pan.y }]
