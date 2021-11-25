@@ -6,7 +6,7 @@ import {
     Image,
     ImageBackground,
     TouchableOpacity,
-    KeyboardAvoidingView,
+    PanResponder,
     StyleSheet,
     Dimensions,
     ActivityIndicator,
@@ -104,14 +104,46 @@ const BloodPressureInputScreen = props => {
     // const netInfo = useNetInfo();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
-    const modalHeightTransform = useRef(new Animated.Value(0)).current;
-    // const [modalHeight, setModalHeight] = useState(screenHeight*0.5);
-    const [firstTouchPoint, setFirstTouchPoint] = useState(0);
-    const [currentTouchPoint, setCurrentTouchPoint] = useState(0);
     const [onRelease, setOnRelease] = useState(true);
 
     const { current } = useCardAnimation();
     const dispatch = useDispatch();
+
+    const [bgColor, setBgColor] = useState(false);
+    const pan = useRef(new Animated.ValueXY()).current;
+
+    const panResponder = useRef(
+        PanResponder.create({
+            onStartShouldSetPanResponder: (evt, gestureState) => {
+                setOnRelease(false);
+                return true;
+            },
+            onMoveShouldSetPanResponder: (evt, { dx, dy }) => {
+                if (dx > 10 || dy > 10) {
+                    setOnRelease(false);
+                    return true;
+                }
+                return false;
+            },
+            onPanResponderGrant: () => {
+                pan.setOffset({
+                    x: pan.x._value,
+                    y: 0
+                });
+            },
+            onPanResponderMove: Animated.event(
+                [
+                    null,
+                    { dx: pan.x, dy: pan.y }
+                ],
+                { useNativeDriver: false }
+            ),
+            onPanResponderRelease: () => {
+                setOnRelease(true);
+                pan.flattenOffset();
+            }
+        })
+    ).current;
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {
@@ -244,22 +276,6 @@ const BloodPressureInputScreen = props => {
         [dispatchFormState]
     );
 
-    // const imageTakenHandler = async (imagePath) => {
-    //     setError(null);
-    //     setIsLoading(true);
-    //     console.log("OCR Image Path");
-    //     console.log(imagePath);
-    //     try {
-    //         const responseArray = await OCRAPIActions.sendPictureToGetNumberBack(imagePath);
-    //         console.log("OCR result to UI js preparing for UI update");
-    //         console.log(responseArray);
-    //         bluetoothInputChangeHandler(responseArray[0], responseArray[1], responseArray[2]);
-    //     } catch (e) {
-    //         setError(e);
-    //     }
-    //     setIsLoading(false);
-    // };
-
     const minMax = (numberInString) => {
         if (numberInString === "" || numberInString === "NaN" || numberInString === null) {
             return "100";
@@ -267,22 +283,6 @@ const BloodPressureInputScreen = props => {
         const minMaxValue = Math.min(Math.max(parseInt(numberInString), 30), 220);
         return minMaxValue.toString();
     };
-
-    const bluetoothInputChangeHandler = useCallback(
-        (sys, dia, pul) => {
-            console.log("going to update form state" + sys + " " + dia + " " + pul);
-            const minMaxSys = minMax(sys.toString());
-            const minMaxDia = minMax(dia.toString());
-            const minMaxPul = minMax(pul.toString());
-            dispatchFormState({
-                type: FORM_INPUT_UPDATE_BLE,
-                sys: minMaxSys,
-                dia: minMaxDia,
-                pul: minMaxPul
-            });
-        },
-        [dispatchFormState]
-    );
 
     const [systolicRange, setsystolicRange] = useState([]);
     const [diastolicRange, setdiastolicRange] = useState([]);
@@ -319,47 +319,38 @@ const BloodPressureInputScreen = props => {
             duration: 300,
             useNativeDriver: true
         }).start();
-        return (() => {
-            Animated.timing(fadeAnim, {
-                toValue: 0,
-                duration: 1,
-                useNativeDriver: true
-            }).start();
-        })
     }, []);
 
     useEffect(() => {
-        if (!onRelease) {
-            if (currentTouchPoint - firstTouchPoint >= 0) {
-                Animated.timing(modalHeightTransform, {
-                    toValue: currentTouchPoint - firstTouchPoint,
-                    duration: 1,
+        if (onRelease) {
+            console.log("pan.y");
+            console.log(pan.y);
+            console.log(screenHeight * 0.5 * 0.3);
+            if (pan.y._value > screenHeight * 0.5 * 0.3) {
+                console.log("pan.y > screenHeight");
+                Animated.timing(pan.y, {
+                    toValue: screenHeight * 0.7,
+                    duration: 150,
                     useNativeDriver: true
                 }).start();
-            }
-            // setModalHeight(screenHeight*0.5+firstTouchPoint-currentTouchPoint);
-        }
-    }, [firstTouchPoint, currentTouchPoint]);
-
-    useEffect(() => {
-        if (onRelease) {
-            console.log("modalHeightTransform");
-            console.log(modalHeightTransform);
-            console.log(firstTouchPoint);
-            console.log(currentTouchPoint);
-            if (currentTouchPoint - firstTouchPoint > screenHeight * 0.5 * 0.5) {
-                props.navigation.goBack();
-            } else {
-                Animated.timing(modalHeightTransform, {
+                Animated.timing(fadeAnim, {
                     toValue: 0,
                     duration: 150,
                     useNativeDriver: true
                 }).start();
-                setFirstTouchPoint(0);
-                setCurrentTouchPoint(0);
+                setTimeout(() => {
+                    props.navigation.goBack();
+                }, 160);
+            } else {
+                console.log("pan.y < screenHeight");
+                Animated.timing(pan.y, {
+                    toValue: 0,
+                    duration: 150,
+                    useNativeDriver: true
+                }).start();
             }
         }
-    }, [modalHeightTransform, onRelease]);
+    }, [pan.y, onRelease]);
 
     return (
         <Animated.View
@@ -391,47 +382,6 @@ const BloodPressureInputScreen = props => {
                         }}
                     />
                     <Animated.View
-                        pointerEvents='auto'
-                        // onStartShouldSetResponder={(evt) => {
-                        //     console.log("onStartShouldSetResponder");
-                        //     console.log(evt.nativeEvent.pageY);
-                        //     setOnRelease(false);
-                        //     setFirstTouchPoint(evt.nativeEvent.pageY);
-                        //     setCurrentTouchPoint(evt.nativeEvent.pageY);
-                        //     return true;
-                        // }}
-                        // onMoveShouldSetResponder={(evt) => {
-                        //     console.log("onMoveShouldSetResponder");
-                        //     setOnRelease(false);
-                        //     setFirstTouchPoint(evt.nativeEvent.pageY);
-                        //     setCurrentTouchPoint(evt.nativeEvent.pageY);
-                        //     return true;
-                        // }}
-                        onResponderGrant={(evt) => {
-                            console.log("onResponderGrant");
-                            console.log(evt.nativeEvent.pageY);
-                            setOnRelease(false);
-                            setFirstTouchPoint(evt.nativeEvent.pageY);
-                            setCurrentTouchPoint(evt.nativeEvent.pageY);
-                            return true;
-                        }}
-                        onResponderMove={(evt) => {
-                            console.log("pageY");
-                            setCurrentTouchPoint(evt.nativeEvent.pageY);
-                            console.log(evt.nativeEvent.pageY);
-                        }}
-                        onResponderRelease={(evt) => {
-                            console.log("onResponderRelease pageY");
-                            console.log(evt.nativeEvent.pageY);
-                            setOnRelease(true);
-                        }}
-                        onResponderTerminationRequest={() => {
-                            console.log("onResponderTerminationRequest");
-                            return true;
-                        }}
-                        onResponderTerminate={(evt) => {
-                            console.log("onResponderTerminate");
-                        }}
                         style={{
                             padding: 16,
                             width: '100%',
@@ -442,10 +392,10 @@ const BloodPressureInputScreen = props => {
                             height: screenHeight * 0.5,
                             borderTopLeftRadius: 30,
                             borderTopRightRadius: 30,
-                            transform: [{ translateY: modalHeightTransform },]
+                            transform: [{ translateY: pan.y }]
                         }}
+                        {...panResponder.panHandlers}
                     >
-
                         <CardOpacity style={styles.bpContainer}>
                             <View style={styles.bpTitlesContainer}>
                                 <View style={styles.bpTitleContainer}>
