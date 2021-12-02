@@ -9,6 +9,13 @@ export default {
     heartbeat: '心跳',
     press: '按',
     health_parameters_description: '輸入血壓記錄',
+    filter: '過濾條件',
+    add_filter: '添加過濾條件',
+    filter_in_use: '過濾條件使用中',
+    remove_filter: '移除過濾條件',
+    from: '由',
+    to: '至',
+    fromdate_over_todate: '開始日期大於結束日期',
     //BloodPressureInputScreen
     systolic_blood_pressure: '上壓',
     diastolic_blood_pressure: '下壓',
@@ -54,6 +61,8 @@ export default {
     high_blood_pressure_stage_2: '高血壓\n第二期',
     hypertensive_crisis: '高血壓危險期',
     heart_org_button: '瀏覽heart.org，了解血壓讀數',
+    no_records_in_the_selected_period: '所選時段內沒有記錄',
+    no_records: '沒有記錄',
     //RecordOutput
     output: '傳送資料',
     email_for_data: '傳送資料到此電郵地址',

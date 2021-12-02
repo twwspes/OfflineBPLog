@@ -10,6 +10,7 @@ import bloodPressureReducer from './store/reducers/bloodPressure'; // for HKU se
 import AppNavigator from './navigation/AppNavigator';
 import { LocalizationContext } from './constants/Localisation';
 import { initBloodPressureDB } from './helpers/dbBloodPressure';
+import { initMessageDB } from './helpers/dbMessage';
 
 initBloodPressureDB()
   .then(() => {
@@ -17,6 +18,15 @@ initBloodPressureDB()
   })
   .catch(err => {
     console.log('Initializing BloodPressureDB failed.');
+    console.log(err);
+  });
+
+initMessageDB()
+  .then(() => {
+    console.log('Initialized MessageDB');
+  })
+  .catch(err => {
+    console.log('Initializing MessageDB failed.');
     console.log(err);
   });
 

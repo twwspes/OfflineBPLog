@@ -1,8 +1,10 @@
-import { SET_BLOODPRESSURE, BLOODPRESSURE_UPDATE } from '../actions/bloodPressure';
+import { SET_BLOODPRESSURE, BLOODPRESSURE_UPDATE, SET_TODATE, SET_FROMDATE } from '../actions/bloodPressure';
 
 const initialState = {
     bloodPressures: [],
-    update: 0
+    update: 0,
+    todate: '', // ISOString or empty string
+    fromdate: '', // ISOString or empty string
 };
 
 export default (state = initialState, action) => {
@@ -16,6 +18,17 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 update: state.update + 1
+            }
+        case SET_TODATE:
+            console.log(action.todate);
+            return {
+                ...state,
+                todate: action.todate
+            }
+        case SET_FROMDATE:
+            return {
+                ...state,
+                fromdate: action.fromdate
             }
     }
     return state;

@@ -132,7 +132,7 @@ export const fetchBloodPressureFromSQL = () => {
 };
 
 export const fetchBloodPressureFromSQLBtwDateMilli = (until, from, limit, offset, sample) => {
-    if (sample !== null) {
+    if (sample === 1) {
         const promise = new Promise((resolve, reject) => {
             db.transaction(tx => {
                 tx.executeSql(
@@ -152,6 +152,58 @@ export const fetchBloodPressureFromSQLBtwDateMilli = (until, from, limit, offset
                     SUM(CASE WHEN systolic_blood_pressure >= 180 OR diastolic_blood_pressure >= 120 THEN 1 ELSE 0 END) AS percent4,
                     COUNT(id) AS count
                     FROM bloodpressure WHERE id <= ? AND id >= ? LIMIT ? OFFSET ?;`,
+                    [until, from, limit, offset],
+                    (_, result) => {
+                        resolve(result);
+                    },
+                    (_, err) => {
+                        reject(err);
+                    }
+                );
+            });
+        });
+        return promise;
+    } else if (sample > 1) {
+        const promise = new Promise((resolve, reject) => {
+            db.transaction(tx => {
+                tx.executeSql(
+                    `
+                        SELECT
+                        AVG(systolic_blood_pressure) AS systolic_blood_pressure, 
+                        MAX(systolic_blood_pressure) AS max_systolic_blood_pressure, 
+                        MIN(systolic_blood_pressure) AS min_systolic_blood_pressure, 
+                        AVG(diastolic_blood_pressure) AS diastolic_blood_pressure, 
+                        MAX(diastolic_blood_pressure) AS max_diastolic_blood_pressure, 
+                        MIN(diastolic_blood_pressure) AS min_diastolic_blood_pressure, 
+                        AVG(pulse) AS pulse, 
+                        MAX(pulse) AS max_pulse, 
+                        MIN(pulse) AS min_pulse,
+                        cast(AVG(id) as int) AS id
+                        FROM (SELECT 
+                        *, 
+                        cast((( (select count(*) from bloodpressure b where a.id >= b.id AND id <= ? AND id >= ? LIMIT ? OFFSET ? ) - 1) / ((select count(*) from bloodpressure c WHERE id <= ? AND id >= ? LIMIT ? OFFSET ?) / (?)) ) as int) as grp 
+                        FROM bloodpressure a WHERE id <= ? AND id >= ? LIMIT ? OFFSET ?) AS listofrecordsbygrp GROUP BY grp;
+                    `,
+                    [
+                        until, from, limit, offset,
+                        until, from, limit, offset, sample, 
+                        until, from, limit, offset,
+                    ],
+                    (_, result) => {
+                        resolve(result);
+                    },
+                    (_, err) => {
+                        reject(err);
+                    }
+                );
+            });
+        });
+        return promise;
+    } else if (limit >= 0 && offset >= 0) {
+        const promise = new Promise((resolve, reject) => {
+            db.transaction(tx => {
+                tx.executeSql(
+                    'SELECT * FROM bloodpressure WHERE id <= ? AND id >= ? ORDER BY id DESC LIMIT ? OFFSET ? ;',
                     [until, from, limit, offset],
                     (_, result) => {
                         resolve(result);

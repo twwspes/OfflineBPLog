@@ -9,6 +9,13 @@ export default {
     heartbeat: 'Pulse',
     press: 'Press',
     health_parameters_description: 'to record blood pressure',
+    filter: 'Filters',
+    add_filter: 'Apply filters',
+    filter_in_use: 'Filters in use',
+    remove_filter: 'Remove Filters',
+    from: 'from ',
+    to: 'to ',
+    fromdate_over_todate: 'The start date is greater than the end date',
     //BloodPressureInputScreen
     systolic_blood_pressure: 'Systolic Blood Pressure',
     diastolic_blood_pressure: 'Diastolic Blood Pressure',
@@ -54,6 +61,8 @@ export default {
     high_blood_pressure_stage_2: 'HIGH BLOOD PRESSURE\nSTAGE 2',
     hypertensive_crisis: 'HYPERTENSIVE CRISIS',
     heart_org_button: 'Understanding Blood Pressure Readings on heart.org',
+    no_records_in_the_selected_period: 'No records found in the given period',
+    no_records: 'No records found',
     //RecordOutput
     output: 'Log Export',
     email_for_data: 'Email for receiving log',

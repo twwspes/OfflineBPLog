@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect, useReducer, useCallback } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, Alert, Platform, TouchableOpacity, FlatList } from 'react-native';
+import React, { useContext, useState, useEffect, PureComponent, useMemo } from 'react';
+import { View, Text, Image, StyleSheet, ActivityIndicator, Alert, Platform, TouchableOpacity, FlatList, Pressable } from 'react-native';
 import moment from "moment/min/moment-with-locales";
 import { useSelector, useDispatch } from 'react-redux';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
@@ -8,14 +8,62 @@ import * as bloodPressureActions from '../../store/actions/bloodPressure'; // fo
 
 import ActivityIndicatorWithModal from '../../components/UI/ActivityIndicatorWithModal';
 import MainButtonOutlineImage from '../../components/UI/MainButtonOutlineImage';
+import MainButtonOutline from '../../components/UI/MainButtonOutline';
+import MainButton from '../../components/UI/MainButton';
 import {
     bloodPressureColorStyle,
     systolicColorStyle,
     diastolicColorStyle,
 } from '../../constants/TrafficLightStyles';
+import DateAndTimePicker from '../../components/UI/DateAndTimePicker';
 import Colors from '../../constants/Colors';
 import { LocalizationContext } from '../../constants/Localisation';
 import FontSize from '../../constants/FontSize';
+
+// class FlatListItem extends PureComponent {
+//     render() {
+//         const { itemData, onFlatListItemPress, noRecordLocalisedString } = this.props;
+
+const FlatListItem = ({ itemData, onFlatListItemPress, noRecordLocalisedString }) => {
+
+    return <MainButtonOutlineImage onPress={() => {
+        onFlatListItemPress(itemData);
+    }} style={styles.otherProfileCard}>
+        <View style={styles.dateContainer}>
+            {!!itemData.item.id ?
+                <Text style={styles.title}>{moment(itemData.item.id).format('lll')}</Text> :
+                <Text style={styles.title}>{noRecordLocalisedString}</Text>
+            }
+        </View>
+        <View style={styles.dataContainer}>
+            <View style={styles.digitContainer}>
+                {itemData.item.systolic_blood_pressure ?
+                    <Text style={{
+                        ...styles.digit,
+                        ...bloodPressureColorStyle(itemData.item.systolic_blood_pressure, itemData.item.diastolic_blood_pressure).customFontStyle
+                    }}>{itemData.item.systolic_blood_pressure}</Text> :
+                    <Text style={styles.digit}>--</Text>
+                }
+            </View>
+            <View style={styles.digitContainer}>
+                {itemData.item.systolic_blood_pressure ?
+                    <Text style={{
+                        ...styles.digit,
+                        ...bloodPressureColorStyle(itemData.item.systolic_blood_pressure, itemData.item.diastolic_blood_pressure).customFontStyle
+                    }}>{itemData.item.diastolic_blood_pressure}</Text> :
+                    <Text style={styles.digit}>--</Text>
+                }
+            </View>
+            <View style={styles.digitContainer}>
+                {!!itemData.item.pulse ?
+                    <Text style={styles.digit}>{itemData.item.pulse}</Text> :
+                    <Text style={styles.digit}>--</Text>
+                }
+            </View>
+        </View>
+    </MainButtonOutlineImage>
+}
+// }
 
 const HealthParametersScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
@@ -25,28 +73,78 @@ const HealthParametersScreen = props => {
     const [bloodPressures, setBloodPressures] = useState([]); // for HKU server
     const [bloodPressuresReverse, setBloodPressuresReverse] = useState([]); // for HKU server
     const bloodPressuresUpdateIndicator = useSelector(state => state.bloodPressure.update); // for HKU server
+    const flatListPaginationIncrement = 100;
+    const [currentOffset, setCurrentOffset] = useState(0);
+    const [latestBloodPressures, setLatestBloodPressures] = useState([]);
+    const fromdate = useSelector(state => state.bloodPressure.fromdate);
+    const todate = useSelector(state => state.bloodPressure.todate);
+    const [showToDatePicker, setShowToDatePicker] = useState(false);
+    const [showFromDatePicker, setShowFromDatePicker] = useState(false);
+    const [isFiltered, setIsFiltered] = useState(false);
     moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : locale.includes('es') ? 'es' : 'en');
 
     useEffect(() => {
         if (error) {
             Alert.alert(t('error_occur'), error, [{ text: t('okay'), onPress: () => setError(null) }]);
         }
-    }, [error])
+    }, [error]);
+
+    useEffect(() => {
+        if (props.route.params?.filtered) {
+            // filter updated, do something with `route.params.filter`
+            const filtered = props.route.params?.filtered;
+            if (filtered) {
+                setBloodPressures([]);
+                setIsFiltered(true);
+            } else {
+                setBloodPressures([]);
+                setIsFiltered(false);
+            }
+        } else {
+            setBloodPressures([]);
+            setIsFiltered(false);
+        }
+    }, [props.route.params?.filtered]);
+
+    useEffect(()=>{
+        setBloodPressures([]);
+    },[bloodPressuresUpdateIndicator]);
 
     // Grab data from source
     useEffect(() => {  // for HKU server
         const downloadItems = async () => {
             setError(null);
             setIsLoading(true);
-            console.log("download HealthParameter items");
+            // console.log("download HealthParameter items");
 
-            const date = new Date();
-            const nowISODateString = date.toISOString();
-            const oneWeekAgoDate = moment().subtract(1, 'years');
-            const oneWeekAgoDateISODateString = oneWeekAgoDate.toISOString();
-            const beginningISODateString = "1970-01-01T00:00:00.000Z"
+            const nowISODateString = new Date().toISOString();
+            const longTimeAgoISOString = '1970-01-01T00:00:00.000Z';
+            console.log("fromdate In Screen useEffect");
+            console.log(fromdate);
+            console.log("todate In Screen useEffect");
+            console.log(todate);
+
+            const newBloodPressures = await bloodPressureActions.fetchBloodPressure(
+                flatListPaginationIncrement,
+                currentOffset,
+                fromdate === "" ? longTimeAgoISOString : fromdate,
+                todate === "" ? nowISODateString : todate,
+                null
+            );
+            console.log("newBloodPressures length");
+            console.log(newBloodPressures.length);
+            console.log(currentOffset);
+            setLatestBloodPressures(newBloodPressures);
             try {
-                setBloodPressures(await bloodPressureActions.fetchBloodPressure(100, 0, beginningISODateString, nowISODateString, null));
+                setBloodPressures((prevValue) => {
+                    const bloodPressuresTemp = [...prevValue, ...newBloodPressures];
+                    bloodPressuresTemp.sort(function (a, b) {
+                        return parseInt(b.id) - parseInt(a.id);
+                    });
+                    const bloodPressuresTempDupliRemoved = bloodPressuresTemp.filter((arr, index, self) =>
+                        index === self.findIndex((t) => (t.id === arr.id)))
+                    return bloodPressuresTempDupliRemoved;
+                });
             } catch (err) {
                 setBloodPressures([]);
                 console.log("failed to download HealthParameter items");
@@ -57,16 +155,34 @@ const HealthParametersScreen = props => {
         };
 
         downloadItems();
+        // }, []);
+    }, [bloodPressuresUpdateIndicator, currentOffset, todate, fromdate]);
 
-    }, [bloodPressuresUpdateIndicator, dispatch]);
+    const onEndReached = async () => {
+        if (latestBloodPressures.length >= flatListPaginationIncrement) {
+            setCurrentOffset(prevValue => prevValue += flatListPaginationIncrement);
+        }
+    }
 
     useEffect(() => {
         // setBloodPressuresReverse(bloodPressures.reverse());
         setBloodPressuresReverse(bloodPressures);
     }, [bloodPressures]);
 
+    const onFlatListItemPress = (itemData) => {
+        props.navigation.navigate('BloodPressureInputModal', {
+            id: itemData.item.id.toString(),
+            systolic: itemData.item.systolic_blood_pressure,
+            diastolic: itemData.item.diastolic_blood_pressure,
+            pulse: itemData.item.pulse
+        });
+    }
+
     return (
-        <View style={styles.screen}>
+        <View style={{
+            ...styles.screen,
+            backgroundColor: isFiltered ? Colors.secondary : 'white',
+        }}>
             {/* <View style={{ height: 60 }}></View> */}
             <View style={styles.titleContainer}>
                 <View style={styles.titleTextContainter}>
@@ -87,69 +203,49 @@ const HealthParametersScreen = props => {
                     </View>
 
                 </View>
+                <Pressable
+                    onPress={() => {
+                        props.navigation.navigate('BloodPressurePeriodModal');
+                    }}
+                    style={styles.titleToggleButton}
+                >
+                    <Text style={styles.titleToggleButtonText}>{isFiltered ? t('filter_in_use') : t('filter')}</Text>
+                </Pressable>
             </View>
-
-            <View style={styles.flatListContainer}>
+            <View style={{
+                ...styles.flatListContainer,
+                backgroundColor: isFiltered ? Colors.secondary : 'white',
+            }}>
                 {bloodPressuresReverse.length !== 0 ?
                     <FlatList
+                        onEndReached={() => {
+                            console.log("onEndReached");
+                            onEndReached();
+                        }}
+                        onEndReachedThreshold={30}
                         showsVerticalScrollIndicator={false}
                         data={bloodPressuresReverse}
                         keyExtractor={item => item.id.toString()}
-                        renderItem={itemData => <MainButtonOutlineImage onPress={() => {
-                            props.navigation.navigate('BloodPressureInputModal', {
-                                id: itemData.item.id.toString(),
-                                systolic: itemData.item.systolic_blood_pressure,
-                                diastolic: itemData.item.diastolic_blood_pressure,
-                                pulse: itemData.item.pulse
-                            });
-                        }} style={styles.otherProfileCard}>
-                            <View style={styles.dateContainer}>
-                                {!!itemData.item.id ?
-                                    <Text style={styles.title}>{moment(itemData.item.id).format('lll')}</Text> :
-                                    <Text style={styles.title}>{t('no_record')}</Text>
-                                }
-                            </View>
-                            <View style={styles.dataContainer}>
-                                <View style={styles.digitContainer}>
-                                    {itemData.item.systolic_blood_pressure ?
-                                        <Text style={{
-                                            ...styles.digit,
-                                            ...bloodPressureColorStyle(itemData.item.systolic_blood_pressure, itemData.item.diastolic_blood_pressure).customFontStyle
-                                        }}>{itemData.item.systolic_blood_pressure}</Text> :
-                                        <Text style={styles.digit}>--</Text>
-                                    }
-                                </View>
-                                <View style={styles.digitContainer}>
-                                    {itemData.item.systolic_blood_pressure ?
-                                        <Text style={{
-                                            ...styles.digit,
-                                            ...bloodPressureColorStyle(itemData.item.systolic_blood_pressure, itemData.item.diastolic_blood_pressure).customFontStyle
-                                        }}>{itemData.item.diastolic_blood_pressure}</Text> :
-                                        <Text style={styles.digit}>--</Text>
-                                    }
-                                </View>
-                                <View style={styles.digitContainer}>
-                                    {!!itemData.item.pulse ?
-                                        <Text style={styles.digit}>{itemData.item.pulse}</Text> :
-                                        <Text style={styles.digit}>--</Text>
-                                    }
-                                </View>
-
-                            </View>
-                        </MainButtonOutlineImage>}
+                        renderItem={itemData => <FlatListItem
+                            itemData={itemData}
+                            onFlatListItemPress={onFlatListItemPress}
+                            noRecordLocalisedString={t('no_record')}
+                        />}
                     />
                     :
-                    <View style={styles.descriptionContainer}>
-                        <View style={{ height: 30 }}></View>
-                        <Text style={styles.LowerBtnsText}>{t('press')} <AntDesign name="pluscircle" size={24} color={Colors.focus} /> {t('health_parameters_description')}</Text>
-                    </View>
+                    isLoading ?
+                        <View style={styles.descriptionContainer}>
+                            <View style={{ height: 30 }}></View>
+                            <View style={styles.indicatorContainer}>
+                                <ActivityIndicator size="large" color={Colors.focus} />
+                            </View>
+                        </View>
+                        : <View style={styles.descriptionContainer}>
+                            <View style={{ height: 30 }}></View>
+                            <Text style={styles.LowerBtnsText}>{t('press')} <AntDesign name="pluscircle" size={24} color={Colors.focus} /> {t('health_parameters_description')}</Text>
+                        </View>
                 }
             </View>
-
-            {/* for HKU server */}
-            {!!isLoading &&
-                <ActivityIndicatorWithModal />
-            }
             <TouchableOpacity onPress={() => {
                 props.navigation.navigate('BloodPressureInputModal');
             }} style={styles.fab}>
@@ -169,7 +265,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     titleContainer: {
-        height: Platform.OS === 'android' ? "20%" : "20%",
+        height: "25%",
         width: '100%',
         justifyContent: 'flex-end',
         alignItems: 'center',
@@ -187,6 +283,33 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         // backgroundColor: 'red'
     },
+    titleToggleButton: {
+        height: 30,
+        minWidth: '30%',
+        paddingHorizontal: 10,
+        backgroundColor: Colors.primary,
+        margin: 5,
+        borderRadius: 30,
+        justifyContent: 'center'
+    },
+    titleToggleButtonText: {
+        // backgroundColor: 'yellow',
+        textAlign: 'center',
+        color: Colors.darkGreen,
+    },
+    titleDateContainer: {
+        width: '90%',
+        // height: 60,
+    },
+    dateTimeButton: {
+        width: '100%',
+        alignItems: 'center',
+        paddingHorizontal: 18,
+        marginVertical: 7,
+    },
+    button: {
+        marginVertical: 7,
+    },
     title: {
         fontSize: FontSize.content,
     },
@@ -196,8 +319,9 @@ const styles = StyleSheet.create({
     },
     flatListContainer: {
         width: '95%',
-        height: "80%",
+        height: "75%",
         alignItems: 'center',
+        backgroundColor: 'white',
     },
     otherProfileCard: {
         height: 100,
@@ -271,6 +395,17 @@ const styles = StyleSheet.create({
         fontSize: FontSize.content,
         color: Colors.grey,
         textAlign: 'center'
+    },
+    activityIndicatorContainer: {
+        width: '95%',
+        height: "75%",
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    indicatorContainer: {
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 

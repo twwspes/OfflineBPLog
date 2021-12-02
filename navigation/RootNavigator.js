@@ -9,6 +9,7 @@ import { LocalizationContext } from '../constants/Localisation';
 
 import BloodPressureInputScreen from '../screens/BloodPressure/BloodPressureInputScreen';
 import BloodPressureInputModal from '../screens/BloodPressure/BloodPressureInputModal';
+import BloodPressurePeriodModal from '../screens/BloodPressure/BloodPressurePeriodModal';
 import BloodPressureScreen from '../screens/BloodPressure/BloodPressureScreen';
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
 import RecordOutputScreen from '../screens/RecordOutput/RecordOutputScreen';
@@ -165,6 +166,22 @@ export const BloodPressureNavigator = () => {
                 <BloodPressureStackNavigator.Screen
                     name="BloodPressureInputModal"
                     component={BloodPressureInputModal}
+                    options={() => {
+                        return {
+                            ...defaultNavOptions,
+                            headerTitle: t('input'),
+                            headerShown: false,
+                            cardOverlayEnabled: true,
+                            gestureEnabled: true,
+                            // ...userScreenOptions
+                        };
+                    }}
+                />
+            </BloodPressureStackNavigator.Group>
+            <BloodPressureStackNavigator.Group screenOptions={{ presentation: 'transparentModal' }}>
+                <BloodPressureStackNavigator.Screen
+                    name="BloodPressurePeriodModal"
+                    component={BloodPressurePeriodModal}
                     options={() => {
                         return {
                             ...defaultNavOptions,

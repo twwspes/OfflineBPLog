@@ -85,7 +85,7 @@ const RecordOutputScreen = props => {
             const oneWeekAgoDateISODateString = oneWeekAgoDate.toISOString();
             const beginningISODateString = "1970-01-01T00:00:00.000Z"
             try {
-                setBloodPressures(await bloodPressureActions.fetchBloodPressure(100, 0, beginningISODateString, nowISODateString, null));
+                setBloodPressures(await bloodPressureActions.fetchBloodPressure(-1, -1, beginningISODateString, nowISODateString, null));
             } catch (err) {
                 setBloodPressures([]);
                 console.log("failed to download HealthParameter items");
@@ -107,7 +107,7 @@ const RecordOutputScreen = props => {
     useEffect(() => {
         let bloodPressuresReverseTextTemp = 'Date,Systolic,Diastolic,Pulse\n';
         for (const item of bloodPressuresReverse) {
-            bloodPressuresReverseTextTemp += moment(item.id).format('lll') + ",";
+            bloodPressuresReverseTextTemp += new Date(parseInt(item.id)).toISOString() + ",";
             bloodPressuresReverseTextTemp += item.systolic_blood_pressure + ",";
             bloodPressuresReverseTextTemp += item.diastolic_blood_pressure + ",";
             bloodPressuresReverseTextTemp += item.pulse + "\n";

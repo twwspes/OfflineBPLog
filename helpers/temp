@@ -1,0 +1,4 @@
+                        SELECT *, 
+                        (select count(*) from bloodpressure b where a.id >= b.id AND id <= ? AND id >= ? LIMIT ? OFFSET ? ) as row_num,
+                        cast((( (select count(*) from bloodpressure b where a.id >= b.id AND id <= ? AND id >= ? LIMIT ? OFFSET ? ) - 1) / ((select count(*) from bloodpressure c WHERE id <= ? AND id >= ? LIMIT ? OFFSET ?) / (?)) ) as int) as grp 
+                        FROM bloodpressure a WHERE id <= ? AND id >= ? LIMIT ? OFFSET ?;

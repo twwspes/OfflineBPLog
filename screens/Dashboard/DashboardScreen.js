@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect, useReducer, useCallback } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, Alert, FlatList, Dimensions, Platform, Linking, SafeAreaView } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Alert, FlatList, Dimensions, Platform, Linking, SafeAreaView } from 'react-native';
 import moment from "moment/min/moment-with-locales";
 import { useSelector, useDispatch } from 'react-redux';
-import { VictoryChart, VictoryLine, VictoryTheme, VictoryAxis, VictoryLegend, VictoryPie, VictoryArea, VictoryLabel, VictoryScatter } from "victory-native";
+import { VictoryChart, VictoryLine, VictoryTheme, VictoryAxis, VictoryLegend, VictoryBoxPlot, VictoryArea, VictoryLabel, VictoryScatter } from "victory-native";
 import { Ionicons } from '@expo/vector-icons';
 
 import * as bloodPressureActions from '../../store/actions/bloodPressure'; // for HKU server
@@ -34,6 +34,9 @@ const DashboardScreen = props => {
     const [bloodPressuresSystolicForChart, setBloodPressuresSystolicForChart] = useState([]);
     const [bloodPressuresDiastolicForChart, setBloodPressuresDiastolicForChart] = useState([]);
     const [bloodPressuresPulseForChart, setBloodPressuresPulseForChart] = useState([]);
+    const [bloodPressuresSystolicMinMaxForChart, setBloodPressuresSystolicMinMaxForChart] = useState([]);
+    const [bloodPressuresDiastolicMinMaxForChart, setBloodPressuresDiastolicMinMaxForChart] = useState([]);
+    const [bloodPressuresPulseMinMaxForChart, setBloodPressuresPulseMinMaxForChart] = useState([]);
     const [bloodPressuresAvgMaxMin, setBloodPressuresAvgMaxMin] = useState([]);
     const [bloodPressuresForTable, setBloodPressuresForTable] = useState([]);
     const [bloodPressuresPeriodForTable, setBloodPressuresPeriodForTable] = useState('one_day');
@@ -71,45 +74,12 @@ const DashboardScreen = props => {
         }
     }, [error])
 
-    useEffect(() => {  // for HKU server
-        const downloadItems = async () => {
-            setError(null);
-            // console.log("setIsLoading true");
-            // setIsLoading(true);
-            console.log("download the latest bloodPressures items");
-
-            const date = new Date();
-            const nowISODateString = date.toISOString();
-            const oneYearAgoDate = moment().subtract(1, 'years');
-            const oneYearAgoDateISODateString = oneYearAgoDate.toISOString();
-            try {
-                setLastBloodPressures(await bloodPressureActions.fetchBloodPressure(1, 0, oneYearAgoDateISODateString, nowISODateString, null));
-                console.log("setLastBloodPressure finished");
-                console.log(lastBloodPressures);
-            } catch (err) {
-                setLastBloodPressures([]);
-                console.log("failed to download the latest HealthParameter items");
-                setIsLoading(false);
-                setError(err.message);
-                if (parseInt(err.message.substring(err.message.length - n)) === "401") {
-                    // dispatch(authActions.loginByRefreshToken(null));
-                }
-                // return;
-            }
-            console.log("setIsLoading false");
-            setIsLoading(false);
-        };
-
-        downloadItems();
-
-    }, [bloodPressuresUpdateIndicator]);
-
     // Grab data from source
     useEffect(() => {  // for HKU server
         const downloadItems = async () => {
             setError(null);
             // console.log("setIsLoading true");
-            // setIsLoading(true);
+            setIsLoading(true);
             console.log("download bloodPressures graph items");
 
             const date = new Date();
@@ -121,11 +91,13 @@ const DashboardScreen = props => {
             }
             const sinceDateISODateString = sinceDate.toISOString();
             try {
-                setBloodPressures(await bloodPressureActions.fetchBloodPressure(1000, 0, sinceDateISODateString, nowISODateString,
-                    bloodPressuresPeriodForTable === 'one_day' || bloodPressuresPeriodForTable === 'one_week' || bloodPressuresPeriodForTable === 'one_month' ? null : null
+                setBloodPressures(await bloodPressureActions.fetchBloodPressure(5000, 0, sinceDateISODateString, nowISODateString,
+                    bloodPressuresPeriodForTable === 'one_day' ? null : bloodPressuresPeriodForTable === 'one_week' ? 7 : 12
                 ));
-                // console.log(await bloodPressureActions.fetchBloodPressure(1000, 0, sinceDateISODateString, nowISODateString, 1));
-                setBloodPressuresAvgMaxMin(await bloodPressureActions.fetchBloodPressure(1000, 0, sinceDateISODateString, nowISODateString, 1));
+                // const testingResult = await bloodPressureActions.fetchBloodPressure(5000, 0, sinceDateISODateString, nowISODateString, 20);
+                // console.log("testingResult");
+                // console.log(testingResult);
+                setBloodPressuresAvgMaxMin(await bloodPressureActions.fetchBloodPressure(5000, 0, sinceDateISODateString, nowISODateString, 1));
             } catch (err) {
                 setBloodPressures([]);
                 setBloodPressuresAvgMaxMin([]);
@@ -151,6 +123,9 @@ const DashboardScreen = props => {
         let bloodPressuresSystolicForChartTemp = [];
         let bloodPressuresDiastolicForChartTemp = [];
         let bloodPressuresPulseForChartTemp = [];
+        let bloodPressuresSystolicMinMaxForChartTemp = [];
+        let bloodPressuresDiastolicMinMaxForChartTemp = [];
+        let bloodPressuresPulseMinMaxForChartTemp = [];
         let bloodPressuresSystolicForTable = [];
         let bloodPressuresDiastolicForTable = [];
         let bloodPressuresPulseForTable = [];
@@ -164,20 +139,50 @@ const DashboardScreen = props => {
             bloodPressures.forEach((bloodPressure) => { // for HKU server
                 if (!!bloodPressure.systolic_blood_pressure && !isNaN(bloodPressure.systolic_blood_pressure)) {
                     bloodPressuresSystolicForChartTemp.push({ x: new Date(bloodPressure.id), y: bloodPressure.systolic_blood_pressure });
+                    if (!!bloodPressure.max_systolic_blood_pressure && !isNaN(bloodPressure.max_systolic_blood_pressure)) {
+                        bloodPressuresSystolicMinMaxForChartTemp.push({
+                            x: new Date(bloodPressure.id), y: [
+                                bloodPressure.min_systolic_blood_pressure,
+                                bloodPressure.systolic_blood_pressure,
+                                bloodPressure.max_systolic_blood_pressure
+                            ]
+                        })
+                    }
                     bloodPressuresSystolicForTable.push(bloodPressure.systolic_blood_pressure);
                 }
                 if (!!bloodPressure.diastolic_blood_pressure && !isNaN(bloodPressure.diastolic_blood_pressure)) {
                     bloodPressuresDiastolicForChartTemp.push({ x: new Date(bloodPressure.id), y: bloodPressure.diastolic_blood_pressure });
+                    if (!!bloodPressure.max_diastolic_blood_pressure && !isNaN(bloodPressure.max_diastolic_blood_pressure)) {
+                        bloodPressuresDiastolicMinMaxForChartTemp.push({
+                            x: new Date(bloodPressure.id), y: [
+                                bloodPressure.min_diastolic_blood_pressure,
+                                bloodPressure.diastolic_blood_pressure,
+                                bloodPressure.max_diastolic_blood_pressure
+                            ]
+                        })
+                    }
                     bloodPressuresDiastolicForTable.push(bloodPressure.diastolic_blood_pressure);
                 }
                 if (!!bloodPressure.pulse && !isNaN(bloodPressure.pulse)) {
                     bloodPressuresPulseForChartTemp.push({ x: new Date(bloodPressure.id), y: bloodPressure.pulse });
+                    if (!!bloodPressure.max_pulse && !isNaN(bloodPressure.max_pulse)) {
+                        bloodPressuresPulseMinMaxForChartTemp.push({
+                            x: new Date(bloodPressure.id), y: [
+                                bloodPressure.min_pulse,
+                                bloodPressure.pulse,
+                                bloodPressure.max_pulse
+                            ]
+                        })
+                    }
                     bloodPressuresPulseForTable.push(bloodPressure.pulse);
                 }
             });
             setBloodPressuresSystolicForChart(bloodPressuresSystolicForChartTemp.reverse());
             setBloodPressuresDiastolicForChart(bloodPressuresDiastolicForChartTemp.reverse());
             setBloodPressuresPulseForChart(bloodPressuresPulseForChartTemp.reverse());
+            setBloodPressuresSystolicMinMaxForChart(bloodPressuresSystolicMinMaxForChartTemp.reverse());
+            setBloodPressuresDiastolicMinMaxForChart(bloodPressuresDiastolicMinMaxForChartTemp.reverse());
+            setBloodPressuresPulseMinMaxForChart(bloodPressuresPulseMinMaxForChartTemp.reverse());
             console.log("bloodPressuresSystolicForChart");
             console.log(bloodPressuresSystolicForChart);
             columnHeadings = [
@@ -266,52 +271,6 @@ const DashboardScreen = props => {
                     <View style={{ width: '100%' }}><Text style={styles.title}>{t('dashboard')}</Text></View>
                     {/* <Image source={require('../../assets/bloodPressure2.png')} style={styles.titleImage} /> */}
                 </View>
-                {false && <View style={styles.otherProfileBtnContainer}>
-                    <MainButtonClearImage onPress={() => {
-                        // setShowBloodPressureCategory((prevValue) => !prevValue)
-                    }} style={styles.otherProfileCard}>
-                        <View style={styles.dataContainer}>
-                            <View style={{ ...styles.digitContainer, width: '27%' }}>
-                                {lastBloodPressures[0] ?
-                                    <Text style={{
-                                        ...styles.digit,
-                                        ...systolicColorStyle(lastBloodPressures[0].systolic_blood_pressure).customFontStyle
-                                    }}>{lastBloodPressures[0].systolic_blood_pressure}</Text> :
-                                    <Text style={styles.digit}>--</Text>
-                                }
-                                <Text style={styles.LowerBtnsText}>{t('systolic')}</Text>
-                                <Text style={styles.unitText}>mmHg</Text>
-                            </View>
-                            <View style={{ ...styles.digitContainer, width: '27%' }}>
-                                {lastBloodPressures[0] ?
-                                    <Text style={{
-                                        ...styles.digit,
-                                        ...diastolicColorStyle(lastBloodPressures[0].diastolic_blood_pressure).customFontStyle
-                                    }}>{lastBloodPressures[0].diastolic_blood_pressure}</Text> :
-                                    <Text style={styles.digit}>--</Text>
-                                }
-                                <Text style={styles.LowerBtnsText}>{t('diastolic')}</Text>
-                                <Text style={styles.unitText}>mmHg</Text>
-                            </View>
-                            <View style={{ ...styles.digitContainer, width: '27%' }}>
-                                {!!lastBloodPressures[0] ?
-                                    <Text style={styles.digit}>{lastBloodPressures[0].pulse}</Text> :
-                                    <Text style={styles.digit}>--</Text>
-                                }
-                                <Text style={styles.LowerBtnsText}>{t('heartbeat')}</Text>
-                                <Text style={styles.unitText}>bpm</Text>
-                            </View>
-                            <View style={{ ...styles.digitContainer, width: '20%' }}>
-                                <Ionicons
-                                    name={showBloodPressureCategory ? "chevron-down-outline" : "chevron-back-outline"}
-                                    size={24}
-                                    color="black"
-                                />
-                            </View>
-                        </View>
-
-                    </MainButtonClearImage>
-                </View>}
 
                 {bloodPressures ?
                     <View style={styles.otherProfileBtnContainer}>
@@ -370,7 +329,11 @@ const DashboardScreen = props => {
                     : <View></View>
                 }
 
-                {showBloodPressureCategory && <View style={styles.categoryContainer}>
+                {isLoading ? <View style={styles.categoryContainer}>
+                    <View style={styles.indicatorContainer}>
+                        <ActivityIndicator size="large" color={Colors.focus} />
+                    </View>
+                </View> : showBloodPressureCategory ? <View style={styles.categoryContainer}>
 
 
                     {bloodPressuresAvgMaxMin ? !!bloodPressuresAvgMaxMin[0] ?
@@ -423,109 +386,270 @@ const DashboardScreen = props => {
                         : <View></View>
                     }
 
+
+
                     {bloodPressures ? !!bloodPressures[1] ? !!bloodPressuresSystolicForChart[1] || !!bloodPressuresDiastolicForChart[1] ?
-                        <VictoryChart
-                            theme={VictoryTheme.material}
-                            scale={{ x: "time" }}
-                            maxDomain={{ y: 250 }}
-                            minDomain={{ y: 0 }}
-                        // containerComponent={
-                        //     <VictoryZoomContainer
-                        //         zoomDimension="x"
-                        //     />
-                        // }
-                        >
-                            {!!bloodPressuresSystolicForChart[1] && !!bloodPressuresDiastolicForChart[1] ?
-                                <ChartAxis crossAxis
-                                    minValue={Math.min(bloodPressuresSystolicForChart[0].x.valueOf(), bloodPressuresDiastolicForChart[0].x.valueOf())}
-                                    maxValue={Math.max(bloodPressuresSystolicForChart[bloodPressuresSystolicForChart.length - 1].x.valueOf(), bloodPressuresDiastolicForChart[bloodPressuresDiastolicForChart.length - 1].x.valueOf())}
-                                />
-                                : !!bloodPressuresSystolicForChart[1] ?
-                                    <ChartAxis crossAxis
-                                        minValue={bloodPressuresSystolicForChart[0].x.valueOf()}
-                                        maxValue={bloodPressuresSystolicForChart[bloodPressuresSystolicForChart.length - 1].x.valueOf()}
-                                    /> : !!bloodPressuresDiastolicForChart[1] && <ChartAxis crossAxis
-                                        minValue={bloodPressuresDiastolicForChart[0].x.valueOf()}
-                                        maxValue={bloodPressuresDiastolicForChart[bloodPressuresDiastolicForChart.length - 1].x.valueOf()}
+                        !!bloodPressuresDiastolicMinMaxForChart[1] ?
+                            <View>
+                                <VictoryChart
+                                    theme={VictoryTheme.material}
+                                    scale={{ x: "time" }}
+                                    maxDomain={{ y: bloodPressuresAvgMaxMin[0].max_systolic_blood_pressure + 10 }}
+                                    minDomain={{ y: bloodPressuresAvgMaxMin[0].min_diastolic_blood_pressure - 10 }}
+                                    domainPadding={10}
+                                // containerComponent={
+                                //     <VictoryZoomContainer
+                                //         zoomDimension="x"
+                                //     />
+                                // }
+                                >
+                                    {!!bloodPressuresSystolicForChart[1] && !!bloodPressuresDiastolicForChart[1] ?
+                                        <ChartAxis crossAxis
+                                            minValue={Math.min(bloodPressuresSystolicForChart[0].x.valueOf(), bloodPressuresDiastolicForChart[0].x.valueOf())}
+                                            maxValue={Math.max(bloodPressuresSystolicForChart[bloodPressuresSystolicForChart.length - 1].x.valueOf(), bloodPressuresDiastolicForChart[bloodPressuresDiastolicForChart.length - 1].x.valueOf())}
+                                        />
+                                        : !!bloodPressuresSystolicForChart[1] ?
+                                            <ChartAxis crossAxis
+                                                minValue={bloodPressuresSystolicForChart[0].x.valueOf()}
+                                                maxValue={bloodPressuresSystolicForChart[bloodPressuresSystolicForChart.length - 1].x.valueOf()}
+                                            /> : !!bloodPressuresDiastolicForChart[1] && <ChartAxis crossAxis
+                                                minValue={bloodPressuresDiastolicForChart[0].x.valueOf()}
+                                                maxValue={bloodPressuresDiastolicForChart[bloodPressuresDiastolicForChart.length - 1].x.valueOf()}
+                                            />
+                                    }
+                                    <VictoryAxis dependentAxis />
+                                    <VictoryLegend x={100} y={0}
+                                        borderPadding={{ right: 25 }}
+                                        orientation="vertical"
+                                        gutter={20}
+                                        style={{ border: { stroke: "black" }, labels: { fontSize: FontSize.veryvarySmallContent } }}
+                                        data={[
+                                            { name: (t('systolic_blood_pressure') + ' (mmHg)'), symbol: { fill: "red" } },
+                                        ]}
                                     />
-                            }
-                            <VictoryAxis dependentAxis />
-                            <VictoryLegend x={100} y={0}
-                                borderPadding={{ right: 25 }}
-                                orientation="vertical"
-                                gutter={20}
-                                style={{ border: { stroke: "black" }, labels: { fontSize: FontSize.veryvarySmallContent } }}
-                                data={[
-                                    { name: (t('systolic_blood_pressure') + ' (mmHg)'), symbol: { fill: "red" } },
-                                    { name: (t('diastolic_blood_pressure') + ' (mmHg)'), symbol: { fill: "blue" } },
-                                ]}
-                            />
-                            {!!bloodPressuresSystolicForChart[1] && <VictoryLine
-                                style={{
-                                    data: { stroke: "red" },
-                                    parent: { border: "1px solid #ccc" }
-                                }}
-                                data={bloodPressuresSystolicForChart}
-                            />}
-                            {!!bloodPressuresSystolicForChart[1] && <VictoryScatter
-                                data={bloodPressuresSystolicForChart}
-                                style={{ data: { fill: "red" } }}
-                            />}
-                            {!!bloodPressuresDiastolicForChart[1] && <VictoryLine
-                                style={{
-                                    data: { stroke: "blue" },
-                                    parent: { border: "1px solid #ccc" }
-                                }}
-                                data={bloodPressuresDiastolicForChart}
-                            />}
-                            {!!bloodPressuresDiastolicForChart[1] && <VictoryScatter
-                                data={bloodPressuresDiastolicForChart}
-                                style={{ data: { fill: "blue" } }}
-                            />}
-                        </VictoryChart>
+                                    {!!bloodPressuresSystolicMinMaxForChart[1] && <VictoryBoxPlot
+                                        data={bloodPressuresSystolicMinMaxForChart}
+                                        boxWidth={10}
+                                        whiskerWidth={5}
+                                    />}
+                                    {!!bloodPressuresSystolicForChart[1] && <VictoryLine
+                                        style={{
+                                            data: { stroke: "red" },
+                                            parent: { border: "1px solid #ccc" }
+                                        }}
+                                        data={bloodPressuresSystolicForChart}
+                                    />}
+                                    {!!bloodPressuresSystolicForChart[1] && <VictoryScatter
+                                        data={bloodPressuresSystolicForChart}
+                                        style={{ data: { fill: "red" } }}
+                                    />}
+                                </VictoryChart>
+                                <VictoryChart
+                                    theme={VictoryTheme.material}
+                                    scale={{ x: "time" }}
+                                    maxDomain={{ y: bloodPressuresAvgMaxMin[0].max_systolic_blood_pressure + 10 }}
+                                    minDomain={{ y: bloodPressuresAvgMaxMin[0].min_diastolic_blood_pressure - 10 }}
+                                    domainPadding={10}
+                                // containerComponent={
+                                //     <VictoryZoomContainer
+                                //         zoomDimension="x"
+                                //     />
+                                // }
+                                >
+                                    {!!bloodPressuresSystolicForChart[1] && !!bloodPressuresDiastolicForChart[1] ?
+                                        <ChartAxis crossAxis
+                                            minValue={Math.min(bloodPressuresSystolicForChart[0].x.valueOf(), bloodPressuresDiastolicForChart[0].x.valueOf())}
+                                            maxValue={Math.max(bloodPressuresSystolicForChart[bloodPressuresSystolicForChart.length - 1].x.valueOf(), bloodPressuresDiastolicForChart[bloodPressuresDiastolicForChart.length - 1].x.valueOf())}
+                                        />
+                                        : !!bloodPressuresSystolicForChart[1] ?
+                                            <ChartAxis crossAxis
+                                                minValue={bloodPressuresSystolicForChart[0].x.valueOf()}
+                                                maxValue={bloodPressuresSystolicForChart[bloodPressuresSystolicForChart.length - 1].x.valueOf()}
+                                            /> : !!bloodPressuresDiastolicForChart[1] && <ChartAxis crossAxis
+                                                minValue={bloodPressuresDiastolicForChart[0].x.valueOf()}
+                                                maxValue={bloodPressuresDiastolicForChart[bloodPressuresDiastolicForChart.length - 1].x.valueOf()}
+                                            />
+                                    }
+                                    <VictoryAxis dependentAxis />
+                                    <VictoryLegend x={100} y={0}
+                                        borderPadding={{ right: 25 }}
+                                        orientation="vertical"
+                                        gutter={20}
+                                        style={{ border: { stroke: "black" }, labels: { fontSize: FontSize.veryvarySmallContent } }}
+                                        data={[
+                                            { name: (t('diastolic_blood_pressure') + ' (mmHg)'), symbol: { fill: "blue" } },
+                                        ]}
+                                    />
+                                    {!!bloodPressuresDiastolicMinMaxForChart[1] && <VictoryBoxPlot
+                                        data={bloodPressuresDiastolicMinMaxForChart}
+                                        boxWidth={10}
+                                        whiskerWidth={5}
+                                    />}
+                                    {!!bloodPressuresDiastolicForChart[1] && <VictoryLine
+                                        style={{
+                                            data: { stroke: "blue" },
+                                            parent: { border: "1px solid #ccc" }
+                                        }}
+                                        data={bloodPressuresDiastolicForChart}
+                                    />}
+                                    {!!bloodPressuresDiastolicForChart[1] && <VictoryScatter
+                                        data={bloodPressuresDiastolicForChart}
+                                        style={{ data: { fill: "blue" } }}
+                                    />}
+                                </VictoryChart>
+                            </View>
+                            :
+                            <VictoryChart
+                                theme={VictoryTheme.material}
+                                scale={{ x: "time" }}
+                                maxDomain={{ y: bloodPressuresAvgMaxMin[0].max_systolic_blood_pressure + 10 }}
+                                minDomain={{ y: bloodPressuresAvgMaxMin[0].min_diastolic_blood_pressure - 10 }}
+                                domainPadding={10}
+                            // containerComponent={
+                            //     <VictoryZoomContainer
+                            //         zoomDimension="x"
+                            //     />
+                            // }
+                            >
+                                {!!bloodPressuresSystolicForChart[1] && !!bloodPressuresDiastolicForChart[1] ?
+                                    <ChartAxis crossAxis
+                                        minValue={Math.min(bloodPressuresSystolicForChart[0].x.valueOf(), bloodPressuresDiastolicForChart[0].x.valueOf())}
+                                        maxValue={Math.max(bloodPressuresSystolicForChart[bloodPressuresSystolicForChart.length - 1].x.valueOf(), bloodPressuresDiastolicForChart[bloodPressuresDiastolicForChart.length - 1].x.valueOf())}
+                                    />
+                                    : !!bloodPressuresSystolicForChart[1] ?
+                                        <ChartAxis crossAxis
+                                            minValue={bloodPressuresSystolicForChart[0].x.valueOf()}
+                                            maxValue={bloodPressuresSystolicForChart[bloodPressuresSystolicForChart.length - 1].x.valueOf()}
+                                        /> : !!bloodPressuresDiastolicForChart[1] && <ChartAxis crossAxis
+                                            minValue={bloodPressuresDiastolicForChart[0].x.valueOf()}
+                                            maxValue={bloodPressuresDiastolicForChart[bloodPressuresDiastolicForChart.length - 1].x.valueOf()}
+                                        />
+                                }
+                                <VictoryAxis dependentAxis />
+                                <VictoryLegend x={100} y={0}
+                                    borderPadding={{ right: 25 }}
+                                    orientation="vertical"
+                                    gutter={20}
+                                    style={{ border: { stroke: "black" }, labels: { fontSize: FontSize.veryvarySmallContent } }}
+                                    data={[
+                                        { name: (t('systolic_blood_pressure') + ' (mmHg)'), symbol: { fill: "red" } },
+                                        { name: (t('diastolic_blood_pressure') + ' (mmHg)'), symbol: { fill: "blue" } },
+                                    ]}
+                                />
+                                {!!bloodPressuresSystolicForChart[1] && <VictoryLine
+                                    style={{
+                                        data: { stroke: "red" },
+                                        parent: { border: "1px solid #ccc" }
+                                    }}
+                                    data={bloodPressuresSystolicForChart}
+                                />}
+                                {!!bloodPressuresSystolicForChart[1] && <VictoryScatter
+                                    data={bloodPressuresSystolicForChart}
+                                    style={{ data: { fill: "red" } }}
+                                />}
+                                {!!bloodPressuresDiastolicForChart[1] && <VictoryLine
+                                    style={{
+                                        data: { stroke: "blue" },
+                                        parent: { border: "1px solid #ccc" }
+                                    }}
+                                    data={bloodPressuresDiastolicForChart}
+                                />}
+                                {!!bloodPressuresDiastolicForChart[1] && <VictoryScatter
+                                    data={bloodPressuresDiastolicForChart}
+                                    style={{ data: { fill: "blue" } }}
+                                />}
+                            </VictoryChart>
                         : <View></View>
                         : <View></View>
                         : <View></View>
                     }
 
+
+
                     {bloodPressures ? !!bloodPressures[1] ? !!bloodPressuresPulseForChart[1] ?
-                        <VictoryChart
-                            theme={VictoryTheme.material}
-                            scale={{ x: "time" }}
-                            maxDomain={{ y: 210 }}
-                            minDomain={{ y: 0 }}
-                        // containerComponent={
-                        //     <VictoryZoomContainer
-                        //         zoomDimension="x"
-                        //     />
-                        // }
-                        >
-                            <ChartAxis crossAxis
-                                minValue={bloodPressuresPulseForChart[0].x.valueOf()}
-                                maxValue={bloodPressuresPulseForChart[bloodPressuresPulseForChart.length - 1].x.valueOf()}
-                            />
-                            <VictoryAxis dependentAxis />
-                            <VictoryLegend x={125} y={0}
-                                borderPadding={{ right: 25 }}
-                                orientation="vertical"
-                                gutter={20}
-                                style={{ border: { stroke: "black" }, labels: { fontSize: FontSize.smallContent } }}
-                                data={[
-                                    { name: (t('heartbeat') + ' (bpm)'), symbol: { fill: "red" } },
-                                ]}
-                            />
-                            <VictoryLine
-                                style={{
-                                    data: { stroke: "#c43a31" },
-                                    parent: { border: "1px solid #ccc" }
-                                }}
-                                data={bloodPressuresPulseForChart}
-                            />
-                            <VictoryScatter
-                                data={bloodPressuresPulseForChart}
-                                style={{ data: { fill: "red" } }}
-                            />
-                        </VictoryChart>
+                        !!bloodPressuresPulseMinMaxForChart[1] ?
+                            <VictoryChart
+                                theme={VictoryTheme.material}
+                                scale={{ x: "time" }}
+                                maxDomain={{ y: bloodPressuresAvgMaxMin[0].max_pulse + 10 }}
+                                minDomain={{ y: bloodPressuresAvgMaxMin[0].min_pulse - 10 }}
+                                domainPadding={10}
+                            // containerComponent={
+                            //     <VictoryZoomContainer
+                            //         zoomDimension="x"
+                            //     />
+                            // }
+                            >
+                                <ChartAxis crossAxis
+                                    minValue={bloodPressuresPulseForChart[0].x.valueOf()}
+                                    maxValue={bloodPressuresPulseForChart[bloodPressuresPulseForChart.length - 1].x.valueOf()}
+                                />
+                                <VictoryAxis dependentAxis />
+                                <VictoryLegend x={125} y={0}
+                                    borderPadding={{ right: 25 }}
+                                    orientation="vertical"
+                                    gutter={20}
+                                    style={{ border: { stroke: "black" }, labels: { fontSize: FontSize.smallContent } }}
+                                    data={[
+                                        { name: (t('heartbeat') + ' (bpm)'), symbol: { fill: "red" } },
+                                    ]}
+                                />
+                                {!!bloodPressuresPulseMinMaxForChart[1] && <VictoryBoxPlot
+                                    data={bloodPressuresPulseMinMaxForChart}
+                                    boxWidth={10}
+                                    whiskerWidth={5}
+                                />}
+                                <VictoryLine
+                                    style={{
+                                        data: { stroke: "#c43a31" },
+                                        parent: { border: "1px solid #ccc" }
+                                    }}
+                                    data={bloodPressuresPulseForChart}
+                                />
+                                <VictoryScatter
+                                    data={bloodPressuresPulseForChart}
+                                    style={{ data: { fill: "red" } }}
+                                />
+                            </VictoryChart>
+                            :
+                            <VictoryChart
+                                theme={VictoryTheme.material}
+                                scale={{ x: "time" }}
+                                maxDomain={{ y: bloodPressuresAvgMaxMin[0].max_pulse + 10 }}
+                                minDomain={{ y: bloodPressuresAvgMaxMin[0].min_pulse - 10 }}
+                                domainPadding={10}
+                            // containerComponent={
+                            //     <VictoryZoomContainer
+                            //         zoomDimension="x"
+                            //     />
+                            // }
+                            >
+                                <ChartAxis crossAxis
+                                    minValue={bloodPressuresPulseForChart[0].x.valueOf()}
+                                    maxValue={bloodPressuresPulseForChart[bloodPressuresPulseForChart.length - 1].x.valueOf()}
+                                />
+                                <VictoryAxis dependentAxis />
+                                <VictoryLegend x={125} y={0}
+                                    borderPadding={{ right: 25 }}
+                                    orientation="vertical"
+                                    gutter={20}
+                                    style={{ border: { stroke: "black" }, labels: { fontSize: FontSize.smallContent } }}
+                                    data={[
+                                        { name: (t('heartbeat') + ' (bpm)'), symbol: { fill: "red" } },
+                                    ]}
+                                />
+                                <VictoryLine
+                                    style={{
+                                        data: { stroke: "#c43a31" },
+                                        parent: { border: "1px solid #ccc" }
+                                    }}
+                                    data={bloodPressuresPulseForChart}
+                                />
+                                <VictoryScatter
+                                    data={bloodPressuresPulseForChart}
+                                    style={{ data: { fill: "red" } }}
+                                />
+                            </VictoryChart>
                         : <View></View>
                         : <View></View>
                         : <View></View>
@@ -646,7 +770,7 @@ const DashboardScreen = props => {
                             </View>
                         </View>
                     </View>
-                    <MainButtonClear onPress={() => {
+                    {/* <MainButtonClear onPress={() => {
                         locale.includes('zh') ?
                             openWebLinkHandler("https://www.heart.org/-/media/files/health-topics/high-blood-pressure/hbp-rainbow-chart-chinese.pdf") :
                             locale.includes('fr') ?
@@ -656,13 +780,21 @@ const DashboardScreen = props => {
                                     openWebLinkHandler("https://www.heart.org/-/media/files/health-topics/high-blood-pressure/hbp-rainbow-chart-english.pdf");
                     }}>
                         {t('heart_org_button')}
-                    </MainButtonClear>
-                </View>}
+                    </MainButtonClear> */}
+                </View>
+                    :
+                    bloodPressures ? <View>
+                        <Text style={styles.noRecordText}>{t('no_records_in_the_selected_period')}</Text>
+                    </View>
+                        :
+                        <View>
+                            <Text style={styles.noRecordText}>{t('no_records')}</Text>
+                        </View>}
 
                 <View style={styles.footer}></View>
-                {!!isLoading &&
+                {/* {!!isLoading &&
                     <ActivityIndicatorWithModal />
-                }
+                } */}
                 {/* </View> */}
             </ScrollView>
         </SafeAreaView>
@@ -862,6 +994,16 @@ const styles = StyleSheet.create({
     bloodPressureRangeTableRowContentDigit: {
         fontSize: FontSize.title
     },
+    indicatorContainer: {
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    noRecordText: {
+        // backgroundColor: 'yellow',
+        textAlign: 'center',
+        fontSize: FontSize.content,
+    }
 });
 
 export default DashboardScreen;

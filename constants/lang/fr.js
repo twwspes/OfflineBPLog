@@ -9,6 +9,13 @@ export default {
     heartbeat: 'les pouls',
     press: 'Appuyez',
     health_parameters_description: 'pour enregistrer les valeurs de tension artérielle',
+    filter: 'Filtres',
+    add_filter: 'Ajouter filtres',
+    filter_in_use: 'Filtres ajoutés',
+    remove_filter: 'Supprimer filtres',
+    from: 'de ',
+    to: 'à ',
+    fromdate_over_todate: 'La date de début est postérieure à la date de fin',
     //BloodPressureInputScreen
     systolic_blood_pressure: 'La tension systolique',
     diastolic_blood_pressure: 'La tension diastolique',
@@ -54,6 +61,8 @@ export default {
     high_blood_pressure_stage_2: 'Hypertension\nDegré 2',
     hypertensive_crisis: 'Hypertension sévère',
     heart_org_button: 'Comment lire les valeurs de tension artérielle sur www.hirslanden.ch',
+    no_records_in_the_selected_period: 'Aucun enregistrement trouvé dans la période donnée',
+    no_records: 'Aucun enregistrement trouvé',
     //RecordOutput
     output: 'Sortie',
     email_for_data: 'Le courrier électronique',

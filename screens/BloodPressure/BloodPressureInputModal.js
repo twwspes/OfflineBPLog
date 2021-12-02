@@ -38,7 +38,6 @@ import DropdownList from '../../components/MultipleChoice/DropdownList';
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
-const FORM_INPUT_UPDATE_BLE = 'FORM_INPUT_UPDATE_BLE';
 
 const formReducer = (state, action) => {
     if (action.type === FORM_INPUT_UPDATE) {
@@ -50,29 +49,6 @@ const formReducer = (state, action) => {
             ...state.inputValidities,
             [action.input]: action.isValid
         };
-        let updatedFormIsValid = true;
-        for (const key in updatedValidities) {
-            updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
-        }
-        return {
-            formIsValid: updatedFormIsValid,
-            inputValidities: updatedValidities,
-            inputValues: updatedValues
-        };
-    } else if (action.type === FORM_INPUT_UPDATE_BLE) {
-        const updatedValues = {
-            ...state.inputValues,
-            systolic: action.sys,
-            diastolic: action.dia,
-            pulse: action.pul,
-        };
-        const updatedValidities = {
-            ...state.inputValidities,
-            systolic: action.sys !== '' ? true : false,
-            diastolic: action.dia !== '' ? true : false,
-            pulse: action.pul !== '' ? true : false,
-        };
-        console.log(action);
         let updatedFormIsValid = true;
         for (const key in updatedValidities) {
             updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
@@ -174,6 +150,36 @@ const BloodPressureInputScreen = props => {
         return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
     }
 
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    const generate1000Records = async () => {
+        setError(null);
+        setIsLoading(true);
+        for (let i = 0; i < 2000; i++) {
+            const updatedbloodPressureData = {
+                timestamp: new Date(new Date().valueOf() - 1000 * 60 * 60 * 24 * 182 + 3110400 * 5 * i).toISOString(),
+                systolic: getRandomInt(70) + 90,
+                diastolic: getRandomInt(70) + 60,
+                pulse: 90
+            }; // for firebase
+            console.log(i);
+            try {
+                await dispatch(bloodPressureActions.addBloodPressure(
+                    updatedbloodPressureData.timestamp,
+                    updatedbloodPressureData.systolic,
+                    updatedbloodPressureData.diastolic,
+                    updatedbloodPressureData.pulse
+                )); // for firebase
+            } catch (err) {
+                console.log(err);
+                setError(err.message);
+            }
+        }
+        setIsLoading(false);
+    };
+
     const saveNewBloodPressureHandler = async () => {
         if (!formState.formIsValid) {
             Alert.alert(t('wrong_input'), t('please_check_the_errors_in_the_form'), [
@@ -207,6 +213,7 @@ const BloodPressureInputScreen = props => {
         const minutes = new Date(formState.inputValues.time).getMinutes();
         date.setHours(hours);
         date.setMinutes(minutes);
+        // update / create a records with selected date
         const updatedbloodPressureData = {
             timestamp: date.toISOString(),
             systolic: parseInt(formState.inputValues.systolic),
@@ -226,6 +233,18 @@ const BloodPressureInputScreen = props => {
                 updatedbloodPressureData.diastolic,
                 updatedbloodPressureData.pulse
             )); // for firebase
+
+            // delete old record if users change the date of old records
+            // since new record has just been created above
+            if (!!oldID) {
+                if (oldID !== "" || new Date(formState.inputValues.date).valueOf() !== new Date(parseInt(oldID)).valueOf()) {
+                    let date = new Date(parseInt(oldID));
+                    let timestampInISO = date.toISOString();
+                    await dispatch(bloodPressureActions.deleteBloodPressure(
+                        timestampInISO
+                    ));
+                }
+            }
             setIsLoading(false);
             props.navigation.goBack();
         } catch (err) {
@@ -452,6 +471,19 @@ const BloodPressureInputScreen = props => {
                             )
                             }
                         </View>
+
+                        {/* <View style={styles.buttonContainer}>
+                            {isLoading ? (
+                                <ActivityIndicator size='small' color={Colors.primary} />
+                            ) : (
+                                <MainButton
+                                    onPress={generate1000Records}
+                                    style={styles.button}>
+                                    Generate 10000
+                                </MainButton>
+                            )
+                            }
+                        </View> */}
 
                         {(!!oldID && oldSys.toString() === formState.inputValues.systolic
                             && oldDia.toString() === formState.inputValues.diastolic

@@ -1,7 +1,10 @@
-import { replaceBloodPressureFromSQL, updateBloodPressureFromSQL, selectDataFromBloodPressureFromSQL, selectLatestDataFromBloodPressureFromSQL, fetchBloodPressureFromSQL, fetchBloodPressureFromSQLBtwDateMilli, deleteBloodPressureFromLocal, deleteBloodPressuresFromLocal } from "../../helpers/dbBloodPressure";
+import { replaceBloodPressureFromSQL, fetchBloodPressureFromSQLBtwDateMilli, deleteBloodPressureFromLocal } from "../../helpers/dbBloodPressure";
+import { replaceMessageFromSQL, fetchMessageFromSQLBtwDateMilli, deleteMessageFromLocal } from "../../helpers/dbMessage";
 
 export const SET_BLOODPRESSURE = 'SET_BLOODPRESSURE';
 export const BLOODPRESSURE_UPDATE = 'BLOODPRESSURE_UPDATE';
+export const SET_TODATE = 'SET_TODATE';
+export const SET_FROMDATE = 'SET_FROMDATE';
 
 export const fetchBloodPressure = async (limit, offset, start_date, end_date, num_of_sample) => {
 
@@ -27,8 +30,20 @@ export const fetchBloodPressure = async (limit, offset, start_date, end_date, nu
     }
     loadedBloodPressures = !!dbResult ? dbResult.rows.length !== 0 ? dbResult.rows._array : [] : [];
 
-    console.log("loadedBloodPressures in action");
-    console.log(loadedBloodPressures);
+    // if (isNaN(num_of_sample)) { 
+    //     let dbMessageResult;
+    //     let loadedMessages = [];
+    //     try {
+    //         dbMessageResult = await fetchMessageFromSQLBtwDateMilli(untilDateMilli, fromDateMilli, limit, offset);
+    //     } catch (e) {
+    //         console.log('fetchMessageFromSQLBtwDateMilli Error');
+    //         console.log(e);
+    //     }
+    //     loadedMessages = !!dbMessageResult ? dbMessageResult.rows.length !== 0 ? dbMessageResult.rows._array : [] : [];
+    // }
+
+    // console.log("loadedBloodPressures in action");
+    // console.log(loadedBloodPressures);
 
     return loadedBloodPressures;
 
@@ -47,8 +62,8 @@ export const addBloodPressure = (timestamp, systolic_blood_pressure, diastolic_b
                 diastolic_blood_pressure,
                 pulse
             );
-            console.log("dbResult from bloodPressure addBloodPressure Action");
-            console.log(dbResult);
+            // console.log("dbResult from bloodPressure addBloodPressure Action");
+            // console.log(dbResult);
         } catch (e) {
             console.log("Error while replacing BloodPressure db locally");
             console.log(e);
@@ -83,3 +98,21 @@ export const deleteBloodPressure = (timestamp) => {
 
     };
 };
+
+export const setFromdate = (dateISOString) => {
+    return async (dispatch, getState) => {
+        dispatch({
+            type: SET_FROMDATE,
+            fromdate: dateISOString
+        });
+    }
+}
+
+export const setTodate = (dateISOString) => {
+    return async (dispatch, getState) => {
+        dispatch({
+            type: SET_TODATE,
+            todate: dateISOString
+        });
+    }
+}
