@@ -27,6 +27,8 @@ export default {
     require_input_warning: 'Required field',
     ocr_demo: 'OCR Demo',
     input: 'Messure your BP',
+    optional_remark: 'Optional Remarks',
+    text_only: 'Maximum number of characters is 30',
     //Dashboard
     avg: 'Avg.',
     min: 'Min.',

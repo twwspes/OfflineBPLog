@@ -27,6 +27,8 @@ export default {
     require_input_warning: '必須輸入',
     ocr_demo: '示範',
     input: '量度血壓',
+    optional_remark: '備註',
+    text_only: '不能多於30字',
     //Dashboard
     avg: '平均',
     min: '最小',

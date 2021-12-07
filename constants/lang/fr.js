@@ -27,6 +27,8 @@ export default {
     require_input_warning: 'Required field',
     ocr_demo: 'Comment utiliser ROC',
     input: 'Mesurez votre tension',
+    optional_remark: 'Commentaire optionnel',
+    text_only: 'La limite est de 30 caractères',
     //Dashboard
     avg: 'Moy.',
     min: 'Min.',

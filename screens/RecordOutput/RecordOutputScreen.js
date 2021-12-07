@@ -105,12 +105,13 @@ const RecordOutputScreen = props => {
     }, [bloodPressures]);
 
     useEffect(() => {
-        let bloodPressuresReverseTextTemp = 'Date,Systolic,Diastolic,Pulse\n';
+        let bloodPressuresReverseTextTemp = 'Date,Systolic,Diastolic,Pulse,Remarks\n';
         for (const item of bloodPressuresReverse) {
             bloodPressuresReverseTextTemp += new Date(parseInt(item.id)).toISOString() + ",";
             bloodPressuresReverseTextTemp += item.systolic_blood_pressure + ",";
             bloodPressuresReverseTextTemp += item.diastolic_blood_pressure + ",";
-            bloodPressuresReverseTextTemp += item.pulse + "\n";
+            bloodPressuresReverseTextTemp += item.pulse + ",";
+            bloodPressuresReverseTextTemp += !!item.remark ? item.remark + "\n" : "\n";
         }
         setBloodPressuresReverseText(bloodPressuresReverseTextTemp);
     }, [bloodPressuresReverse]);
@@ -174,7 +175,7 @@ const RecordOutputScreen = props => {
                 </MainButton>
             </View>
             <Text>BP Log v.{pkg.expo.version}</Text>
-            <Text style={{ fontSize: 12 }}>© 2021 Tak Wai WONG</Text>
+            <Text style={{ fontSize: 12 }}>© 2021-2022 Tak Wai WONG</Text>
             <MainButtonClear
                 onPress={() => {
                     Linking.openURL(privacyPolicyWebsite);

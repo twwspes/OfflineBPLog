@@ -27,6 +27,8 @@ export default {
     require_input_warning: 'Campo obligatorio',
     ocr_demo: 'Cómo utilizar un OCR',
     input: 'Medir la presión',
+    optional_remark: 'Comentario opcional',
+    text_only: 'El límite de caracteres es 30',
     //Dashboard
     avg: 'Med.',
     min: 'Mín.',

@@ -26,9 +26,13 @@ import FontSize from '../../constants/FontSize';
 
 const FlatListItem = ({ itemData, onFlatListItemPress, noRecordLocalisedString }) => {
 
-    return <MainButtonOutlineImage onPress={() => {
-        onFlatListItemPress(itemData);
-    }} style={styles.otherProfileCard}>
+    return <MainButtonOutlineImage
+        onPress={() => {
+            onFlatListItemPress(itemData);
+        }} style={{
+            ...styles.otherProfileCard,
+            height: !!itemData.item.remark ? 150 : 100,
+        }}>
         <View style={styles.dateContainer}>
             {!!itemData.item.id ?
                 <Text style={styles.title}>{moment(itemData.item.id).format('lll')}</Text> :
@@ -61,6 +65,9 @@ const FlatListItem = ({ itemData, onFlatListItemPress, noRecordLocalisedString }
                 }
             </View>
         </View>
+        {!!itemData.item.remark && <View style={styles.dateContainer}>
+            <Text style={styles.remark}>{itemData.item.remark}</Text>
+        </View>}
     </MainButtonOutlineImage>
 }
 // }
@@ -106,9 +113,9 @@ const HealthParametersScreen = props => {
         }
     }, [props.route.params?.filtered]);
 
-    useEffect(()=>{
+    useEffect(() => {
         setBloodPressures([]);
-    },[bloodPressuresUpdateIndicator]);
+    }, [bloodPressuresUpdateIndicator]);
 
     // Grab data from source
     useEffect(() => {  // for HKU server
@@ -174,7 +181,8 @@ const HealthParametersScreen = props => {
             id: itemData.item.id.toString(),
             systolic: itemData.item.systolic_blood_pressure,
             diastolic: itemData.item.diastolic_blood_pressure,
-            pulse: itemData.item.pulse
+            pulse: itemData.item.pulse,
+            remark: !!itemData.item.remark ? itemData.item.remark : ""
         });
     }
 
@@ -313,6 +321,9 @@ const styles = StyleSheet.create({
     title: {
         fontSize: FontSize.content,
     },
+    remark: {
+        fontSize: FontSize.smallContent,
+    },
     titleImage: {
         maxHeight: '60%',
         resizeMode: 'contain',
@@ -334,14 +345,14 @@ const styles = StyleSheet.create({
     },
     dateContainer: {
         width: '100%',
-        height: '35%',
+        height: 30,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 5
+        // marginBottom: 5
     },
     dataContainer: {
         width: '100%',
-        height: '65%',
+        height: 60,
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
