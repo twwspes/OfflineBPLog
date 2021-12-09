@@ -6,7 +6,7 @@ import MainButtonClear from '../UI/MainButtonClear';
 
 const screenHeight = Math.round(Dimensions.get('window').height);
 
-const SingleChoice = ({ onItemSelected, id, items, initialValue, buttonTextStyle, buttonStyle }) => {
+const SingleChoice = ({ onItemSelected, id, items, initialValue, buttonTextStyle, buttonStyle, isModalActive }) => {
     console.log("render DropdownList");
 
     // const { onItemSelected, id, items, initialValue } = props;
@@ -60,6 +60,17 @@ const SingleChoice = ({ onItemSelected, id, items, initialValue, buttonTextStyle
         setSelected(value);
         setActiveModal(false);
     };
+
+    useEffect(()=>{
+        if (!!isModalActive){
+            if (activeModal){
+                isModalActive(true);
+            } else {
+                isModalActive(false);
+            }
+        }
+        
+    }, [activeModal]);
 
     return (
         <View>
