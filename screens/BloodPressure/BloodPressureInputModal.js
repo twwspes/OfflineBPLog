@@ -35,6 +35,9 @@ import DateAndTimePicker from '../../components/UI/DateAndTimePicker';
 import DropdownList from '../../components/MultipleChoice/DropdownList';
 
 const screenHeight = Math.round(Dimensions.get('window').height);
+const screenWidth = Math.round(Dimensions.get('window').width);
+const aspectRatio = screenHeight / screenWidth;
+const isPhone = aspectRatio > 1.6;
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
@@ -427,11 +430,11 @@ const BloodPressureInputScreen = props => {
                         style={{
                             padding: 16,
                             width: '100%',
-                            maxWidth: 400,
+                            maxWidth: isPhone ? 400 : '90%',
                             minHeight: 500,
                             borderRadius: 3,
                             backgroundColor: 'white',
-                            margin: -1 * (screenHeight * (0.000731 * screenHeight - 0.254878)),
+                            margin: isPhone ? -1 * (screenHeight * (0.000731 * screenHeight - 0.254878)): -500,
                             height: screenHeight,
                             borderTopLeftRadius: 30,
                             borderTopRightRadius: 30,
