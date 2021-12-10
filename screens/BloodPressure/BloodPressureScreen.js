@@ -101,17 +101,21 @@ const HealthParametersScreen = props => {
             // filter updated, do something with `route.params.filter`
             const filtered = props.route.params?.filtered;
             if (filtered) {
+                console.log("List filtered");
                 setBloodPressures([]);
                 setIsFiltered(true);
             } else {
+                console.log("List not filtered");
                 setBloodPressures([]);
                 setIsFiltered(false);
             }
         } else {
-            setBloodPressures([]);
+            console.log("List no filter paramater");
+            // setBloodPressures([]);
             setIsFiltered(false);
         }
-    }, [props.route.params?.filtered]);
+        // props.route.params?.feedbackTimestamp is a trigger to activate this clear function
+    }, [props.route.params?.filtered, props.route.params?.feedbackTimestamp]);
 
     useEffect(() => {
         setBloodPressures([]);

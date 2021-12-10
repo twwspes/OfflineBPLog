@@ -13,11 +13,11 @@ export const fetchBloodPressure = async (limit, offset, start_date, end_date, nu
     var fromDateMilli = 0;
 
     if (start_date) {
-        fromDateMilli = new Date(start_date.split("T")[0]).valueOf();
+        fromDateMilli = new Date(start_date).valueOf();
     }
 
     if (end_date) {
-        untilDateMilli = new Date(end_date.split("T")[0]).valueOf() + 24 * 60 * 60 * 1000;
+        untilDateMilli = new Date(end_date).valueOf();
     }
 
     var dbResult;
@@ -54,8 +54,8 @@ export const fetchBloodPressure = async (limit, offset, start_date, end_date, nu
 
 
 
-    // console.log("loadedBloodPressures in action");
-    // console.log(loadedBloodPressures);
+    console.log("loadedBloodPressures in action");
+    console.log(loadedBloodPressures);
 
     return loadedBloodPressures;
 

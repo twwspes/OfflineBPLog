@@ -50,6 +50,7 @@ const formReducer = (state, action) => {
             [action.input]: action.isValid
         };
         let updatedFormIsValid = true;
+        console.log("form in PeriodModal", action.value);
         for (const key in updatedValidities) {
             updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
         }
@@ -159,26 +160,29 @@ const BloodPressurePeriodModal = props => {
             Alert.alert(t('wrong_input'), t('please_check_the_errors_in_the_form'), [
                 { text: t('okay') }
             ]);
+            setIsLoading(false);
             return;
         }
         if (new Date(formState.inputValues.fromdate).valueOf() >= new Date(formState.inputValues.todate).valueOf()) {
             Alert.alert(t('wrong_input'), t('fromdate_over_todate'), [
                 { text: t('okay') }
             ]);
+            setIsLoading(false);
             return;
         }
-        let todate = new Date(formState.inputValues.todate);
-        todate.setHours(23);
-        todate.setMinutes(59);
-        let fromdate = new Date(formState.inputValues.fromdate);
-        fromdate.setHours(0);
-        fromdate.setMinutes(0);
+        const todate = new Date(formState.inputValues.todate);
+        todate.setHours(23, 59);
+        const fromdate = new Date(formState.inputValues.fromdate);
+        fromdate.setHours(0, 0);
         dispatch(bloodPressureActions.setFromdate(fromdate.toISOString()));
         dispatch(bloodPressureActions.setTodate(todate.toISOString()));
         setIsLoading(false);
         props.navigation.navigate({
             name: 'BloodPressure',
-            params: { filtered: true },
+            params: {
+                filtered: true,
+                feedbackTimestamp: new Date().valueOf()
+            },
             merge: true,
         });;
     }
@@ -190,7 +194,10 @@ const BloodPressurePeriodModal = props => {
         setIsLoading(false);
         props.navigation.navigate({
             name: 'BloodPressure',
-            params: { filtered: false },
+            params: {
+                filtered: false,
+                feedbackTimestamp: new Date().valueOf()
+            },
             merge: true,
         });;
     }
