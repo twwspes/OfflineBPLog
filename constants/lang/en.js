@@ -65,6 +65,7 @@ export default {
     heart_org_button: 'Understanding Blood Pressure Readings on heart.org',
     no_records_in_the_selected_period: 'No records found in the given period',
     no_records: 'No records found',
+    min_q1_mean_q3_max: 'Min Q1 Med Q3 Max',
     //RecordOutput
     output: 'Log Export',
     email_for_data: 'Email for receiving log',

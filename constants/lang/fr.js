@@ -65,6 +65,7 @@ export default {
     heart_org_button: 'Comment lire les valeurs de tension artérielle sur www.hirslanden.ch',
     no_records_in_the_selected_period: 'Aucun enregistrement trouvé dans la période donnée',
     no_records: 'Aucun enregistrement trouvé',
+    min_q1_mean_q3_max: 'Min Q1 Méd Q3 Max',
     //RecordOutput
     output: 'Sortie',
     email_for_data: 'Le courrier électronique',

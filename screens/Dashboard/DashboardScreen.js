@@ -92,7 +92,11 @@ const DashboardScreen = props => {
             const sinceDateISODateString = sinceDate.toISOString();
             try {
                 setBloodPressures(await bloodPressureActions.fetchBloodPressure(5000, 0, sinceDateISODateString, nowISODateString,
-                    bloodPressuresPeriodForTable === 'one_day' ? null : bloodPressuresPeriodForTable === 'one_week' ? 7 : 12
+                    bloodPressuresPeriodForTable === 'one_day' ? null :
+                        bloodPressuresPeriodForTable === 'one_week' ? 7 :
+                            bloodPressuresPeriodForTable === 'one_month' ? 4 :
+                                bloodPressuresPeriodForTable === 'three_months' ? 3 :
+                                    bloodPressuresPeriodForTable === 'six_months' ? 6 : 12
                 ));
                 // const testingResult = await bloodPressureActions.fetchBloodPressure(5000, 0, sinceDateISODateString, nowISODateString, 20);
                 // console.log("testingResult");
@@ -141,11 +145,19 @@ const DashboardScreen = props => {
                     bloodPressuresSystolicForChartTemp.push({ x: new Date(bloodPressure.id), y: bloodPressure.systolic_blood_pressure });
                     if (!!bloodPressure.max_systolic_blood_pressure && !isNaN(bloodPressure.max_systolic_blood_pressure)) {
                         bloodPressuresSystolicMinMaxForChartTemp.push({
-                            x: new Date(bloodPressure.id), y: [
-                                bloodPressure.min_systolic_blood_pressure,
-                                bloodPressure.systolic_blood_pressure,
-                                bloodPressure.max_systolic_blood_pressure
-                            ]
+                            // x: new Date(bloodPressure.id), y: [
+                            //     bloodPressure.min_systolic_blood_pressure,
+                            //     bloodPressure.systolic_blood_pressure - bloodPressure.systolic_sd,
+                            //     bloodPressure.systolic_blood_pressure,
+                            //     bloodPressure.systolic_blood_pressure + bloodPressure.systolic_sd,
+                            //     bloodPressure.max_systolic_blood_pressure
+                            // ]
+                            x: new Date(bloodPressure.id),
+                            min: Math.round(bloodPressure.min_systolic_blood_pressure),
+                            median: Math.round(bloodPressure.systolic_blood_pressure),
+                            max: Math.round(bloodPressure.max_systolic_blood_pressure),
+                            q1: Math.round(bloodPressure.systolic_blood_pressure - ((Math.sqrt(3) * bloodPressure.systolic_sd) / 2)),
+                            q3: Math.round(bloodPressure.systolic_blood_pressure + ((Math.sqrt(3) * bloodPressure.systolic_sd) / 2)),
                         })
                     }
                     bloodPressuresSystolicForTable.push(bloodPressure.systolic_blood_pressure);
@@ -154,11 +166,19 @@ const DashboardScreen = props => {
                     bloodPressuresDiastolicForChartTemp.push({ x: new Date(bloodPressure.id), y: bloodPressure.diastolic_blood_pressure });
                     if (!!bloodPressure.max_diastolic_blood_pressure && !isNaN(bloodPressure.max_diastolic_blood_pressure)) {
                         bloodPressuresDiastolicMinMaxForChartTemp.push({
-                            x: new Date(bloodPressure.id), y: [
-                                bloodPressure.min_diastolic_blood_pressure,
-                                bloodPressure.diastolic_blood_pressure,
-                                bloodPressure.max_diastolic_blood_pressure
-                            ]
+                            // x: new Date(bloodPressure.id), y: [
+                            //     bloodPressure.min_diastolic_blood_pressure,
+                            //     bloodPressure.diastolic_blood_pressure - bloodPressure.diastolic_sd,
+                            //     bloodPressure.diastolic_blood_pressure,
+                            //     bloodPressure.diastolic_blood_pressure + bloodPressure.diastolic_sd,
+                            //     bloodPressure.max_diastolic_blood_pressure
+                            // ]
+                            x: new Date(bloodPressure.id),
+                            min: Math.round(bloodPressure.min_diastolic_blood_pressure),
+                            median: Math.round(bloodPressure.diastolic_blood_pressure),
+                            max: Math.round(bloodPressure.max_diastolic_blood_pressure),
+                            q1: Math.round(bloodPressure.diastolic_blood_pressure - ((Math.sqrt(3) * bloodPressure.diastolic_sd) / 2)),
+                            q3: Math.round(bloodPressure.diastolic_blood_pressure + ((Math.sqrt(3) * bloodPressure.diastolic_sd) / 2)),
                         })
                     }
                     bloodPressuresDiastolicForTable.push(bloodPressure.diastolic_blood_pressure);
@@ -167,11 +187,19 @@ const DashboardScreen = props => {
                     bloodPressuresPulseForChartTemp.push({ x: new Date(bloodPressure.id), y: bloodPressure.pulse });
                     if (!!bloodPressure.max_pulse && !isNaN(bloodPressure.max_pulse)) {
                         bloodPressuresPulseMinMaxForChartTemp.push({
-                            x: new Date(bloodPressure.id), y: [
-                                bloodPressure.min_pulse,
-                                bloodPressure.pulse,
-                                bloodPressure.max_pulse
-                            ]
+                            // x: new Date(bloodPressure.id), y: [
+                            //     bloodPressure.min_pulse,
+                            //     bloodPressure.pulse - bloodPressure.pulse_sd,
+                            //     bloodPressure.pulse,
+                            //     bloodPressure.pulse + bloodPressure.pulse_sd,
+                            //     bloodPressure.max_pulse
+                            // ]
+                            x: new Date(bloodPressure.id),
+                            min: Math.round(bloodPressure.min_pulse),
+                            median: Math.round(bloodPressure.pulse),
+                            max: Math.round(bloodPressure.max_pulse),
+                            q1: Math.round(bloodPressure.pulse - ((Math.sqrt(3) * bloodPressure.pulse_sd) / 2)),
+                            q3: Math.round(bloodPressure.pulse + ((Math.sqrt(3) * bloodPressure.pulse_sd) / 2)),
                         })
                     }
                     bloodPressuresPulseForTable.push(bloodPressure.pulse);
@@ -395,7 +423,7 @@ const DashboardScreen = props => {
                                     theme={VictoryTheme.material}
                                     scale={{ x: "time" }}
                                     maxDomain={{ y: bloodPressuresAvgMaxMin[0].max_systolic_blood_pressure + 10 }}
-                                    minDomain={{ y: bloodPressuresAvgMaxMin[0].min_diastolic_blood_pressure - 10 }}
+                                    minDomain={{ y: bloodPressuresAvgMaxMin[0].min_systolic_blood_pressure - 10 }}
                                     domainPadding={10}
                                 // containerComponent={
                                 //     <VictoryZoomContainer
@@ -425,6 +453,7 @@ const DashboardScreen = props => {
                                         style={{ border: { stroke: "black" }, labels: { fontSize: FontSize.veryvarySmallContent } }}
                                         data={[
                                             { name: (t('systolic_blood_pressure') + ' (mmHg)'), symbol: { fill: "red" } },
+                                            { name: (t('min_q1_mean_q3_max')), symbol: { fill: "grey" } },
                                         ]}
                                     />
                                     {!!bloodPressuresSystolicMinMaxForChart[1] && <VictoryBoxPlot
@@ -447,7 +476,7 @@ const DashboardScreen = props => {
                                 <VictoryChart
                                     theme={VictoryTheme.material}
                                     scale={{ x: "time" }}
-                                    maxDomain={{ y: bloodPressuresAvgMaxMin[0].max_systolic_blood_pressure + 10 }}
+                                    maxDomain={{ y: bloodPressuresAvgMaxMin[0].max_diastolic_blood_pressure + 10 }}
                                     minDomain={{ y: bloodPressuresAvgMaxMin[0].min_diastolic_blood_pressure - 10 }}
                                     domainPadding={10}
                                 // containerComponent={
@@ -478,6 +507,7 @@ const DashboardScreen = props => {
                                         style={{ border: { stroke: "black" }, labels: { fontSize: FontSize.veryvarySmallContent } }}
                                         data={[
                                             { name: (t('diastolic_blood_pressure') + ' (mmHg)'), symbol: { fill: "blue" } },
+                                            { name: (t('min_q1_mean_q3_max')), symbol: { fill: "grey" } },
                                         ]}
                                     />
                                     {!!bloodPressuresDiastolicMinMaxForChart[1] && <VictoryBoxPlot
@@ -589,9 +619,10 @@ const DashboardScreen = props => {
                                     borderPadding={{ right: 25 }}
                                     orientation="vertical"
                                     gutter={20}
-                                    style={{ border: { stroke: "black" }, labels: { fontSize: FontSize.smallContent } }}
+                                    style={{ border: { stroke: "black" }, labels: { fontSize: FontSize.veryvarySmallContent } }}
                                     data={[
                                         { name: (t('heartbeat') + ' (bpm)'), symbol: { fill: "red" } },
+                                        { name: (t('min_q1_mean_q3_max')), symbol: { fill: "grey" } },
                                     ]}
                                 />
                                 {!!bloodPressuresPulseMinMaxForChart[1] && <VictoryBoxPlot

@@ -65,6 +65,7 @@ export default {
     heart_org_button: 'Cómo monitorear la presion arterial en heart.org',
     no_records_in_the_selected_period: 'No hay registros en un período dado',
     no_records: 'No hay registros',
+    min_q1_mean_q3_max: 'Mín Q1 Med Q3 Máx',
     //RecordOutput
     output: 'Salida',
     email_for_data: 'Correo electrónico',

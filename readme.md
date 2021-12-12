@@ -16,4 +16,4 @@ v1.1.0 (Adnroid version code 5) - prod-v2 (expo 43, up to the version of "height
 v1.1.1 (Adnroid version code 6) - prod-v3 (expo 43, not yet released)
 v1.1.2 (Adnroid version code 7) - prod-v4 (expo 43, not yet released)
 
-expo publish --release-channel prod-v3
+expo publish --release-channel prod-v4

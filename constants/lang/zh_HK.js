@@ -65,6 +65,7 @@ export default {
     heart_org_button: '瀏覽heart.org，了解血壓讀數',
     no_records_in_the_selected_period: '所選時段內沒有記錄',
     no_records: '沒有記錄',
+    min_q1_mean_q3_max: '最小 Q1 中位 Q3 最高',
     //RecordOutput
     output: '傳送資料',
     email_for_data: '傳送資料到此電郵地址',
