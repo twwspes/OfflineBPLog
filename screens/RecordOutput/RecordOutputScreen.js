@@ -167,15 +167,15 @@ const RecordOutputScreen = props => {
                 )
                 }
             </View>
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
                 <MainButton onPress={() => {
                     Linking.openURL('mailto:wai.wong@stringdynamic.com?subject=An improvement advice for Offline BP Log');
                 }}>
                     {t('send_email_to_developer')}
                 </MainButton>
-            </View>
+            </View> */}
             <Text>BP Log v.{pkg.expo.version}</Text>
-            <Text style={{ fontSize: 12 }}>© 2021-2022 Tak Wai WONG</Text>
+            <Text style={{ fontSize: 12 }}>{'© 2021-' + new Date().getFullYear() + ' Tak Wai WONG'}</Text>
             <MainButtonClear
                 onPress={() => {
                     Linking.openURL(privacyPolicyWebsite);

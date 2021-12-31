@@ -15,5 +15,6 @@ v1.0.1 (Android version code 4) - prod-v1 (expo 42), api version 21+, target sdk
 v1.1.0 (Adnroid version code 5) - prod-v2 (expo 43, up to the version of "height of the modal has been fine-tuned", not to be released, testflight/closed release only), api version 21+, target sdk 30, min ios version 12.0
 v1.1.1 (Adnroid version code 6) - prod-v3 internal testing only
 v1.1.2 (Adnroid version code 7) - prod-v4 release mid-Dec 2021
+v1.1.3 (Adnroid version code 8) - prod-v5 hiding the suggestion button, not yet release
 
-expo publish --release-channel prod-v4
+expo publish --release-channel prod-v5
