@@ -169,7 +169,7 @@ const RecordOutputScreen = props => {
             </View>
             <View style={styles.buttonContainer}>
                 <MainButton onPress={() => {
-                    Linking.openURL('mailto:spes@connect.hku.hk?subject=An improvement advice for Offline BP Log');
+                    Linking.openURL('mailto:wai.wong@stringdynamic.com?subject=An improvement advice for Offline BP Log');
                 }}>
                     {t('send_email_to_developer')}
                 </MainButton>
