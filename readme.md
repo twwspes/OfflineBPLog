@@ -10,11 +10,19 @@ Android App Keystore and Apple APNS
 The managed workflow handles the Android Keystore and Apple APNS automatically and saves them in the Expo server.  The keys will be used when we request Expo server to build app for us.
 
 Expo release channel
+
 v1.0.0 (Android version code 3) - default (expo 41)
+
 v1.0.1 (Android version code 4) - prod-v1 (expo 42), api version 21+, target sdk 30, min ios version 11.0
-v1.1.0 (Adnroid version code 5) - prod-v2 (expo 43, up to the version of "height of the modal has been fine-tuned", not to be released, testflight/closed release only), api version 21+, target sdk 30, min ios version 12.0
-v1.1.1 (Adnroid version code 6) - prod-v3 internal testing only
-v1.1.2 (Adnroid version code 7) - prod-v4 release mid-Dec 2021
-v1.1.3 (Adnroid version code 8) - prod-v5 hiding the suggestion button, not yet release
+
+v1.1.0 (Android version code 5) - prod-v2 (expo 43, up to the version of "height of the modal has been fine-tuned", not to be released, testflight/closed release only), api version 21+, target sdk 30, min ios version 12.0
+
+v1.1.1 (Android version code 6) - prod-v3 internal testing only
+
+v1.1.2 (Android version code 7) - prod-v4 released in mid-Dec 2021
+
+v1.1.3 (Android version code 8) - prod-v5 hiding the suggestion button, released at 1 Jan 2022
+
+v1.1.4 (Android version code 9) - prod-v6 fixing bugs when user type commas on remark and exporting to csv, not published not released
 
 expo publish --release-channel prod-v5

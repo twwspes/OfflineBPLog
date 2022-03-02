@@ -111,7 +111,11 @@ const RecordOutputScreen = props => {
             bloodPressuresReverseTextTemp += item.systolic_blood_pressure + ",";
             bloodPressuresReverseTextTemp += item.diastolic_blood_pressure + ",";
             bloodPressuresReverseTextTemp += item.pulse + ",";
-            bloodPressuresReverseTextTemp += !!item.remark ? item.remark + "\n" : "\n";
+            let tempRemark = !!item.remark ? item.remark.replace(/"/g, '""') : "";
+            if (tempRemark.search(/("|,|\n)/g) >= 0) {
+                tempRemark = `"${tempRemark}"`;
+            }
+            bloodPressuresReverseTextTemp += tempRemark + "\n";
         }
         setBloodPressuresReverseText(bloodPressuresReverseTextTemp);
     }, [bloodPressuresReverse]);
