@@ -25,4 +25,6 @@ v1.1.3 (Android version code 8) - prod-v5 hiding the suggestion button, released
 
 v1.1.4 (Android version code 9) - prod-v6 fixing bugs when user type commas on remark and exporting to csv, not published not released
 
+v1.2.0 (Android version code 10) - prod-v7 (expo 44), not published not released
+
 expo publish --release-channel prod-v5

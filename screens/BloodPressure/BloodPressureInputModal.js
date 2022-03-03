@@ -353,14 +353,22 @@ const BloodPressureInputScreen = props => {
         }).start();
     }, []);
 
+    const [timestampForGestureHandling, setTimestampForGestureHandling] = useState(0);
+
     useEffect(() => {
         if (onRelease) {
-            console.log("pan.y");
-            console.log(pan.y);
-            console.log(screenHeight * 0.5 * 0.3);
-            console.log(screenHeight);
+            const timestampWhenFingerOffScreen = new Date().valueOf();
+            // console.log("timestampForGestureHandling", timestampForGestureHandling);
+            // console.log("timestampWhenFingerOffScreen", timestampWhenFingerOffScreen);
+            const timeDifference = timestampWhenFingerOffScreen - timestampForGestureHandling;
+            setTimestampForGestureHandling(0);
+            // console.log("timeDifference", timeDifference);
+            // console.log("pan.y", pan.y);
+            // console.log(screenHeight * 0.5 * 0.3);
+            // console.log(screenHeight);
             Keyboard.dismiss()
-            if (pan.y._value > screenHeight * 0.5 * 0.3) {
+            if (pan.y._value > screenHeight * 0.5 * 0.5 ||
+                (pan.y._value > screenHeight * 0.5 * 0.1 && timeDifference < 100)) {
                 console.log("pan.y > screenHeight");
                 Animated.timing(pan.y, {
                     toValue: screenHeight,
@@ -383,6 +391,12 @@ const BloodPressureInputScreen = props => {
                     useNativeDriver: true
                 }).start();
             }
+        } else {
+            // timestamp when touch begins
+            // if (timestampForGestureHandling == 0) {
+                setTimestampForGestureHandling(new Date().valueOf());
+                console.log(timestampForGestureHandling);
+            // }
         }
     }, [pan.y, onRelease]);
 
@@ -434,7 +448,7 @@ const BloodPressureInputScreen = props => {
                             minHeight: 500,
                             borderRadius: 3,
                             backgroundColor: 'white',
-                            margin: isPhone ? -1 * (screenHeight * (0.000731 * screenHeight - 0.254878)): -500,
+                            margin: isPhone ? -1 * (screenHeight * (0.000731 * screenHeight - 0.254878)) : -500,
                             height: screenHeight,
                             borderTopLeftRadius: 30,
                             borderTopRightRadius: 30,
