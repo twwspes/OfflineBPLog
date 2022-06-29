@@ -7,6 +7,9 @@ npm-debug.*
 *.key
 *.mobileprovision
 *.orig.*
+
+certs/
+.env
 web-build/
 
 # macOS

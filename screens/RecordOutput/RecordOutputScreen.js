@@ -49,12 +49,12 @@ const RecordOutputScreen = props => {
     const bloodPressuresUpdateIndicator = useSelector(state => state.bloodPressure.update); // for HKU server
     moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : locale.includes('es') ? 'es' : 'en');
     const privacyPolicyWebsite = locale.includes('zh') ?
-        'https://sites.google.com/connect.hku.hk/offlinebplog-zh/home' :
+        'https://twwspes.github.io/OfflineBPLog-Intro/?lang=zh' :
         locale.includes('fr') ?
-            'https://sites.google.com/connect.hku.hk/offlinebplog-fr/home' :
+            'https://twwspes.github.io/OfflineBPLog-Intro/?lang=fr' :
             locale.includes('es') ?
-                'https://sites.google.com/connect.hku.hk/offlinebplog-es/home' :
-                'https://sites.google.com/connect.hku.hk/offlinebplog/home';
+                'https://twwspes.github.io/OfflineBPLog-Intro/?lang=es' :
+                'https://twwspes.github.io/OfflineBPLog-Intro/';
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {
