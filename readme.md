@@ -40,4 +40,6 @@ v1.2.0 (Android version code 10) - prod-v7 (expo 44), not published not released
 
 v1.2.0 (Android version code 10) - prod-v8 (expo 45), not published not released
 
-expo publish --release-channel prod-v8
+v1.2.1 (Android version code 11) - prod-v9 (expo 45), not published not released
+
+expo publish --release-channel prod-v9
