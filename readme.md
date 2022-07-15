@@ -11,14 +11,7 @@ To simplify the maintenance process, I choose to apply expo over react-native an
 The managed workflow handles the Android Keystore and Apple APNS automatically and saves them in the Expo server.  The keys will be used when we request Expo server to build app for us.
 
 # Hyperlinks to introductory website
-https://sites.google.com/connect.hku.hk/offlinebplog-fr/home
-https://sites.google.com/connect.hku.hk/offlinebplog-es/home
-https://sites.google.com/connect.hku.hk/offlinebplog-zh/home
-https://sites.google.com/connect.hku.hk/offlinebplog/home
-https://sites.google.com/connect.hku.hk/offlinebplogprivacy-fr
-https://sites.google.com/connect.hku.hk/offlinebplogprivacy-es
-https://sites.google.com/connect.hku.hk/offlinebplogprivacy-zh
-https://sites.google.com/connect.hku.hk/offlinebplogprivacy
+https://twwspes.github.io/OfflineBPLog-Intro/
 
 # Expo release channel
 
@@ -40,6 +33,8 @@ v1.2.0 (Android version code 10) - prod-v7 (expo 44), not published not released
 
 v1.2.0 (Android version code 10) - prod-v8 (expo 45), not published not released
 
-v1.2.1 (Android version code 11) - prod-v9 (expo 45), not published not released
+v1.2.1 (Android version code 11) - prod-v9 (expo 45), published and released
 
-expo publish --release-channel prod-v9
+v1.3.0 (Android version code 12) - prod-v9 (expo 45), not published not released
+
+expo publish --release-channel prod-v10

@@ -6,17 +6,17 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "releaseChannel": "prod-v8"
+      "releaseChannel": "prod-v10"
     },
     "preview": {
       "android": {
         "buildType": "apk"
       },
       "distribution": "internal",
-      "releaseChannel": "prod-v8"
+      "releaseChannel": "prod-v10"
     },
     "production": {
-      "releaseChannel": "prod-v8"
+      "releaseChannel": "prod-v10"
     }
   },
   "submit": {
