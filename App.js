@@ -6,7 +6,7 @@ import ReduxThunk from 'redux-thunk';
 import * as Localization from 'expo-localization'; // or whatever library you want
 import i18n from 'i18n-js'; // or whatever library you want
 
-import bloodPressureReducer from './store/reducers/bloodPressure'; // for HKU server
+import bloodPressureReducer from './store/reducers/bloodPressure'; 
 import AppNavigator from './navigation/AppNavigator';
 import { LocalizationContext } from './constants/Localisation';
 import { initBloodPressureDB } from './helpers/dbBloodPressure';

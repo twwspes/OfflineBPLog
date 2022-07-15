@@ -7,13 +7,12 @@ The app currently supports English, French, Spanish, Traditional Chinese and Sim
 # Expo managed workflow
 To simplify the maintenance process, I choose to apply expo over react-native and let expo to manage the building process.  This allows me to focus more time on the matters of user experience rather than dealing with tangled messy npm packages.  One shortcoming is that the compiled app tends to be bigger in size (around 30 MB, compared with native apps of similar category with just a few MB).
 
-# Android App Keystore and Apple APNS 
-The managed workflow handles the Android Keystore and Apple APNS automatically and saves them in the Expo server.  The keys will be used when we request Expo server to build app for us.
-
 # Hyperlinks to introductory website
 https://twwspes.github.io/OfflineBPLog-Intro/
 
 # Expo release channel
+
+The Channel is for reference only as I do not use expo-update for now.
 
 v1.0.0 (Android version code 3) - default (expo 41)
 

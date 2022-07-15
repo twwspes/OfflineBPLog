@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { VictoryChart, VictoryLine, VictoryTheme, VictoryAxis, VictoryLegend, VictoryBoxPlot, VictoryArea, VictoryLabel, VictoryScatter } from "victory-native";
 import { Ionicons } from '@expo/vector-icons';
 
-import * as bloodPressureActions from '../../store/actions/bloodPressure'; // for HKU server
+import * as bloodPressureActions from '../../store/actions/bloodPressure'; 
 import ActivityIndicatorWithModal from '../../components/UI/ActivityIndicatorWithModal';
 import MainButtonOutlineImage from '../../components/UI/MainButtonOutlineImage';
 import MainButtonClear from '../../components/UI/MainButtonClear';
@@ -27,10 +27,10 @@ const DashboardScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const { t, locale } = useContext(LocalizationContext);
-    const [lastBloodPressures, setLastBloodPressures] = useState([]); // for HKU server
-    const [bloodPressures, setBloodPressures] = useState([]); // for HKU server
+    const [lastBloodPressures, setLastBloodPressures] = useState([]); 
+    const [bloodPressures, setBloodPressures] = useState([]); 
     const [showBloodPressureCategory, setShowBloodPressureCategory] = useState(false);
-    const bloodPressuresUpdateIndicator = useSelector(state => state.bloodPressure.update); // for HKU server
+    const bloodPressuresUpdateIndicator = useSelector(state => state.bloodPressure.update); 
     const [bloodPressuresSystolicForChart, setBloodPressuresSystolicForChart] = useState([]);
     const [bloodPressuresDiastolicForChart, setBloodPressuresDiastolicForChart] = useState([]);
     const [bloodPressuresPulseForChart, setBloodPressuresPulseForChart] = useState([]);
@@ -75,7 +75,7 @@ const DashboardScreen = props => {
     }, [error])
 
     // Grab data from source
-    useEffect(() => {  // for HKU server
+    useEffect(() => {  
         const downloadItems = async () => {
             setError(null);
             // console.log("setIsLoading true");
@@ -140,7 +140,7 @@ const DashboardScreen = props => {
         // let sinceMoment = new Date().valueOf() - periodValueMapping(bloodPressuresPeriodForTable); // for firebase
 
         if (bloodPressures && bloodPressuresAvgMaxMin.length > 0) {
-            bloodPressures.forEach((bloodPressure) => { // for HKU server
+            bloodPressures.forEach((bloodPressure) => { 
                 if (!!bloodPressure.systolic_blood_pressure && !isNaN(bloodPressure.systolic_blood_pressure)) {
                     bloodPressuresSystolicForChartTemp.push({ x: new Date(bloodPressure.id), y: bloodPressure.systolic_blood_pressure });
                     if (!!bloodPressure.max_systolic_blood_pressure && !isNaN(bloodPressure.max_systolic_blood_pressure)) {

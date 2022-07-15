@@ -4,7 +4,7 @@ import moment from "moment/min/moment-with-locales";
 import { useSelector, useDispatch } from 'react-redux';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 
-import * as bloodPressureActions from '../../store/actions/bloodPressure'; // for HKU server
+import * as bloodPressureActions from '../../store/actions/bloodPressure'; 
 
 import ActivityIndicatorWithModal from '../../components/UI/ActivityIndicatorWithModal';
 import MainButtonOutlineImage from '../../components/UI/MainButtonOutlineImage';
@@ -77,9 +77,9 @@ const HealthParametersScreen = props => {
     const [error, setError] = useState();
     const { t, locale } = useContext(LocalizationContext);
     const dispatch = useDispatch();
-    const [bloodPressures, setBloodPressures] = useState([]); // for HKU server
-    const [bloodPressuresReverse, setBloodPressuresReverse] = useState([]); // for HKU server
-    const bloodPressuresUpdateIndicator = useSelector(state => state.bloodPressure.update); // for HKU server
+    const [bloodPressures, setBloodPressures] = useState([]); 
+    const [bloodPressuresReverse, setBloodPressuresReverse] = useState([]); 
+    const bloodPressuresUpdateIndicator = useSelector(state => state.bloodPressure.update); 
     const flatListPaginationIncrement = 100;
     const [currentOffset, setCurrentOffset] = useState(0);
     const [latestBloodPressures, setLatestBloodPressures] = useState([]);
@@ -122,7 +122,7 @@ const HealthParametersScreen = props => {
     }, [bloodPressuresUpdateIndicator]);
 
     // Grab data from source
-    useEffect(() => {  // for HKU server
+    useEffect(() => {  
         const downloadItems = async () => {
             setError(null);
             setIsLoading(true);

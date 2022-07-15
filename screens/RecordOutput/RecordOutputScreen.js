@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Linking, ActivityIndicator, Alert, TouchableOpa
 import { useSelector, useDispatch } from 'react-redux';
 import moment from "moment/min/moment-with-locales";
 
-import * as bloodPressureActions from '../../store/actions/bloodPressure'; // for HKU server
+import * as bloodPressureActions from '../../store/actions/bloodPressure'; 
 
 import pkg from '../../app.json';
 import MainButton from '../../components/UI/MainButton';
@@ -43,10 +43,10 @@ const RecordOutputScreen = props => {
     const [error, setError] = useState();
     const { t, locale } = useContext(LocalizationContext);
     const dispatch = useDispatch();
-    const [bloodPressures, setBloodPressures] = useState([]); // for HKU server
-    const [bloodPressuresReverse, setBloodPressuresReverse] = useState([]); // for HKU server
-    const [bloodPressuresReverseText, setBloodPressuresReverseText] = useState(''); // for HKU server
-    const bloodPressuresUpdateIndicator = useSelector(state => state.bloodPressure.update); // for HKU server
+    const [bloodPressures, setBloodPressures] = useState([]); 
+    const [bloodPressuresReverse, setBloodPressuresReverse] = useState([]); 
+    const [bloodPressuresReverseText, setBloodPressuresReverseText] = useState(''); 
+    const bloodPressuresUpdateIndicator = useSelector(state => state.bloodPressure.update); 
     moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : locale.includes('es') ? 'es' : 'en');
     const privacyPolicyWebsite = locale.includes('zh') ?
         'https://twwspes.github.io/OfflineBPLog-Intro/?lang=zh' :
@@ -73,7 +73,7 @@ const RecordOutputScreen = props => {
     }, [error])
 
     // Grab data from source
-    useEffect(() => {  // for HKU server
+    useEffect(() => {  
         const downloadItems = async () => {
             setError(null);
             setIsLoading(true);

@@ -127,7 +127,7 @@ export const homeColorStyle = (bloodGlucose, when) => {
         //     when === "before_dinner" ||
         //     when === "before_bedtime"
         // ) 
-        // for HKU server
+        
         if (!isNaN(when)) {
             if (when === 1 ||
                 when === 3 ||

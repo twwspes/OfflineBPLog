@@ -27,7 +27,7 @@ import MainButton from '../../components/UI/MainButton';
 import MainButtonOutline from '../../components/UI/MainButtonOutline';
 import Colors from '../../constants/Colors';
 // import * as OCRAPIActions from '../../store/actions/OCRAPI';
-import * as bloodPressureActions from '../../store/actions/bloodPressure'; // for HKU server
+import * as bloodPressureActions from '../../store/actions/bloodPressure'; 
 import { LocalizationContext } from '../../constants/Localisation';
 import FontSize from '../../constants/FontSize';
 import DateAndTimePicker from '../../components/UI/DateAndTimePicker';
