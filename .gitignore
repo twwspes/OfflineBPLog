@@ -8,6 +8,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 package-lock.json
+.expo-shared
 
 certs/
 .env
