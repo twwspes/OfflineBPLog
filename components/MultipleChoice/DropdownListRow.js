@@ -55,10 +55,12 @@ const styles = StyleSheet.create({
     },
     btnInnerPadding: {
         backgroundColor: 'white',
+        height: 80,
         borderRadius: 0,
     },
     btnInnerPaddingSelected: {
         backgroundColor: Colors.blur,
+        height: 80,
         borderRadius: 0,
     },
 });

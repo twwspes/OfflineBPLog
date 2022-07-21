@@ -34,6 +34,8 @@ v1.2.0 (Android version code 10) - prod-v8 (expo 45), not published not released
 
 v1.2.1 (Android version code 11) - prod-v9 (expo 45), published and released
 
-v1.3.0 (Android version code 12) - prod-v9 (expo 45), not published not released
+v1.3.0 (Android version code 12) - prod-v9 (expo 45), published and released
+
+v1.3.1 (Android version code 13) - prod-v10 (expo 45), not published and not released
 
 expo publish --release-channel prod-v10
