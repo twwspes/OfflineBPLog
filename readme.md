@@ -39,3 +39,5 @@ v1.3.0 (Android version code 12) - prod-v9 (expo 45), published and released
 v1.3.1 (Android version code 13) - prod-v10 (expo 45), not published and not released
 
 expo publish --release-channel prod-v10
+
+v1.4.0 (Android version code 13) - prod-1.4 (expo 47), not published and not released, eas build is used, iOS 13 is minimal supported version

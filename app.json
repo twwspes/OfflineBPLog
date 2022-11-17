@@ -7,7 +7,7 @@
       "ios",
       "android"
     ],
-    "version": "1.3.1",
+    "version": "1.4.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -23,7 +23,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.spesnaiad.bplog",
-      "buildNumber": "1.3.1",
+      "buildNumber": "1.4.0",
       "supportsTablet": true,
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true
@@ -42,7 +42,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.spesnaiad.bplog",
-      "versionCode": 13,
+      "versionCode": 14,
       "permissions":[
 
       ]
