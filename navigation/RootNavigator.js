@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { LocalizationContext } from '../constants/Localisation';
 
-import BloodPressureInputScreen from '../screens/BloodPressure/BloodPressureInputScreen';
+// import BloodPressureInputScreen from '../screens/BloodPressure/BloodPressureInputScreen';
 import BloodPressureInputModal from '../screens/BloodPressure/BloodPressureInputModal';
 import BloodPressurePeriodModal from '../screens/BloodPressure/BloodPressurePeriodModal';
 import BloodPressureScreen from '../screens/BloodPressure/BloodPressureScreen';
@@ -150,7 +150,7 @@ export const BloodPressureNavigator = () => {
                         }
                     }}
                 />
-                <BloodPressureStackNavigator.Screen
+                {/* <BloodPressureStackNavigator.Screen
                     name="BloodPressureInput"
                     component={BloodPressureInputScreen}
                     options={() => {
@@ -160,7 +160,7 @@ export const BloodPressureNavigator = () => {
                             // ...userScreenOptions
                         };
                     }}
-                />
+                /> */}
             </BloodPressureStackNavigator.Group>
             <BloodPressureStackNavigator.Group screenOptions={{ presentation: 'transparentModal' }}>
                 <BloodPressureStackNavigator.Screen
