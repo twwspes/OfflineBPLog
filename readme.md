@@ -41,3 +41,13 @@ v1.3.1 (Android version code 13) - prod-v10 (expo 45), not published and not rel
 expo publish --release-channel prod-v10
 
 v1.4.0 (Android version code 13) - prod-1.4 (expo 47), not published and not released, eas build is used, iOS 13 is minimal supported version
+
+eas update --branch prod-1.4.0  
+eas channel:edit preview --branch prod-1.4.0
+eas build --profile preview --platform android
+
+eas update --branch prod-1.4.0  
+eas channel:edit prod-1.4.0 --branch prod-1.4.0
+eas channel:edit production --branch prod-1.4.0
+eas build --profile production
+
