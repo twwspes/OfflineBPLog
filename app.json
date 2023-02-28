@@ -43,9 +43,10 @@
       },
       "package": "com.spesnaiad.bplog",
       "versionCode": 14,
-      "permissions":[
-
-      ]
-    }
+      "permissions": []
+    },
+    "plugins": [
+      "expo-localization"
+    ]
   }
 }
