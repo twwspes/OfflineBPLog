@@ -13,6 +13,8 @@
     "@react-navigation/native": "^6.0.4",
     "@react-navigation/stack": "^6.0.9",
     "expo": "^48.0.4",
+    "expo-document-picker": "~11.2.2",
+    "expo-file-system": "~15.2.2",
     "expo-localization": "~14.1.1",
     "expo-sqlite": "~11.1.1",
     "expo-updates": "~0.16.3",
@@ -30,7 +32,9 @@
     "react-redux": "^7.2.4",
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
-    "victory-native": "^35.3.2"
+    "victory-native": "^35.3.2",
+    "xlsx": "file:vendor/xlsx-0.19.2.tgz",
+    "expo-sharing": "~11.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3"
