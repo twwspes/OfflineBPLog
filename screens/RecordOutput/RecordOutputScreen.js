@@ -146,7 +146,7 @@ const RecordOutputScreen = props => {
                         });
                         const path = result.uri;
 
-                        const b64 = await FileSystem.readAsStringAsync(excelFileUri, {encoding: FileSystem.EncodingType.Base64 });
+                        const b64 = await FileSystem.readAsStringAsync(path, {encoding: FileSystem.EncodingType.Base64 });
                         const workbook = XLSX.read(b64, {type: "base64" });
 
                         const importJsonArray = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
