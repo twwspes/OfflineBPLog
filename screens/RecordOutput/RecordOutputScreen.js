@@ -146,13 +146,13 @@ const RecordOutputScreen = props => {
                         });
                         const path = result.uri;
 
-                        const b64 = await FileSystem.readAsStringAsync(path, {encoding: FileSystem.EncodingType.Base64 });
-                        const workbook = XLSX.read(b64, {type: "base64" });
+                        const b64 = await FileSystem.readAsStringAsync(path, { encoding: FileSystem.EncodingType.Base64 });
+                        const workbook = XLSX.read(b64, { type: "base64" });
 
                         const importJsonArray = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
                         console.log("RecordOutputScreen json", importJsonArray);
 
-                        if (importJsonArray !== "") {
+                        if (importJsonArray !== undefined) {
                             console.log("RecordOutputScreen json is valid");
 
                             let bloodPressuresReverseIndex = 0;
@@ -213,17 +213,20 @@ const RecordOutputScreen = props => {
                             Promise.all(promises).then(results => {
                                 // all the fetch requests have completed, and the results are in the "results" array
                                 console.log("All done", results);
+                                Alert.alert(t('congrat'), t('all_logs_imported'), [
+                                    { text: t('okay'), style: t('cancel'), }
+                                ]);
                                 dispatch(bloodPressureActions.forceUpdateBPState());
                             });
                         }
                     } catch (err) {
                         console.log('RecordOutputScreen Import xml Error: ', err);
-                        Alert.alert("Sorry!", "Error occurs. Please relaunch the app and try again", [
-                            { text: t('okay'), style: 'cancel', }
+                        Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
+                            { text: t('okay'), style: t('cancel'), }
                         ]);
                     }
                 }}>
-                    Import xlsx
+                    {t('import_xlsx')}
                 </MainButton>
                 )
                 }
@@ -269,7 +272,7 @@ const RecordOutputScreen = props => {
                         Sharing.shareAsync(FileSystem.documentDirectory + "BloodPressure.xlsx");
                     }
                 }}>
-                    Export xlsx
+                    {t('export_xlsx')}
                 </MainButton>
                 )}
             </View>
@@ -277,7 +280,7 @@ const RecordOutputScreen = props => {
                 {isLoading ? (
                     <ActivityIndicator size='small' color={Colors.primary} />
                 ) : (<MainButton onPress={deleteAllLogsHandler}>
-                    Delete all logs
+                    {t('delete_all_logs')}
                 </MainButton>
                 )}
             </View>
