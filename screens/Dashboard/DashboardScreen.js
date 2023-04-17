@@ -211,18 +211,18 @@ const DashboardScreen = props => {
             setBloodPressuresSystolicMinMaxForChart(bloodPressuresSystolicMinMaxForChartTemp.reverse());
             setBloodPressuresDiastolicMinMaxForChart(bloodPressuresDiastolicMinMaxForChartTemp.reverse());
             setBloodPressuresPulseMinMaxForChart(bloodPressuresPulseMinMaxForChartTemp.reverse());
-            console.log("bloodPressuresSystolicForChart");
-            console.log(bloodPressuresSystolicForChart);
+            // console.log("bloodPressuresSystolicForChart");
+            // console.log(bloodPressuresSystolicForChart);
             columnHeadings = [
                 t(bloodPressuresPeriodForTable),
                 t('systolic_short'),
                 t('diastolic_short'),
                 t('heartbeat')
             ];
-            console.log('bloodPressuresAvgMaxMin[0]');
-            console.log(bloodPressuresAvgMaxMin);
-            console.log('bloodPressures');
-            console.log(bloodPressures);
+            // console.log('bloodPressuresAvgMaxMin[0]');
+            // console.log(bloodPressuresAvgMaxMin);
+            // console.log('bloodPressures');
+            // console.log(bloodPressures);
             bloodPressuresAvgForTable = [
                 t('avg'),
                 Math.round(bloodPressuresAvgMaxMin[0].systolic_blood_pressure),

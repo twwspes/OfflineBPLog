@@ -42,12 +42,14 @@ expo publish --release-channel prod-v10
 
 v1.4.0 (Android version code 13) - prod-1.4 (expo 47), not published and not released, eas build is used, iOS 13 is minimal supported version
 
-eas update --branch prod-1.4.0  
-eas channel:edit preview --branch prod-1.4.0
+v1.5.0 (Android version code 15) - prod-1.5 (expo 48), not published and not released, extra modules for import and export xlsx, iOS 13 is minimal supported version
+
+eas update --branch prod-1.5.0  
+eas channel:edit preview --branch prod-1.5.0
 eas build --profile preview --platform android
 
-eas update --branch prod-1.4.0  
-eas channel:edit prod-1.4.0 --branch prod-1.4.0
-eas channel:edit production --branch prod-1.4.0
+eas update --branch prod-1.5.0  
+eas channel:edit prod-1.5.0 --branch prod-1.5.0
+eas channel:edit production --branch prod-1.5.0
 eas build --profile production
 

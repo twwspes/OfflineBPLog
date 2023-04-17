@@ -1,5 +1,5 @@
-import { replaceBloodPressureFromSQL, fetchBloodPressureFromSQLBtwDateMilli, deleteBloodPressureFromLocal } from "../../helpers/dbBloodPressure";
-import { replaceMessageFromSQL, fetchMessageFromSQLBtwDateMilli, deleteMessageFromLocal } from "../../helpers/dbMessage";
+import { replaceBloodPressureFromSQL, fetchBloodPressureFromSQLBtwDateMilli, deleteBloodPressureFromLocal, deleteBloodPressuresFromLocal } from "../../helpers/dbBloodPressure";
+import { replaceMessageFromSQL, fetchMessageFromSQLBtwDateMilli, deleteMessageFromLocal, deleteMessagesFromLocal } from "../../helpers/dbMessage";
 
 export const SET_BLOODPRESSURE = 'SET_BLOODPRESSURE';
 export const BLOODPRESSURE_UPDATE = 'BLOODPRESSURE_UPDATE';
@@ -29,7 +29,7 @@ export const fetchBloodPressure = async (limit, offset, start_date, end_date, nu
         console.log(e);
     }
     loadedBloodPressures = !!dbResult ? dbResult.rows.length !== 0 ? dbResult.rows._array : [] : [];
-    if (num_of_sample === null) { 
+    if (num_of_sample === null) {
         let dbMessageResult;
         let loadedMessages = [];
         try {
@@ -42,11 +42,11 @@ export const fetchBloodPressure = async (limit, offset, start_date, end_date, nu
         loadedMessages = !!dbMessageResult ? dbMessageResult.rows.length !== 0 ? dbMessageResult.rows._array : [] : [];
         // console.log("loadedMessage in fetchBloodPressure");
         // console.log(loadedMessages);
-        loadedMessages.forEach((messageJson)=> {
-            const index = loadedBloodPressures.findIndex((bloodPressureJson)=>bloodPressureJson.id === messageJson.id);
+        loadedMessages.forEach((messageJson) => {
+            const index = loadedBloodPressures.findIndex((bloodPressureJson) => bloodPressureJson.id === messageJson.id);
             console.log("messageJson in fetchBloodPressure");
             console.log(messageJson);
-            if (index !== -1){
+            if (index !== -1) {
                 loadedBloodPressures[index]["remark"] = messageJson.remark;
             }
         });
@@ -55,14 +55,14 @@ export const fetchBloodPressure = async (limit, offset, start_date, end_date, nu
 
 
     console.log("loadedBloodPressures in action");
-    console.log(loadedBloodPressures);
+    // console.log(loadedBloodPressures);
 
     return loadedBloodPressures;
 
 };
 
 
-export const addBloodPressure = (timestamp, systolic_blood_pressure, diastolic_blood_pressure, pulse, remark, withRemark) => {
+export const addBloodPressure = (timestamp, systolic_blood_pressure, diastolic_blood_pressure, pulse, remark, withRemark, shouldStopInstantUpdate) => {
 
     const timestampMilli = new Date(timestamp).valueOf();
 
@@ -82,8 +82,8 @@ export const addBloodPressure = (timestamp, systolic_blood_pressure, diastolic_b
         }
 
         // if someone tries to create / update a remark on a new / existing record.
-        if (!(remark === null || remark === "" || remark === undefined)){
-            console.log("saving remark for record ", new Date(timestamp));
+        if (!(remark === null || remark === "" || remark === undefined)) {
+            // console.log("saving remark for record ", new Date(timestamp));
             try {
                 const dbMessageResult = await replaceMessageFromSQL(
                     timestampMilli,
@@ -111,9 +111,17 @@ export const addBloodPressure = (timestamp, systolic_blood_pressure, diastolic_b
             }
         }
 
-        dispatch({
-            type: BLOODPRESSURE_UPDATE
-        });
+        if (shouldStopInstantUpdate === undefined) {
+            console.log('update state');
+            dispatch({
+                type: BLOODPRESSURE_UPDATE
+            });
+        } else if (shouldStopInstantUpdate !== undefined && shouldStopInstantUpdate) {
+            console.log('update state');
+            dispatch({
+                type: BLOODPRESSURE_UPDATE
+            });
+        }
 
     };
 };
@@ -153,6 +161,38 @@ export const deleteBloodPressure = (timestamp, withRemark) => {
 
     };
 };
+
+export const forceUpdateBPState = () => {
+    return async (dispatch, getState) => {
+        dispatch({
+            type: BLOODPRESSURE_UPDATE,
+        });
+    }
+}
+
+export const deleteAllBloodPressures = () => {
+    return async (dispatch, getState) => {
+        try {
+            const dbBloodPressureResult = await deleteBloodPressuresFromLocal();
+            // console.log("dbMessageResult from message addBloodPressure Action");
+            // console.log(dbMessageResult);
+        } catch (e) {
+            console.log("Error while deleting All Blood Pressures db locally");
+            console.log(e);
+        }
+        try {
+            const dbMessageResult = await deleteMessagesFromLocal();
+            // console.log("dbMessageResult from message addBloodPressure Action");
+            // console.log(dbMessageResult);
+        } catch (e) {
+            console.log("Error while deleting All Blood Pressures db locally");
+            console.log(e);
+        }
+        dispatch({
+            type: BLOODPRESSURE_UPDATE,
+        });
+    }
+}
 
 export const setFromdate = (dateISOString) => {
     return async (dispatch, getState) => {

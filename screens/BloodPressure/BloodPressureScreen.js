@@ -158,7 +158,7 @@ const HealthParametersScreen = props => {
                 });
             } catch (err) {
                 setBloodPressures([]);
-                console.log("failed to download HealthParameter items");
+                console.log("failed to BloodPressureScreen useEffect Download");
                 setIsLoading(false);
                 setError(err.message);
             }
