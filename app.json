@@ -43,7 +43,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.spesnaiad.bplog",
-      "versionCode": 14,
+      "versionCode": 15,
       "permissions": []
     },
     "plugins": [
