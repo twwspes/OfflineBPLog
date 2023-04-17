@@ -7,7 +7,7 @@ import MainButtonClear from '../UI/MainButtonClear';
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 const SingleChoice = ({ onItemSelected, id, items, initialValue, buttonTextStyle, buttonStyle, isModalActive }) => {
-    console.log("render DropdownList");
+    // console.log("render DropdownList");
 
     // const { onItemSelected, id, items, initialValue } = props;
 

@@ -9,7 +9,7 @@ import Colors from '../../constants/Colors';
 const screenWidth = Math.round(Dimensions.get('window').width);
 
 const MultipleChoiceRow = ({onPress, title, selected}) =>  {
-    console.log("render DropdownListRow" + title);
+    // console.log("render DropdownListRow" + title);
     return (
         // <View style={styles.flatlist} >
             <MainButtonClearImage style={styles.circleFocused} buttonStyle={selected ? styles.btnInnerPaddingSelected: styles.btnInnerPadding} onPress={onPress}>

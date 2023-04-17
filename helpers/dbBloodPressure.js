@@ -224,10 +224,10 @@ export const fetchBloodPressureFromSQLBtwDateMilli = (until, from, limit, offset
                                                         cnt: 1
                                                     };
                                                 }
-                                                console.log("result");
-                                                console.log(result.rows._array);
-                                                console.log(result2.rows._array);
-                                                console.log(row.grp);
+                                                // console.log("result");
+                                                // console.log(result.rows._array);
+                                                // console.log(result2.rows._array);
+                                                // console.log(row.grp);
                                                 output[row.grp]["systolic_var_sum"] = output[row.grp]["systolic_var_sum"] +
                                                     ((row.systolic_blood_pressure - result.rows.item(row.grp).systolic_blood_pressure) *
                                                         (row.systolic_blood_pressure - result.rows.item(row.grp).systolic_blood_pressure));
@@ -248,9 +248,9 @@ export const fetchBloodPressureFromSQLBtwDateMilli = (until, from, limit, offset
                                                 const systolic_sd = Math.sqrt(output[key].systolic_var_sum / output[key].cnt);
                                                 const diastolic_sd = Math.sqrt(output[key].diastolic_var_sum / output[key].cnt);
                                                 const pulse_sd = Math.sqrt(output[key].pulse_var_sum / output[key].cnt);
-                                                console.log("systolic_sd", systolic_sd);
-                                                console.log("diastolic_sd", diastolic_sd);
-                                                console.log("pulse_sd", pulse_sd);
+                                                // console.log("systolic_sd", systolic_sd);
+                                                // console.log("diastolic_sd", diastolic_sd);
+                                                // console.log("pulse_sd", pulse_sd);
                                                 result.rows._array[key]["systolic_sd"] = systolic_sd;
                                                 result.rows._array[key]["diastolic_sd"] = diastolic_sd;
                                                 result.rows._array[key]["pulse_sd"] = pulse_sd;

@@ -55,7 +55,7 @@ export const fetchBloodPressure = async (limit, offset, start_date, end_date, nu
 
 
     console.log("loadedBloodPressures in action");
-    console.log(loadedBloodPressures);
+    // console.log(loadedBloodPressures);
 
     return loadedBloodPressures;
 
@@ -83,7 +83,7 @@ export const addBloodPressure = (timestamp, systolic_blood_pressure, diastolic_b
 
         // if someone tries to create / update a remark on a new / existing record.
         if (!(remark === null || remark === "" || remark === undefined)) {
-            console.log("saving remark for record ", new Date(timestamp));
+            // console.log("saving remark for record ", new Date(timestamp));
             try {
                 const dbMessageResult = await replaceMessageFromSQL(
                     timestampMilli,
@@ -111,7 +111,12 @@ export const addBloodPressure = (timestamp, systolic_blood_pressure, diastolic_b
             }
         }
 
-        if (shouldStopInstantUpdate !== undefined && !shouldStopInstantUpdate) {
+        if (shouldStopInstantUpdate === undefined) {
+            console.log('update state');
+            dispatch({
+                type: BLOODPRESSURE_UPDATE
+            });
+        } else if (shouldStopInstantUpdate !== undefined && shouldStopInstantUpdate) {
             console.log('update state');
             dispatch({
                 type: BLOODPRESSURE_UPDATE

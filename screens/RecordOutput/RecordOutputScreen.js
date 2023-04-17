@@ -150,7 +150,7 @@ const RecordOutputScreen = props => {
                         const workbook = XLSX.read(b64, { type: "base64" });
 
                         const importJsonArray = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
-                        console.log("RecordOutputScreen json", importJsonArray);
+                        // console.log("RecordOutputScreen json", importJsonArray);
 
                         if (importJsonArray !== undefined) {
                             console.log("RecordOutputScreen json is valid");
@@ -161,33 +161,35 @@ const RecordOutputScreen = props => {
 
                             for (const item of importJsonArray) {
                                 const date = new Date(item.Year, item.Month - 1, item.Date, item.Hours, item.Minutes, item.Seconds);
-                                console.log("RecordOutputScreen date", date, bloodPressuresReverseIndex);
+                                // console.log("RecordOutputScreen date", date, bloodPressuresReverseIndex);
                                 if (bloodPressuresReverseIndex < bloodPressuresReverse.length) {
                                     for (let i = bloodPressuresReverseIndex; i < bloodPressuresReverse.length; i++) {
-                                        console.log(date);
-                                        console.log(new Date(bloodPressuresReverse[i].id));
+                                        // console.log(date);
+                                        // console.log(new Date(bloodPressuresReverse[i].id));
                                         if (date.valueOf() === Math.floor(Number(bloodPressuresReverse[i].id) / 1000) * 1000) {
-                                            console.log("RecordOutputScreen date === existing records", date);
+                                            // console.log("RecordOutputScreen date === existing records", date);
                                             const promise = dispatch(bloodPressureActions.addBloodPressure(
                                                 bloodPressuresReverse[i].id,
                                                 item.Systolic,
                                                 item.Diastolic,
                                                 item.Pulse,
                                                 item.Remark,
-                                                false,
+                                                true,
+                                                false
                                             ));
                                             promises.push(promise);
                                             bloodPressuresReverseIndex = i + 1;
                                             break;
                                         } else if (date.valueOf() >= Math.floor(Number(bloodPressuresReverse[i].id) / 1000) * 1000) {
-                                            console.log("RecordOutputScreen date !== existing records", date);
+                                            // console.log("RecordOutputScreen date !== existing records", date);
                                             const promise = dispatch(bloodPressureActions.addBloodPressure(
                                                 date.valueOf(),
                                                 item.Systolic,
                                                 item.Diastolic,
                                                 item.Pulse,
                                                 item.Remark,
-                                                false,
+                                                true,
+                                                false
                                             ));
                                             promises.push(promise);
                                             bloodPressuresReverseIndex = i + 1
@@ -195,14 +197,15 @@ const RecordOutputScreen = props => {
                                         }
                                     }
                                 } else {
-                                    console.log("bloodPressuresReverseIndex < bloodPressuresReverse.length", date);
+                                    // console.log("bloodPressuresReverseIndex < bloodPressuresReverse.length", date);
                                     const promise = dispatch(bloodPressureActions.addBloodPressure(
                                         date.valueOf(),
                                         item.Systolic,
                                         item.Diastolic,
                                         item.Pulse,
                                         item.Remark,
-                                        false,
+                                        true,
+                                        false
                                     ));
                                     promises.push(promise);
                                 }
@@ -212,7 +215,7 @@ const RecordOutputScreen = props => {
                             // wait for all the promises in the promises array to resolve
                             Promise.all(promises).then(results => {
                                 // all the fetch requests have completed, and the results are in the "results" array
-                                console.log("All done", results);
+                                // console.log("All done", results);
                                 Alert.alert(t('congrat'), t('all_logs_imported'), [
                                     { text: t('okay'), style: t('cancel'), }
                                 ]);
