@@ -309,7 +309,7 @@ const RecordOutputScreen = props => {
                                 systolic_blood_pressure: 116,
                                 diastolic_blood_pressure: 75,
                                 pulse: 64,
-                                remark: "Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm"
+                                remark: "Right Arm"
                             }
                         ]
                         const bloodPressuresJson = sampleBloodPressureLog.map((item) => {
