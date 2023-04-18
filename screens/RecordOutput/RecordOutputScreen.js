@@ -17,6 +17,7 @@ import { LocalizationContext } from '../../constants/Localisation';
 import Input from '../../components/UI/Input';
 import Colors from '../../constants/Colors';
 import FontSize from '../../constants/FontSize';
+import isValidDate from '../../helpers/isValidDate';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
@@ -112,7 +113,7 @@ const RecordOutputScreen = props => {
     }, [bloodPressures]);
 
     const deleteAllLogsHandler = () => {
-        Alert.alert("Warning!", "Logs will be removed permanently, are you SURE?", [
+        Alert.alert(t('warning'), t('all_logs_removed_warning'), [
             {
                 text: t('okay'), onPress: async () => {
                     setIsLoading(true);
@@ -122,7 +123,7 @@ const RecordOutputScreen = props => {
                     })
                 }
             },
-            { text: "Cencel", style: 'cancel', }
+            { text: t('cancel'), style: 'cancel', }
         ]);
         return;
     }
@@ -132,161 +133,232 @@ const RecordOutputScreen = props => {
             onPress={Keyboard.dismiss}
             activeOpacity={1}
         >
-            <View style={styles.buttonContainer}>
-                {isLoading ? (
-                    <ActivityIndicator size='small' color={Colors.primary} />
-                ) : (<MainButton onPress={async () => {
-                    let promise1 = new Promise((res, rej) => {
-                        setTimeout(() => res("Now it's done!"), 5000)
-                    });
-                    try {
-                        const result = await DocumentPicker.getDocumentAsync({
-                            copyToCacheDirectory: true,
-                            type: ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-                        });
-                        const path = result.uri;
+            {isLoading ? (
+                <ActivityIndicator size='large' color={Colors.primary} />
+            ) : (<>
+                <View style={styles.buttonContainer}>
+                    <MainButton onPress={async () => {
+                        try {
+                            setIsLoading(true);
+                            const result = await DocumentPicker.getDocumentAsync({
+                                copyToCacheDirectory: true,
+                                type: ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+                            });
+                            console.log("RecordOutputScreen result", result);
 
-                        const b64 = await FileSystem.readAsStringAsync(path, { encoding: FileSystem.EncodingType.Base64 });
-                        const workbook = XLSX.read(b64, { type: "base64" });
+                            if (result.type === "success") {
 
-                        const importJsonArray = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
-                        // console.log("RecordOutputScreen json", importJsonArray);
+                                const path = result.uri;
 
-                        if (importJsonArray !== undefined) {
-                            console.log("RecordOutputScreen json is valid");
+                                const b64 = await FileSystem.readAsStringAsync(path, { encoding: FileSystem.EncodingType.Base64 });
+                                const workbook = XLSX.read(b64, { type: "base64" });
 
-                            let bloodPressuresReverseIndex = 0;
+                                const importJsonArray = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
+                                // console.log("RecordOutputScreen json", importJsonArray);
 
-                            const promises = [];
+                                if (importJsonArray !== undefined) {
+                                    console.log("RecordOutputScreen json is valid");
 
-                            for (const item of importJsonArray) {
-                                const date = new Date(item.Year, item.Month - 1, item.Date, item.Hours, item.Minutes, item.Seconds);
-                                // console.log("RecordOutputScreen date", date, bloodPressuresReverseIndex);
-                                if (bloodPressuresReverseIndex < bloodPressuresReverse.length) {
-                                    for (let i = bloodPressuresReverseIndex; i < bloodPressuresReverse.length; i++) {
-                                        // console.log(date);
-                                        // console.log(new Date(bloodPressuresReverse[i].id));
-                                        if (date.valueOf() === Math.floor(Number(bloodPressuresReverse[i].id) / 1000) * 1000) {
-                                            // console.log("RecordOutputScreen date === existing records", date);
-                                            const promise = dispatch(bloodPressureActions.addBloodPressure(
-                                                bloodPressuresReverse[i].id,
-                                                item.Systolic,
-                                                item.Diastolic,
-                                                item.Pulse,
-                                                item.Remark,
-                                                true,
-                                                false
-                                            ));
-                                            promises.push(promise);
-                                            bloodPressuresReverseIndex = i + 1;
-                                            break;
-                                        } else if (date.valueOf() >= Math.floor(Number(bloodPressuresReverse[i].id) / 1000) * 1000) {
-                                            // console.log("RecordOutputScreen date !== existing records", date);
-                                            const promise = dispatch(bloodPressureActions.addBloodPressure(
-                                                date.valueOf(),
-                                                item.Systolic,
-                                                item.Diastolic,
-                                                item.Pulse,
-                                                item.Remark,
-                                                true,
-                                                false
-                                            ));
-                                            promises.push(promise);
-                                            bloodPressuresReverseIndex = i + 1
-                                            break;
+                                    let bloodPressuresReverseIndex = 0;
+
+                                    const promises = [];
+
+                                    for (const item of importJsonArray) {
+                                        const date = new Date(item.Year, item.Month - 1, item.Date, item.Hours, item.Minutes, item.Seconds);
+                                        if (isValidDate(date)) {
+
+                                            if (item.Remark.toString().length <= 300 && item.Systolic > 20 && item.Systolic < 250 && item.Diastolic > 20 && item.Diastolic < 250 && item.Pulse > 20 && item.Pulse < 250) {
+
+                                                // console.log("RecordOutputScreen date", date, bloodPressuresReverseIndex);
+                                                if (bloodPressuresReverseIndex < bloodPressuresReverse.length) {
+                                                    for (let i = bloodPressuresReverseIndex; i < bloodPressuresReverse.length; i++) {
+                                                        // console.log(date);
+                                                        // console.log(new Date(bloodPressuresReverse[i].id));
+                                                        if (date.valueOf() === Math.floor(Number(bloodPressuresReverse[i].id) / 1000) * 1000) {
+                                                            // console.log("RecordOutputScreen date === existing records", date);
+                                                            const promise = dispatch(bloodPressureActions.addBloodPressure(
+                                                                bloodPressuresReverse[i].id,
+                                                                item.Systolic,
+                                                                item.Diastolic,
+                                                                item.Pulse,
+                                                                item.Remark,
+                                                                true,
+                                                                false
+                                                            ));
+                                                            promises.push(promise);
+                                                            bloodPressuresReverseIndex = i + 1;
+                                                            break;
+                                                        } else if (date.valueOf() >= Math.floor(Number(bloodPressuresReverse[i].id) / 1000) * 1000) {
+                                                            // console.log("RecordOutputScreen date !== existing records", date);
+                                                            const promise = dispatch(bloodPressureActions.addBloodPressure(
+                                                                date.valueOf(),
+                                                                item.Systolic,
+                                                                item.Diastolic,
+                                                                item.Pulse,
+                                                                item.Remark,
+                                                                true,
+                                                                false
+                                                            ));
+                                                            promises.push(promise);
+                                                            bloodPressuresReverseIndex = i + 1
+                                                            break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    // console.log("bloodPressuresReverseIndex < bloodPressuresReverse.length", date);
+                                                    const promise = dispatch(bloodPressureActions.addBloodPressure(
+                                                        date.valueOf(),
+                                                        item.Systolic,
+                                                        item.Diastolic,
+                                                        item.Pulse,
+                                                        item.Remark,
+                                                        true,
+                                                        false
+                                                    ));
+                                                    promises.push(promise);
+                                                }
+                                            }
+
                                         }
-                                    }
-                                } else {
-                                    // console.log("bloodPressuresReverseIndex < bloodPressuresReverse.length", date);
-                                    const promise = dispatch(bloodPressureActions.addBloodPressure(
-                                        date.valueOf(),
-                                        item.Systolic,
-                                        item.Diastolic,
-                                        item.Pulse,
-                                        item.Remark,
-                                        true,
-                                        false
-                                    ));
-                                    promises.push(promise);
-                                }
 
+                                    }
+
+                                    // wait for all the promises in the promises array to resolve
+                                    Promise.all(promises).then(results => {
+                                        // all the fetch requests have completed, and the results are in the "results" array
+                                        // console.log("All done", results);
+                                        Alert.alert(t('congrat'), t('all_logs_imported'), [
+                                            { text: t('okay'), style: t('cancel'), }
+                                        ]);
+                                        dispatch(bloodPressureActions.forceUpdateBPState());
+
+                                        setIsLoading(false);
+                                    });
+                                } else {
+                                    Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
+                                        { text: t('okay'), style: t('cancel'), }
+                                    ]);
+                                }
                             }
 
-                            // wait for all the promises in the promises array to resolve
-                            Promise.all(promises).then(results => {
-                                // all the fetch requests have completed, and the results are in the "results" array
-                                // console.log("All done", results);
-                                Alert.alert(t('congrat'), t('all_logs_imported'), [
-                                    { text: t('okay'), style: t('cancel'), }
-                                ]);
-                                dispatch(bloodPressureActions.forceUpdateBPState());
-                            });
+                        } catch (err) {
+                            console.log('RecordOutputScreen Import xml Error: ', err);
+                            Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
+                                { text: t('okay'), style: t('cancel'), }
+                            ]);
+                            setIsLoading(false);
                         }
-                    } catch (err) {
-                        console.log('RecordOutputScreen Import xml Error: ', err);
-                        Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
-                            { text: t('okay'), style: t('cancel'), }
-                        ]);
-                    }
-                }}>
-                    {t('import_xlsx')}
-                </MainButton>
-                )
-                }
-            </View>
-            <View style={styles.buttonContainer}>
-                {isLoading ? (
-                    <ActivityIndicator size='small' color={Colors.primary} />
-                ) : (<MainButton onPress={async () => {
-                    const bloodPressuresJson = bloodPressuresReverse.map((item) => {
-                        const dateTemp = new Date(parseInt(item.id));
-                        return {
-                            systolic: item.systolic_blood_pressure,
-                            diastolic: item.diastolic_blood_pressure,
-                            pulse: item.pulse,
-                            year: dateTemp.getFullYear(),
-                            month: dateTemp.getMonth() + 1,
-                            date: dateTemp.getDate(),
-                            hours: dateTemp.getHours(),
-                            minutes: dateTemp.getMinutes(),
-                            seconds: dateTemp.getSeconds(),
-                            remark: item.remark ?? "",
+                    }}>
+                        {t('import_xlsx')}
+                    </MainButton>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <MainButton onPress={async () => {
+                        const bloodPressuresJson = bloodPressuresReverse.map((item) => {
+                            const dateTemp = new Date(parseInt(item.id));
+                            return {
+                                systolic: item.systolic_blood_pressure,
+                                diastolic: item.diastolic_blood_pressure,
+                                pulse: item.pulse,
+                                year: dateTemp.getFullYear(),
+                                month: dateTemp.getMonth() + 1,
+                                date: dateTemp.getDate(),
+                                hours: dateTemp.getHours(),
+                                minutes: dateTemp.getMinutes(),
+                                seconds: dateTemp.getSeconds(),
+                                remark: item.remark ?? "",
+                            }
+                        });
+                        console.log('bloodPressuresJson', bloodPressuresJson);
+                        /* generate worksheet and workbook */
+                        const worksheet = XLSX.utils.json_to_sheet(bloodPressuresJson);
+                        const workbook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+                        /* fix headers */
+                        XLSX.utils.sheet_add_aoa(worksheet, [["Systolic", "Diastolic", "Pulse", "Year", "Month", "Date", "Hours", "Minutes", "Seconds", "Remark"]], { origin: "A1" });
+
+                        /* calculate column width */
+                        // const max_width = bloodPressuresJson.reduce((w, r) => Math.max(w, r.name.length), 10);
+                        // worksheet["!cols"] = [{ wch: max_width }];
+                        const b64 = XLSX.write(workbook, { type: 'base64', bookType: "xlsx" });
+                        // /* b64 is a Base64 string */
+                        await FileSystem.writeAsStringAsync(FileSystem.documentDirectory + "BloodPressure.xlsx", b64, { encoding: FileSystem.EncodingType.Base64 });
+
+                        const isSharingAvailable = Sharing.isAvailableAsync();
+
+                        if (isSharingAvailable) {
+                            Sharing.shareAsync(FileSystem.documentDirectory + "BloodPressure.xlsx");
                         }
-                    });
-                    console.log('bloodPressuresJson', bloodPressuresJson);
-                    /* generate worksheet and workbook */
-                    const worksheet = XLSX.utils.json_to_sheet(bloodPressuresJson);
-                    const workbook = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+                    }}>
+                        {t('export_xlsx')}
+                    </MainButton>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <MainButton onPress={async () => {
+                        const sampleBloodPressureLog = [
+                            {
+                                id: new Date().valueOf(),
+                                systolic_blood_pressure: 113,
+                                diastolic_blood_pressure: 79,
+                                pulse: 63,
+                                remark: "Left Arm"
+                            },
+                            {
+                                id: new Date().valueOf() - 12 * 60 * 60 * 1000,
+                                systolic_blood_pressure: 116,
+                                diastolic_blood_pressure: 75,
+                                pulse: 64,
+                                remark: "Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm Right Arm"
+                            }
+                        ]
+                        const bloodPressuresJson = sampleBloodPressureLog.map((item) => {
+                            const dateTemp = new Date(parseInt(item.id));
+                            return {
+                                systolic: item.systolic_blood_pressure,
+                                diastolic: item.diastolic_blood_pressure,
+                                pulse: item.pulse,
+                                year: dateTemp.getFullYear(),
+                                month: dateTemp.getMonth() + 1,
+                                date: dateTemp.getDate(),
+                                hours: dateTemp.getHours(),
+                                minutes: dateTemp.getMinutes(),
+                                seconds: dateTemp.getSeconds(),
+                                remark: item.remark ?? "",
+                            }
+                        });
+                        console.log('bloodPressuresJson', bloodPressuresJson);
+                        /* generate worksheet and workbook */
+                        const worksheet = XLSX.utils.json_to_sheet(bloodPressuresJson);
+                        const workbook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
-                    /* fix headers */
-                    XLSX.utils.sheet_add_aoa(worksheet, [["Systolic", "Diastolic", "Pulse", "Year", "Month", "Date", "Hours", "Minutes", "Seconds", "Remark"]], { origin: "A1" });
+                        /* fix headers */
+                        XLSX.utils.sheet_add_aoa(worksheet, [["Systolic", "Diastolic", "Pulse", "Year", "Month", "Date", "Hours", "Minutes", "Seconds", "Remark"]], { origin: "A1" });
 
-                    /* calculate column width */
-                    // const max_width = bloodPressuresJson.reduce((w, r) => Math.max(w, r.name.length), 10);
-                    // worksheet["!cols"] = [{ wch: max_width }];
-                    const b64 = XLSX.write(workbook, { type: 'base64', bookType: "xlsx" });
-                    // /* b64 is a Base64 string */
-                    await FileSystem.writeAsStringAsync(FileSystem.documentDirectory + "BloodPressure.xlsx", b64, { encoding: FileSystem.EncodingType.Base64 });
+                        /* calculate column width */
+                        // const max_width = bloodPressuresJson.reduce((w, r) => Math.max(w, r.name.length), 10);
+                        // worksheet["!cols"] = [{ wch: max_width }];
+                        const b64 = XLSX.write(workbook, { type: 'base64', bookType: "xlsx" });
+                        // /* b64 is a Base64 string */
+                        await FileSystem.writeAsStringAsync(FileSystem.documentDirectory + "BloodPressure.xlsx", b64, { encoding: FileSystem.EncodingType.Base64 });
 
-                    const isSharingAvailable = Sharing.isAvailableAsync();
+                        const isSharingAvailable = Sharing.isAvailableAsync();
 
-                    if (isSharingAvailable) {
-                        Sharing.shareAsync(FileSystem.documentDirectory + "BloodPressure.xlsx");
-                    }
-                }}>
-                    {t('export_xlsx')}
-                </MainButton>
-                )}
-            </View>
-            <View style={styles.buttonContainer}>
-                {isLoading ? (
-                    <ActivityIndicator size='small' color={Colors.primary} />
-                ) : (<MainButton onPress={deleteAllLogsHandler}>
-                    {t('delete_all_logs')}
-                </MainButton>
-                )}
-            </View>
+                        if (isSharingAvailable) {
+                            Sharing.shareAsync(FileSystem.documentDirectory + "BloodPressure.xlsx");
+                        }
+                    }}>
+                        {t('download_sample_xlsx')}
+                    </MainButton>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <MainButton onPress={deleteAllLogsHandler}>
+                        {t('delete_all_logs')}
+                    </MainButton>
+                </View>
+            </>
+            )}
             <Text>BP Log v.{pkg.expo.version}</Text>
             <Text style={{ fontSize: 12 }}>{'© 2021-' + new Date().getFullYear() + ' Tak Wai WONG'}</Text>
             <MainButtonClear

@@ -24,7 +24,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.spesnaiad.bplog",
-      "buildNumber": "1.5.0",
+      "buildNumber": "16",
       "supportsTablet": true,
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true
@@ -43,7 +43,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.spesnaiad.bplog",
-      "versionCode": 15,
+      "versionCode": 16,
       "permissions": []
     },
     "plugins": [
