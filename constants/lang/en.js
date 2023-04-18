@@ -79,7 +79,7 @@ export default {
     delete_all_logs: 'Delete all logs',
     sorry: 'Sorry!',
     error_occur_relaunch_apps: 'Error occurs. Please relaunch the app and try again',
-    cancel: 'Cencel',
+    cancel: 'Cancel',
     congrat: 'Congratulations!',
     all_logs_imported: 'All records have been imported successfully"',
     warning: 'Warning!',
