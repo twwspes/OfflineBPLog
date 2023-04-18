@@ -238,7 +238,10 @@ const RecordOutputScreen = props => {
                                     Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
                                         { text: t('okay'), style: t('cancel'), }
                                     ]);
+                                    setIsLoading(false);
                                 }
+                            } else {
+                                setIsLoading(false);
                             }
 
                         } catch (err) {
