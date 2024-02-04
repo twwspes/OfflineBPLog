@@ -22,3 +22,5 @@ dist/
 *.ipa
 *.aab
 *.apk
+build-*.tar.gz
+*.app
