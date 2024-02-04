@@ -3,7 +3,7 @@ import {
     ScrollView,
     View,
     Text,
-    Image,
+    Platform,
     ImageBackground,
     TouchableOpacity,
     PanResponder,
