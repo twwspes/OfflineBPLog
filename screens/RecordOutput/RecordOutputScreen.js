@@ -154,7 +154,7 @@ const RecordOutputScreen = props => {
                                 const workbook = XLSX.read(b64, { type: "base64" });
 
                                 const importJsonArray = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
-                                // console.log("RecordOutputScreen json", importJsonArray);
+                                console.log("RecordOutputScreen json", importJsonArray);
 
                                 if (importJsonArray !== undefined) {
                                     console.log("RecordOutputScreen json is valid");
@@ -167,7 +167,15 @@ const RecordOutputScreen = props => {
                                         const date = new Date(item.Year, item.Month - 1, item.Date, item.Hours, item.Minutes, item.Seconds);
                                         if (isValidDate(date)) {
 
-                                            if (item.Remark.toString().length <= 300 && item.Systolic > 20 && item.Systolic < 250 && item.Diastolic > 20 && item.Diastolic < 250 && item.Pulse > 20 && item.Pulse < 250) {
+                                            if (item.Systolic > 20
+                                                && item.Systolic < 250
+                                                && item.Diastolic > 20
+                                                && item.Diastolic < 250
+                                                && item.Pulse > 20
+                                                && item.Pulse < 250
+                                            ) {
+
+                                                const remark = item.Remark !== undefined ? item.Remark.toString().substring(0, 300) : '';
 
                                                 // console.log("RecordOutputScreen date", date, bloodPressuresReverseIndex);
                                                 if (bloodPressuresReverseIndex < bloodPressuresReverse.length) {
@@ -175,13 +183,13 @@ const RecordOutputScreen = props => {
                                                         // console.log(date);
                                                         // console.log(new Date(bloodPressuresReverse[i].id));
                                                         if (date.valueOf() === Math.floor(Number(bloodPressuresReverse[i].id) / 1000) * 1000) {
-                                                            // console.log("RecordOutputScreen date === existing records", date);
+                                                            console.log("RecordOutputScreen date === existing records", date);
                                                             const promise = dispatch(bloodPressureActions.addBloodPressure(
                                                                 bloodPressuresReverse[i].id,
                                                                 item.Systolic,
                                                                 item.Diastolic,
                                                                 item.Pulse,
-                                                                item.Remark,
+                                                                remark,
                                                                 true,
                                                                 false
                                                             ));
@@ -189,13 +197,13 @@ const RecordOutputScreen = props => {
                                                             bloodPressuresReverseIndex = i + 1;
                                                             break;
                                                         } else if (date.valueOf() >= Math.floor(Number(bloodPressuresReverse[i].id) / 1000) * 1000) {
-                                                            // console.log("RecordOutputScreen date !== existing records", date);
+                                                            console.log("RecordOutputScreen date !== existing records", date);
                                                             const promise = dispatch(bloodPressureActions.addBloodPressure(
                                                                 date.valueOf(),
                                                                 item.Systolic,
                                                                 item.Diastolic,
                                                                 item.Pulse,
-                                                                item.Remark,
+                                                                remark,
                                                                 true,
                                                                 false
                                                             ));
@@ -205,13 +213,13 @@ const RecordOutputScreen = props => {
                                                         }
                                                     }
                                                 } else {
-                                                    // console.log("bloodPressuresReverseIndex < bloodPressuresReverse.length", date);
+                                                    console.log("bloodPressuresReverseIndex < bloodPressuresReverse.length", date);
                                                     const promise = dispatch(bloodPressureActions.addBloodPressure(
                                                         date.valueOf(),
                                                         item.Systolic,
                                                         item.Diastolic,
                                                         item.Pulse,
-                                                        item.Remark,
+                                                        remark,
                                                         true,
                                                         false
                                                     ));
