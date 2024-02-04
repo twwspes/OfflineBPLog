@@ -146,9 +146,9 @@ const RecordOutputScreen = props => {
                             });
                             console.log("RecordOutputScreen result", result);
 
-                            if (result.type === "success") {
+                            if (!result.canceled && !!result.assets[0].uri) {
 
-                                const path = result.uri;
+                                const path = result.assets[0].uri;
 
                                 const b64 = await FileSystem.readAsStringAsync(path, { encoding: FileSystem.EncodingType.Base64 });
                                 const workbook = XLSX.read(b64, { type: "base64" });
