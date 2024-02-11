@@ -1,6 +1,6 @@
-v1.6.0 (Android version code 17) - prod-1.6 (expo 50), published and released, java zulu-17 applied,
+v1.6.0 (Android version code 17) - prod-1.6 (expo 50), published and released, java zulu-17 applied, Android API 23+
 
-v1.5.0 (Android version code 15) - prod-1.5 (expo 48), extra modules for import and export xlsx, iOS 13 is minimal supported version
+v1.5.0 (Android version code 15) - prod-1.5 (expo 48), extra modules for import and export xlsx, iOS 13 is minimal supported version, Android API 21+
 
 v1.4.0 (Android version code 13) - prod-1.4 (expo 47), not published and not released, eas build is used, iOS 13 is minimal supported version
 
