@@ -9,17 +9,3 @@ To simplify the maintenance process, I choose to apply expo over react-native an
 
 # Hyperlinks to introductory website
 https://twwspes.github.io/OfflineBPLog-Intro/
-
-# Expo release channel
-
-The Channel is for reference only as I do not use expo-update for now.
-
-eas update --branch prod-1.6.0  
-eas channel:edit preview --branch prod-1.6.0
-eas build --profile preview --platform android
-
-eas update --branch prod-1.6.0  
-eas channel:edit prod-1.6.0 --branch prod-1.6.0
-eas channel:edit production --branch prod-1.6.0
-eas build --profile production
-
