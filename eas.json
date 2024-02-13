@@ -6,17 +6,26 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "channel": "development"
+      "channel": "development",
+      "ios": {
+        "simulator": true
+      },
+      "android": {
+        "buildType": "apk"
+      }
     },
     "preview": {
       "android": {
         "buildType": "apk"
       },
+      "ios": {
+        "simulator": true
+      },
       "distribution": "internal",
       "channel": "preview"
     },
     "production": {
-      "channel": "prod-1.5.0"
+      "channel": "prod-1.6.0"
     }
   },
   "submit": {

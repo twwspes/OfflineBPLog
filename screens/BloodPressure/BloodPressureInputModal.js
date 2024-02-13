@@ -3,7 +3,7 @@ import {
     ScrollView,
     View,
     Text,
-    Image,
+    Platform,
     KeyboardAvoidingView,
     Keyboard,
     PanResponder,

@@ -146,9 +146,9 @@ const RecordOutputScreen = props => {
                             });
                             console.log("RecordOutputScreen result", result);
 
-                            if (result.type === "success") {
+                            if (!result.canceled && !!result.assets[0].uri) {
 
-                                const path = result.uri;
+                                const path = result.assets[0].uri;
 
                                 const b64 = await FileSystem.readAsStringAsync(path, { encoding: FileSystem.EncodingType.Base64 });
                                 const workbook = XLSX.read(b64, { type: "base64" });
@@ -167,7 +167,15 @@ const RecordOutputScreen = props => {
                                         const date = new Date(item.Year, item.Month - 1, item.Date, item.Hours, item.Minutes, item.Seconds);
                                         if (isValidDate(date)) {
 
-                                            if (item.Remark.toString().length <= 300 && item.Systolic > 20 && item.Systolic < 250 && item.Diastolic > 20 && item.Diastolic < 250 && item.Pulse > 20 && item.Pulse < 250) {
+                                            if (item.Systolic > 20
+                                                && item.Systolic < 250
+                                                && item.Diastolic > 20
+                                                && item.Diastolic < 250
+                                                && item.Pulse > 20
+                                                && item.Pulse < 250
+                                            ) {
+
+                                                const remark = item.Remark !== undefined ? item.Remark.toString().substring(0, 300) : '';
 
                                                 // console.log("RecordOutputScreen date", date, bloodPressuresReverseIndex);
                                                 if (bloodPressuresReverseIndex < bloodPressuresReverse.length) {
@@ -181,7 +189,7 @@ const RecordOutputScreen = props => {
                                                                 item.Systolic,
                                                                 item.Diastolic,
                                                                 item.Pulse,
-                                                                item.Remark,
+                                                                remark,
                                                                 true,
                                                                 false
                                                             ));
@@ -195,7 +203,7 @@ const RecordOutputScreen = props => {
                                                                 item.Systolic,
                                                                 item.Diastolic,
                                                                 item.Pulse,
-                                                                item.Remark,
+                                                                remark,
                                                                 true,
                                                                 false
                                                             ));
@@ -211,7 +219,7 @@ const RecordOutputScreen = props => {
                                                         item.Systolic,
                                                         item.Diastolic,
                                                         item.Pulse,
-                                                        item.Remark,
+                                                        remark,
                                                         true,
                                                         false
                                                     ));
