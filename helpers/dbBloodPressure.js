@@ -22,13 +22,13 @@ pulse INTEGER NOT NULL
 //   }
 
 export const initBloodPressureDB = async () => {
-    await db.execAsync(
+    await (await db).execAsync(
         'CREATE TABLE IF NOT EXISTS bloodpressure (id INTEGER PRIMARY KEY NOT NULL, systolic_blood_pressure REAL NOT NULL, diastolic_blood_pressure REAL NOT NULL, pulse INTEGER NOT NULL);',
     );
 }
 
-export const replaceBloodPressureFromSQL = (id, systolic, diastolic, pulse) => {
-    const result = db.runAsync(
+export const replaceBloodPressureFromSQL = async (id, systolic, diastolic, pulse) => {
+    const result = await (await db).runAsync(
         'REPLACE INTO bloodpressure (id, systolic_blood_pressure, diastolic_blood_pressure, pulse) VALUES (?, ?, ?, ?);',
         [id, systolic, diastolic, pulse],
     );
@@ -36,13 +36,13 @@ export const replaceBloodPressureFromSQL = (id, systolic, diastolic, pulse) => {
 };
 
 export const fetchBloodPressureFromSQL = async () => {
-    const allRows = await db.getAllAsync('SELECT * FROM bloodpressure;');
+    const allRows = await (await db).getAllAsync('SELECT * FROM bloodpressure;');
     return allRows;
 };
 
 export const fetchBloodPressureFromSQLBtwDateMilli = async (until, from, limit, offset, sample) => {
     if (sample === 1) {
-        const allRows = await db.getAllAsync(
+        const allRows = await (await db).getAllAsync(
             `SELECT AVG(systolic_blood_pressure) AS systolic_blood_pressure, 
                     MAX(systolic_blood_pressure) AS max_systolic_blood_pressure, 
                     MIN(systolic_blood_pressure) AS min_systolic_blood_pressure, 
@@ -62,12 +62,12 @@ export const fetchBloodPressureFromSQLBtwDateMilli = async (until, from, limit, 
             [until, from, limit, offset])
         return allRows;
     } else if (sample > 1) {
-        const pureresultRows = await db.getAllAsync(
+        const pureresultRows = await (await db).getAllAsync(
             'SELECT * FROM bloodpressure WHERE id <= ? AND id >= ? ORDER BY id DESC LIMIT ? OFFSET ? ;',
             [until, from, limit, offset],
         )
         if (pureresultRows.length < 24) {
-            const resultRows = await db.getAllAsync(
+            const resultRows = await (await db).getAllAsync(
                 `
                 SELECT
                 AVG(systolic_blood_pressure) AS systolic_blood_pressure, 
@@ -92,7 +92,7 @@ export const fetchBloodPressureFromSQLBtwDateMilli = async (until, from, limit, 
                     until, from, limit, offset,
                 ],
             )
-            const result2Rows = await db.getAllAsync(
+            const result2Rows = await (await db).getAllAsync(
                 `
                 SELECT 
                 *, 
@@ -144,19 +144,19 @@ export const fetchBloodPressureFromSQLBtwDateMilli = async (until, from, limit, 
                 // console.log("systolic_sd", systolic_sd);
                 // console.log("diastolic_sd", diastolic_sd);
                 // console.log("pulse_sd", pulse_sd);
-                resultRows._array[key]["systolic_sd"] = systolic_sd;
-                resultRows._array[key]["diastolic_sd"] = diastolic_sd;
-                resultRows._array[key]["pulse_sd"] = pulse_sd;
+                resultRows[key]["systolic_sd"] = systolic_sd;
+                resultRows[key]["diastolic_sd"] = diastolic_sd;
+                resultRows[key]["pulse_sd"] = pulse_sd;
             }
             return resultRows;
         }
         return pureresultRows
     } else if (limit >= 0 && offset >= 0) {
-        const resultRows = await db.getAllAsync('SELECT * FROM bloodpressure WHERE id <= ? AND id >= ? ORDER BY id DESC LIMIT ? OFFSET ? ;',
+        const resultRows = await (await db).getAllAsync('SELECT * FROM bloodpressure WHERE id <= ? AND id >= ? ORDER BY id DESC LIMIT ? OFFSET ? ;',
             [until, from, limit, offset],);
         return resultRows;
     } else {
-        const resultRows = await db.getAllAsync(
+        const resultRows = await (await db).getAllAsync(
             'SELECT * FROM bloodpressure WHERE id <= ? AND id >= ? ORDER BY id DESC;',
             [until, from]
         )
@@ -165,7 +165,7 @@ export const fetchBloodPressureFromSQLBtwDateMilli = async (until, from, limit, 
 };
 
 export const deleteBloodPressureFromLocal = async (id) => {
-    const result = await db.runAsync(
+    const result = await (await db).runAsync(
         'DELETE FROM bloodpressure WHERE id = ?;',
         [id],
     );
@@ -173,7 +173,7 @@ export const deleteBloodPressureFromLocal = async (id) => {
 };
 
 export const deleteBloodPressuresFromLocal = async () => {
-    const result = await db.runAsync(
+    const result = await (await db).runAsync(
         'DELETE FROM bloodpressure;',
         [],
     );

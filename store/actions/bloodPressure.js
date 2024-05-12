@@ -28,7 +28,7 @@ export const fetchBloodPressure = async (limit, offset, start_date, end_date, nu
         console.log('fetchBloodPressureFromSQL Error');
         console.log(e);
     }
-    loadedBloodPressures = !!rows ? rows.length !== 0 ? rows._array : [] : [];
+    loadedBloodPressures = !!rows ? rows.length !== 0 ? rows : [] : [];
     if (num_of_sample === null) {
         let rows;
         let loadedMessages = [];
@@ -39,9 +39,9 @@ export const fetchBloodPressure = async (limit, offset, start_date, end_date, nu
             console.log(e);
         }
 
-        loadedMessages = !!rows ? rows.length !== 0 ? rows._array : [] : [];
-        // console.log("loadedMessage in fetchBloodPressure");
-        // console.log(loadedMessages);
+        loadedMessages = !!rows ? rows.length !== 0 ? rows : [] : [];
+        console.log("loadedMessage in fetchBloodPressure");
+        console.log(loadedMessages);
         loadedMessages.forEach((messageJson) => {
             const index = loadedBloodPressures.findIndex((bloodPressureJson) => bloodPressureJson.id === messageJson.id);
             // console.log("messageJson in fetchBloodPressure");
