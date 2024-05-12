@@ -67,6 +67,8 @@ export const fetchBloodPressureFromSQLBtwDateMilli = async (until, from, limit, 
             [until, from, limit, offset],
         )
         if (pureresultRows.length < 24) {
+            return pureresultRows
+        } else {
             const resultRows = await (await db).getAllAsync(
                 `
                 SELECT
@@ -108,7 +110,7 @@ export const fetchBloodPressureFromSQLBtwDateMilli = async (until, from, limit, 
             var len = result2Rows.length;
             const output = {};
             for (let i = 0; i < len; i++) {
-                let row = result2Rows.item(i);
+                let row = result2Rows[i];
                 if (!output.hasOwnProperty(row.grp)) {
                     output[row.grp] = {
                         systolic_var_sum: 0,
@@ -117,20 +119,18 @@ export const fetchBloodPressureFromSQLBtwDateMilli = async (until, from, limit, 
                         cnt: 1
                     };
                 }
-                // console.log("result");
-                // console.log(resultRows._array);
-                // console.log(result2Rows._array);
+                // console.log("result", resultRows, result2Rows);
                 // console.log(row.grp);
                 output[row.grp]["systolic_var_sum"] = output[row.grp]["systolic_var_sum"] +
-                    ((row.systolic_blood_pressure - resultRows.item(row.grp).systolic_blood_pressure) *
-                        (row.systolic_blood_pressure - resultRows.item(row.grp).systolic_blood_pressure));
+                    ((row.systolic_blood_pressure - resultRows[row.grp].systolic_blood_pressure) *
+                        (row.systolic_blood_pressure - resultRows[row.grp].systolic_blood_pressure));
                 output[row.grp]["diastolic_var_sum"] = output[row.grp]["diastolic_var_sum"] +
-                    ((row.diastolic_blood_pressure - resultRows.item(row.grp).diastolic_blood_pressure) *
-                        (row.diastolic_blood_pressure - resultRows.item(row.grp).diastolic_blood_pressure));
+                    ((row.diastolic_blood_pressure - resultRows[row.grp].diastolic_blood_pressure) *
+                        (row.diastolic_blood_pressure - resultRows[row.grp].diastolic_blood_pressure));
                 output[row.grp]["pulse_var_sum"] = output[row.grp]["pulse_var_sum"] +
-                    ((row.pulse - resultRows.item(row.grp).pulse) *
-                        (row.pulse - resultRows.item(row.grp).pulse));
-                output[row.grp]["cnt"] = resultRows.item(row.grp).cnt;
+                    ((row.pulse - resultRows[row.grp].pulse) *
+                        (row.pulse - resultRows[row.grp].pulse));
+                output[row.grp]["cnt"] = resultRows[row.grp].cnt;
 
             }
             // const systolic_sd = Math.sqrt(output["0"] / len);
@@ -150,7 +150,6 @@ export const fetchBloodPressureFromSQLBtwDateMilli = async (until, from, limit, 
             }
             return resultRows;
         }
-        return pureresultRows
     } else if (limit >= 0 && offset >= 0) {
         const resultRows = await (await db).getAllAsync('SELECT * FROM bloodpressure WHERE id <= ? AND id >= ? ORDER BY id DESC LIMIT ? OFFSET ? ;',
             [until, from, limit, offset],);
