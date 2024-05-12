@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('message.db');
+const db = SQLite.openDatabaseAsync('message.db');
 
 /*
 message db
@@ -19,184 +19,53 @@ message TEXT NOT NULL
 //     },
 //   }
 
-export const initMessageDB = () => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction(tx => {
-            tx.executeSql(
-                'CREATE TABLE IF NOT EXISTS message (id INTEGER PRIMARY KEY NOT NULL, remark TEXT NOT NULL);',
-                [],
-                () => {
-                    resolve();
-                },
-                (_, err) => {
-                    reject(err);
-                }
-            );
-        });
-    });
-    return promise;
+export const initMessageDB = async () => {
+    await db.execAsync(
+        'CREATE TABLE IF NOT EXISTS message (id INTEGER PRIMARY KEY NOT NULL, remark TEXT NOT NULL);',
+    );
 };
 
-export const replaceMessageFromSQL = (id, remark) => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction(tx => {
-            tx.executeSql(
-                `REPLACE INTO message (id, remark) VALUES (?, ?);`,
-                [id, remark],
-                (_, result) => {
-                    resolve(result);
-                },
-                (_, err) => {
-                    reject(err);
-                }
-            );
-        });
-    });
-    return promise;
+export const replaceMessageFromSQL = async (id, remark) => {
+    const result = db.runAsync(
+        `REPLACE INTO message (id, remark) VALUES (?, ?);`,
+        [id, remark],
+    );
+    return result;
 };
 
-export const updateMessageFromSQL = (id, input, inputValue) => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction(tx => {
-            //
-            //UPDATE users SET ' + input + ' = ' + inputValue + ' WHERE id IN ( ' + id + ' );
-            tx.executeSql(
-                `update message set ${input} = ? where id = ?;`,
-                [inputValue, id],
-                (_, result) => {
-                    resolve(result);
-                },
-                (_, err) => {
-                    reject(err);
-                }
-            );
-        });
-    });
-    return promise;
+export const fetchMessageFromSQL = async () => {
+    const allRows = await db.getAllAsync('SELECT * FROM message;');
+    return allRows;
 };
 
-export const selectDataFromMessageFromSQL = (id) => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction(tx => {
-            tx.executeSql(
-                `SELECT * FROM message WHERE id = ?;`,
-                [id],
-                (_, result) => {
-                    resolve(result);
-                },
-                (_, err) => {
-                    reject(err);
-                }
-            );
-        });
-    });
-    return promise;
-};
-
-export const selectLatestDataFromMessageFromSQL = () => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction(tx => {
-            tx.executeSql(
-                `SELECT MAX(id), remark FROM message;`,
-                [],
-                (_, result) => {
-                    resolve(result);
-                },
-                (_, err) => {
-                    reject(err);
-                }
-            );
-        });
-    });
-    return promise;
-};
-
-export const fetchMessageFromSQL = () => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction(tx => {
-            tx.executeSql(
-                'SELECT * FROM message;',
-                [],
-                (_, result) => {
-                    resolve(result);
-                },
-                (_, err) => {
-                    reject(err);
-                }
-            );
-        });
-    });
-    return promise;
-};
-
-export const fetchMessageFromSQLBtwDateMilli = (until, from, limit, offset) => {
+export const fetchMessageFromSQLBtwDateMilli = async (until, from, limit, offset) => {
     if (limit >= 0 && offset >= 0) {
-        const promise = new Promise((resolve, reject) => {
-            db.transaction(tx => {
-                tx.executeSql(
-                    'SELECT * FROM message WHERE id <= ? AND id >= ? ORDER BY id DESC LIMIT ? OFFSET ? ;',
-                    [until, from, limit, offset],
-                    (_, result) => {
-                        resolve(result);
-                    },
-                    (_, err) => {
-                        reject(err);
-                    }
-                );
-            });
-        });
-        return promise;
+        const allRows = await db.getAllAsync(
+            'SELECT * FROM message WHERE id <= ? AND id >= ? ORDER BY id DESC LIMIT ? OFFSET ? ;',
+            [until, from, limit, offset],
+        );
+        return allRows;
     } else {
-        const promise = new Promise((resolve, reject) => {
-            db.transaction(tx => {
-                tx.executeSql(
-                    'SELECT * FROM message WHERE id <= ? AND id >= ? ORDER BY id DESC;',
-                    [until, from],
-                    (_, result) => {
-                        resolve(result);
-                    },
-                    (_, err) => {
-                        reject(err);
-                    }
-                );
-            });
-        });
-        return promise;
+        const allRows = await db.getAllAsync(
+            'SELECT * FROM message WHERE id <= ? AND id >= ? ORDER BY id DESC;',
+            [until, from],
+        );
+        return allRows;
     }
 };
 
-export const deleteMessageFromLocal = (id) => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction(tx => {
-            tx.executeSql(
-                'DELETE FROM message WHERE id = ?;',
-                [id],
-                (_, result) => {
-                    resolve(result);
-                },
-                (_, err) => {
-                    reject(err);
-                }
-            );
-        });
-    });
-    return promise;
+export const deleteMessageFromLocal = async (id) => {
+    const result = await db.runAsync(
+        'DELETE FROM message WHERE id = ?;',
+        [id],
+    );
+    return result;
 };
 
-export const deleteMessagesFromLocal = () => {
-    const promise = new Promise((resolve, reject) => {
-        db.transaction(tx => {
-            tx.executeSql(
-                'DELETE FROM message;',
-                [],
-                (_, result) => {
-                    resolve(result);
-                },
-                (_, err) => {
-                    reject(err);
-                }
-            );
-        });
-    });
-    return promise;
+export const deleteMessagesFromLocal = async () => {
+    const result = await db.runAsync(
+        'DELETE FROM message;',
+        [],
+    );
+    return result;
 };
