@@ -12,6 +12,7 @@ package-lock.json
 
 certs/
 .env
+.secret
 web-build/
 
 # macOS

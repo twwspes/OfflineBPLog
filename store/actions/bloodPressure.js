@@ -20,28 +20,28 @@ export const fetchBloodPressure = async (limit, offset, start_date, end_date, nu
         untilDateMilli = new Date(end_date).valueOf();
     }
 
-    var dbResult;
+    var rows;
     var loadedBloodPressures = [];
     try {
-        dbResult = await fetchBloodPressureFromSQLBtwDateMilli(untilDateMilli, fromDateMilli, limit, offset, num_of_sample);
+        rows = await fetchBloodPressureFromSQLBtwDateMilli(untilDateMilli, fromDateMilli, limit, offset, num_of_sample);
     } catch (e) {
         console.log('fetchBloodPressureFromSQL Error');
         console.log(e);
     }
-    loadedBloodPressures = !!dbResult ? dbResult.rows.length !== 0 ? dbResult.rows._array : [] : [];
+    loadedBloodPressures = !!rows ? rows.length !== 0 ? rows : [] : [];
     if (num_of_sample === null) {
-        let dbMessageResult;
+        let rows;
         let loadedMessages = [];
         try {
-            dbMessageResult = await fetchMessageFromSQLBtwDateMilli(untilDateMilli, fromDateMilli, limit, offset);
+            rows = await fetchMessageFromSQLBtwDateMilli(untilDateMilli, fromDateMilli, limit, offset);
         } catch (e) {
             console.log('fetchMessageFromSQLBtwDateMilli Error');
             console.log(e);
         }
 
-        loadedMessages = !!dbMessageResult ? dbMessageResult.rows.length !== 0 ? dbMessageResult.rows._array : [] : [];
-        // console.log("loadedMessage in fetchBloodPressure");
-        // console.log(loadedMessages);
+        loadedMessages = !!rows ? rows.length !== 0 ? rows : [] : [];
+        console.log("loadedMessage in fetchBloodPressure");
+        console.log(loadedMessages);
         loadedMessages.forEach((messageJson) => {
             const index = loadedBloodPressures.findIndex((bloodPressureJson) => bloodPressureJson.id === messageJson.id);
             // console.log("messageJson in fetchBloodPressure");
