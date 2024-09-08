@@ -1,0 +1,10 @@
+runner:
+  eslint:
+    cmd: yarn eslint .
+    format: eslint
+    level: error
+
+  tsc:
+    cmd: yarn tsc --noEmit
+    format: tsc
+    level: error
