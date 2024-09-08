@@ -75,7 +75,7 @@ const FlatListItem = ({ itemData, onFlatListItemPress, noRecordLocalisedString }
 const HealthParametersScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
-    const { t, locale } = useContext(LocalizationContext);
+    const { t, locale2 } = useLocalisation();
     const dispatch = useDispatch();
     const [bloodPressures, setBloodPressures] = useState([]); 
     const [bloodPressuresReverse, setBloodPressuresReverse] = useState([]); 
@@ -88,7 +88,7 @@ const HealthParametersScreen = props => {
     const [showToDatePicker, setShowToDatePicker] = useState(false);
     const [showFromDatePicker, setShowFromDatePicker] = useState(false);
     const [isFiltered, setIsFiltered] = useState(false);
-    moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : locale.includes('es') ? 'es' : 'en');
+    moment.locale(locale2);
 
     useEffect(() => {
         if (error) {

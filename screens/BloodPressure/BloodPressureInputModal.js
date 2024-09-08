@@ -33,6 +33,7 @@ import { FontSize } from '../../constants/FontSize';
 import DateAndTimePicker from '../../components/UI/DateAndTimePicker';
 // import Dropdown from '../../components/UI/Dropdown';
 import DropdownList from '../../components/MultipleChoice/DropdownList';
+import { useLocalisation } from 'hooks/useLocalisation';
 
 const screenHeight = Math.round(Dimensions.get('window').height);
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -67,7 +68,7 @@ const formReducer = (state, action) => {
 const BloodPressureInputScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
-    const { t, locale } = useContext(LocalizationContext);
+    const { t, locale2 } = useLocalisation();
     const oldID = props.route.params ? props.route.params.id : "";
     const oldSys = props.route.params ? props.route.params.systolic.toString() : "113";
     const oldDia = props.route.params ? props.route.params.diastolic.toString() : "79";
@@ -80,7 +81,7 @@ const BloodPressureInputScreen = props => {
     const [onShow, setOnShow] = useState(false);
     // const [isModalActive, setIsModalActive] = useState(false);
     // const [showModalButton, setShowModalButton] = useState(false);
-    moment.locale(locale.includes('zh') ? (locale.includes('CN') ? 'zh-cn' : 'zh-hk') : locale.includes('fr') ? 'fr' : locale.includes('es') ? 'es' : 'en');
+    moment.locale(locale2);
     // const netInfo = useNetInfo();
 
     const fadeAnim = useRef(new Animated.Value(0)).current;

@@ -5,11 +5,12 @@ import { NavigationContainer} from '@react-navigation/native';
 
 import { BottomTabNavigator, navigationRef} from './RootNavigator';
 import { LocalizationContext } from '../constants/Localisation';
+import { useLocalisation } from 'hooks/useLocalisation';
 
 const AppNavigator = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
-    const { t, locale, setLocale } = useContext(LocalizationContext);
+    const { t } = useLocalisation();
 
     useEffect(() => {
         if (error) {

@@ -14,6 +14,7 @@ import BloodPressureScreen from '../screens/BloodPressure/BloodPressureScreen';
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
 import RecordOutputScreen from '../screens/RecordOutput/RecordOutputScreen';
 import { Colors } from '../constants/Colors';
+import { useLocalisation } from 'hooks/useLocalisation';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const { height, width } = Dimensions.get('window');
@@ -59,7 +60,7 @@ export function navigate(name, params) {
 const Tab = createBottomTabNavigator();
 
 export const BottomTabNavigator = () => {
-    const { t } = React.useContext(LocalizationContext);
+    const { t } = useLocalisation();
 
     function getTabBarVisibility(route) {
         const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
@@ -121,7 +122,7 @@ export const BottomTabNavigator = () => {
 const BloodPressureStackNavigator = createStackNavigator();
 
 export const BloodPressureNavigator = () => {
-    const { t } = React.useContext(LocalizationContext);
+    const { t } = useLocalisation();
 
     const screenOptions = () => {
         return {

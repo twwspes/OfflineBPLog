@@ -6,6 +6,7 @@ import Dropdown from './Dropdown';
 import { FontSize } from '../../constants/FontSize';
 import { Colors } from '../../constants/Colors';
 import { LocalizationContext } from '../../constants/Localisation';
+import { useLocalisation } from 'hooks/useLocalisation';
 
 const styles = StyleSheet.create({
   container: {
@@ -81,7 +82,7 @@ const formReducer = (state, action) => {
 };
 
 const ModalBottom = props => {
-  const { t, locale } = useContext(LocalizationContext);
+  const { t } = useLocalisation();
 
   const { onClose } = props;
 
