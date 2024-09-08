@@ -16,9 +16,9 @@ import {
     systolicColorStyle,
     diastolicColorStyle,
 } from '../../constants/TrafficLightStyles';
-import Colors from '../../constants/Colors';
+import { Colors } from '../../constants/Colors';
 import { LocalizationContext } from '../../constants/Localisation';
-import FontSize from '../../constants/FontSize';
+import { FontSize } from '../../constants/FontSize';
 import DropdownList from '../../components/MultipleChoice/DropdownList';
 
 const screenWidth = Math.round(Dimensions.get('window').width);

@@ -16,9 +16,9 @@ import {
     diastolicColorStyle,
 } from '../../constants/TrafficLightStyles';
 import DateAndTimePicker from '../../components/UI/DateAndTimePicker';
-import Colors from '../../constants/Colors';
+import { Colors } from '../../constants/Colors';
 import { LocalizationContext } from '../../constants/Localisation';
-import FontSize from '../../constants/FontSize';
+import { FontSize } from '../../constants/FontSize';
 
 // class FlatListItem extends PureComponent {
 //     render() {

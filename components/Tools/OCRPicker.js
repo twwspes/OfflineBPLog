@@ -5,8 +5,8 @@
 
 // import { LocalizationContext } from '../../constants/Localisation';
 
-// import Colors from '../../constants/Colors';
-// import FontSize from '../../constants/FontSize';
+// import { Colors } from '../../constants/Colors';
+// import { FontSize } from '../../constants/FontSize';
 // import MainButtonClear from '../UI/MainButtonClearImage';
 // import MainButtonOutlineImage from '../UI/MainButtonOutlineImage';
 

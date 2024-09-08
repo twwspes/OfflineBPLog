@@ -3,8 +3,8 @@ import { TouchableOpacity, View, Text, StyleSheet, Modal, Alert, ScrollView, Ima
 
 import Input from './Input';
 import Dropdown from './Dropdown';
-import FontSize from '../../constants/FontSize';
-import Colors from '../../constants/Colors';
+import { FontSize } from '../../constants/FontSize';
+import { Colors } from '../../constants/Colors';
 import { LocalizationContext } from '../../constants/Localisation';
 
 const styles = StyleSheet.create({

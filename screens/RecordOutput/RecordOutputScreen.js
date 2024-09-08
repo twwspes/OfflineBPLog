@@ -15,8 +15,8 @@ import MainButton from '../../components/UI/MainButton';
 import MainButtonClear from '../../components/UI/MainButtonClear';
 import { LocalizationContext } from '../../constants/Localisation';
 import Input from '../../components/UI/Input';
-import Colors from '../../constants/Colors';
-import FontSize from '../../constants/FontSize';
+import { Colors } from '../../constants/Colors';
+import { FontSize } from '../../constants/FontSize';
 import isValidDate from '../../helpers/isValidDate';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';

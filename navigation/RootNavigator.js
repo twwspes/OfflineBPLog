@@ -13,7 +13,7 @@ import BloodPressurePeriodModal from '../screens/BloodPressure/BloodPressurePeri
 import BloodPressureScreen from '../screens/BloodPressure/BloodPressureScreen';
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
 import RecordOutputScreen from '../screens/RecordOutput/RecordOutputScreen';
-import Colors from '../constants/Colors';
+import { Colors } from '../constants/Colors';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const { height, width } = Dimensions.get('window');

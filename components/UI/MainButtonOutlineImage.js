@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native';
 
-import Colors from '../../constants/Colors';
+import { Colors } from '../../constants/Colors';
 
 const MainButtonOutlineImage = props => {
     let ButtonComponent = TouchableOpacity; // .jsx need capital head

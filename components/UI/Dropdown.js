@@ -1,8 +1,8 @@
 import React, { useReducer, useEffect } from 'react';
 import { StyleSheet, View, Platform } from 'react-native';
 
-import Colors from '../../constants/Colors';
-import FontSize from '../../constants/FontSize';
+import { Colors } from '../../constants/Colors';
+import { FontSize } from '../../constants/FontSize';
 import RNPickerSelect from 'react-native-picker-select';
 
 const DROPDOWN_CHANGE = 'DROPDOWN_CHANGE';
