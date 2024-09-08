@@ -50,7 +50,7 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 export default function App() {
   const [locale, setLocale] = React.useState(
     () => {
-      console.log("Localization.locale value");
+      // console.log("Localization.locale value");
       const localeToBeSet = Localization.locale.includes('zh') ?
         ((Localization.locale.includes('CN') || Localization.locale.includes('Hans')) ?
           'zh_CN' : 'zh_HK') :
@@ -58,7 +58,7 @@ export default function App() {
           'fr' :
           Localization.locale.includes('es') ?
             'es' : 'en';
-      console.log(localeToBeSet);
+      // console.log(localeToBeSet);
       return localeToBeSet;
     }
     // The following code retrieve locale from system and decide which language the app should use
