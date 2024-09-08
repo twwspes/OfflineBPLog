@@ -6,9 +6,9 @@ import ReduxThunk from 'redux-thunk';
 import * as Localization from 'expo-localization'; // or whatever library you want
 import i18n from 'i18n-js'; // or whatever library you want
 
-import bloodPressureReducer from './store/reducers/bloodPressure'; 
+import bloodPressureReducer from './store/reducers/bloodPressure';
 import AppNavigator from './navigation/AppNavigator';
-import { LocalizationContext } from './constants/Localisation';
+import { LocalisationProvider } from './hooks/useLocalisation';
 import { initBloodPressureDB } from './helpers/dbBloodPressure';
 import { initMessageDB } from './helpers/dbMessage';
 
@@ -16,7 +16,7 @@ initBloodPressureDB()
   .then(() => {
     console.log('Initialized BloodPressureDB');
   })
-  .catch(err => {
+  .catch((err) => {
     console.log('Initializing BloodPressureDB failed.');
     console.log(err);
   });
@@ -25,7 +25,7 @@ initMessageDB()
   .then(() => {
     console.log('Initialized MessageDB');
   })
-  .catch(err => {
+  .catch((err) => {
     console.log('Initializing MessageDB failed.');
     console.log(err);
   });
@@ -47,36 +47,14 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 //   // other store enhancers if any
 // ));
 
-export default function App() {
-  const [locale, setLocale] = React.useState(
-    () => {
-      // console.log("Localization.locale value");
-      const localeToBeSet = Localization.locale.includes('zh') ?
-        ((Localization.locale.includes('CN') || Localization.locale.includes('Hans')) ?
-          'zh_CN' : 'zh_HK') :
-        Localization.locale.includes('fr') ?
-          'fr' :
-          Localization.locale.includes('es') ?
-            'es' : 'en';
-      // console.log(localeToBeSet);
-      return localeToBeSet;
-    }
-    // The following code retrieve locale from system and decide which language the app should use
-  );
-  const localizationContext = React.useMemo(
-    () => ({
-      t: (scope, options) => i18n.t(scope, { locale, ...options }),
-      locale,
-      setLocale,
-    }),
-    [locale]
-  );
-
+const App = () => {
   return (
-    <LocalizationContext.Provider value={localizationContext}>
+    <LocalisationProvider>
       <Provider store={store}>
         <AppNavigator />
       </Provider>
-    </LocalizationContext.Provider>
+    </LocalisationProvider>
   );
-}
+};
+
+export default App;
