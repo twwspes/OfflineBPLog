@@ -324,7 +324,8 @@ export const BloodPressureScreen: React.FC<Props> = ({ navigation, route }) => {
       }
     }
     setIsLoading(false);
-  }, [currentOffset, fromdate, t, todate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bloodPressuresUpdateIndicator, currentOffset, fromdate, t, todate]);
 
   useEffect(() => {
     void downloadItems();
