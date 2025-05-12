@@ -561,7 +561,8 @@ export const BloodPressureInputModal: React.FC<Props> = ({
       setTimestampForGestureHandling(new Date().valueOf());
       // }
     }
-  }, [pan.y, onRelease, timestampForGestureHandling, fadeAnim, navigation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pan.y, onRelease]);
 
   return (
     <Animated.View
