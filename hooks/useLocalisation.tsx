@@ -3,11 +3,11 @@ import React, { useCallback, useState } from 'react';
 import i18n from 'i18n-js'; // or whatever library you want
 import * as Localization from 'expo-localization'; // or whatever library you want
 
-import en from '../constants/lang/en';
-import zh_HK from '../constants/lang/zh_HK';
-import zh_CN from '../constants/lang/zh_CN';
-import fr from '../constants/lang/fr';
-import es from '../constants/lang/es';
+import { en } from '../constants/lang/en';
+import { zh_HK } from '../constants/lang/zh_HK';
+import { zh_CN } from '../constants/lang/zh_CN';
+import { fr } from '../constants/lang/fr';
+import { es } from '../constants/lang/es';
 
 interface ProviderProps {
   children: React.ReactNode;

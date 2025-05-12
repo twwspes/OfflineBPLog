@@ -94,7 +94,7 @@ export const systolicColorStyle = (systolic: number | null) => {
     }
     return redStyles;
   }
-  return {};
+  return redStyles;
 };
 
 export const diastolicColorStyle = (diastolic: number | null) => {
@@ -110,7 +110,7 @@ export const diastolicColorStyle = (diastolic: number | null) => {
     }
     return redStyles;
   }
-  return {};
+  return redStyles;
 };
 
 // export function percent130Style (percent) {
