@@ -1487,30 +1487,6 @@ export const DashboardScreen: React.FC<Props> = () => {
               >
                 {t('blood_pressure_records_since_last')}
               </Text>
-              {/* <Dropdown
-                                id="bloodPressureTablePeriod"
-                                onItemSelected={(inputIdentifier, inputValue, inputValidity) => {
-                                    console.log("Dropdown inputValue");
-                                    console.log(inputValue);
-                                    setBloodPressuresPeriodForTable(inputValue);
-                                }}
-                                items={[
-                                    { label: t('one_day'), value: 'one_day' },
-                                    { label: t('one_week'), value: 'one_week' },
-                                    { label: t('one_month'), value: 'one_month' },
-                                    { label: t('three_months'), value: 'three_months' },
-                                    { label: t('six_months'), value: 'six_months' },
-                                    { label: t('one_year'), value: 'one_year' },
-                                    { label: t('all'), value: 'all' },
-                                ]}
-                                placeholder={{
-                                    label: t('please_select'),
-                                    value: 'none',
-                                }}
-                                style={styles.picker}
-                                initialValue={'one_day'}
-                                initialIsValid={true}
-                            /> */}
               <View style={{ height: 10 }} />
               <SingleChoice
                 id="bloodPressureTablePeriod"
@@ -1527,8 +1503,8 @@ export const DashboardScreen: React.FC<Props> = () => {
                   { label: t('one_year'), value: 'one_year' },
                   { label: t('all'), value: 'all' },
                 ]}
-                onItemSelected={(inputValue) => {
-                  setBloodPressuresPeriodForTable(inputValue);
+                onItemSelected={(_, value) => {
+                  setBloodPressuresPeriodForTable(value as string);
                 }}
                 initialValue="one_day"
                 buttonTextStyle={{ fontSize: FontSize.varyBigTitle }}
