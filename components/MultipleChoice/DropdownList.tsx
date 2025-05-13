@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useReducer, useEffect, useState } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
   FlatList,
   Modal,
   TouchableOpacity,
+  ScrollView,
   Dimensions,
 } from 'react-native';
 
@@ -25,6 +27,7 @@ const styles = StyleSheet.create({
   buttonStyle: {
     paddingVertical: 0,
     paddingHorizontal: 0,
+    // backgroundColor: 'red',
   },
   buttonText: {
     fontSize: 12,
@@ -52,16 +55,18 @@ const ListOfItem: React.FC<ListOfItemProps> = ({
         data={list}
         keyExtractor={(item) => item.value.toString()}
         initialScrollIndex={initialPosition}
-        getItemLayout={(_, index) => ({
+        getItemLayout={(data, index) => ({
           length: 80,
           offset: 80 * index,
           index,
         })}
-        renderItem={({ item }) => (
+        renderItem={(itemData) => (
           <MemoizedMultipleChoiceRow
-            title={item.title}
-            selected={item.selected}
-            onPress={() => onItemClicked(item.value, item.selected)}
+            title={itemData.item.title}
+            selected={itemData.item.selected}
+            onPress={() => {
+              onItemClicked(itemData.item.value, itemData.item.selected);
+            }}
           />
         )}
       />
@@ -93,11 +98,11 @@ export const SingleChoice: React.FC<Props> = ({
   id,
   items,
   initialValue,
-  buttonTextStyle = {},
-  buttonStyle = {},
+  buttonTextStyle,
+  buttonStyle,
   isModalActive,
 }) => {
-  const [selected, setSelected] = useState<string | number>(initialValue);
+  const [selected, setSelected] = useState(initialValue);
   const [activeModal, setActiveModal] = useState(false);
   const [initialPosition, setInitialPosition] = useState(0);
 
@@ -113,30 +118,31 @@ export const SingleChoice: React.FC<Props> = ({
   }, [initialValue]);
 
   useEffect(() => {
-    const listTemp: typeof listOfItemsToBeSelected = [];
-    const jsonTemp: typeof jsonOfItemsToBeSelected = {};
-
-    items.forEach((i) => {
-      listTemp.push({
+    const listOfItemsToBeSelectedTemp: typeof listOfItemsToBeSelected = [];
+    const jsonOfItemsToBeSelectedTemp: typeof jsonOfItemsToBeSelected = {};
+    for (const i of items) {
+      listOfItemsToBeSelectedTemp.push({
         title: i.label,
         value: i.value,
-        selected: String(i.value) === String(selected),
+        selected: Number(i.value) === Number(selected) ? true : false,
       });
-      jsonTemp[i.value] = i.label;
+      jsonOfItemsToBeSelectedTemp[i.value] = i.label;
+    }
+    setlistOfItemsToBeSelected(listOfItemsToBeSelectedTemp);
+    setjsonOfItemsToBeSelected(jsonOfItemsToBeSelectedTemp);
+    setInitialPosition(() => {
+      return Math.max(
+        items.findIndex((item) => {
+          return Number(item.value) === Number(selected);
+        }) - 3,
+        0,
+      );
     });
-
-    setlistOfItemsToBeSelected(listTemp);
-    setjsonOfItemsToBeSelected(jsonTemp);
-
-    const index = items.findIndex(
-      (item) => String(item.value) === String(selected),
-    );
-    setInitialPosition(Math.max(index - 3, 0));
   }, [items, selected]);
 
   useEffect(() => {
     onItemSelected(id, selected, true);
-  }, [selected, jsonOfItemsToBeSelected, onItemSelected, id]);
+  }, [selected, jsonOfItemsToBeSelected]);
 
   const selectToggleHandler = (value: string | number) => {
     setSelected(value);
@@ -144,26 +150,33 @@ export const SingleChoice: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (isModalActive) {
-      isModalActive(activeModal);
+    if (!!isModalActive) {
+      if (activeModal) {
+        isModalActive(true);
+      } else {
+        isModalActive(false);
+      }
     }
-  }, [activeModal, isModalActive]);
+  }, [activeModal]);
 
   return (
     <View>
       <MainButtonClear
         buttonStyle={{ ...styles.buttonStyle, ...buttonStyle }}
         buttonText={{ ...styles.buttonText, ...buttonTextStyle }}
-        onPress={() => setActiveModal((prev) => !prev)}
+        onPress={() => {
+          setActiveModal((previousValue) => !previousValue);
+        }}
       >
         {jsonOfItemsToBeSelected[selected]}
       </MainButtonClear>
-
       {activeModal && (
-        <Modal animationType="fade" transparent visible>
+        <Modal animationType="fade" transparent visible={true}>
           <TouchableOpacity
             style={styles.container}
-            onPress={() => setActiveModal(false)}
+            onPress={() => {
+              setActiveModal(false);
+            }}
           >
             <ListOfItem
               list={listOfItemsToBeSelected}
