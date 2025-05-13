@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, {
   useState,
   useEffect,
@@ -276,7 +277,7 @@ export const BloodPressureInputModal: React.FC<Props> = ({
       onPanResponderGrant: () => {
         pan.setOffset({
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, no-underscore-dangle
-          x: pan.x._value,
+          x: (pan.x as unknown as { _value: number })._value,
           y: 0,
         });
       },
@@ -531,9 +532,12 @@ export const BloodPressureInputModal: React.FC<Props> = ({
       Keyboard.dismiss();
       if (
         // eslint-disable-next-line no-underscore-dangle
-        pan.y._value > screenHeight * 0.5 * 0.5 ||
+        (pan.y as unknown as { _value: number })._value >
+          screenHeight * 0.5 * 0.5 ||
         // eslint-disable-next-line no-underscore-dangle
-        (pan.y._value > screenHeight * 0.5 * 0.1 && timeDifference < 100)
+        ((pan.y as unknown as { _value: number })._value >
+          screenHeight * 0.5 * 0.1 &&
+          timeDifference < 100)
       ) {
         Animated.timing(pan.y, {
           toValue: screenHeight,
