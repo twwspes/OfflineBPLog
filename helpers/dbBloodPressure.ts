@@ -254,7 +254,7 @@ export const fetchBloodPressureFromSQLBtwDateMilliForChart = async (
         pulse: number;
         cnt: number;
       };
-      if (!Object.prototype.hasOwnProperty.call(row, 'grp')) {
+      if (!Object.prototype.hasOwnProperty.call(output, row.grp)) {
         output[row.grp] = {
           systolic_var_sum: 0,
           diastolic_var_sum: 0,
