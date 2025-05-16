@@ -153,14 +153,11 @@ export const addBloodPressure = async (
   );
 
   // if someone tries to create / update a remark on a new / existing record.
-  if (!(remark === null || remark === '' || remark === undefined)) {
+  if (!(remark === null || remark === undefined)) {
     // console.log("saving remark for record ", new Date(timestamp));
     await replaceMessageFromSQL(timestampMilli, remark);
-  }
-
-  // if someone tries to remove a remark from an existing record.
-  if (withRemark && remark === '') {
-    await deleteMessageFromLocal(timestampMilli);
+  } else {
+    await replaceMessageFromSQL(timestampMilli, '');
   }
 
   if (!shouldStopInstantUpdate) {

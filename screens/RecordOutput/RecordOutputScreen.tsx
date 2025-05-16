@@ -145,6 +145,7 @@ export const RecordOutputScreen: React.FC = () => {
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ],
       });
+      // console.log('RecordOutputScreen result', result);
 
       if (!result.canceled && !!result.assets[0].uri) {
         const path = result.assets[0].uri;
@@ -169,6 +170,8 @@ export const RecordOutputScreen: React.FC = () => {
         // console.log("RecordOutputScreen json", importJsonArray);
 
         if (importJsonArray !== undefined) {
+          // console.log('RecordOutputScreen json is valid');
+
           let bloodPressuresReverseIndex = 0;
 
           const promises: Promise<unknown>[] = [];
@@ -213,7 +216,7 @@ export const RecordOutputScreen: React.FC = () => {
 
               promises.push(
                 bloodPressureActions.addBloodPressure(
-                  idToUse.toString(),
+                  new Date(idToUse).toISOString(),
                   item.Systolic,
                   item.Diastolic,
                   item.Pulse,
@@ -227,7 +230,7 @@ export const RecordOutputScreen: React.FC = () => {
             } else {
               promises.push(
                 bloodPressureActions.addBloodPressure(
-                  dateValue.toString(),
+                  new Date(dateValue).toISOString(),
                   item.Systolic,
                   item.Diastolic,
                   item.Pulse,
@@ -265,6 +268,7 @@ export const RecordOutputScreen: React.FC = () => {
         setIsLoading(false);
       }
     } catch (err) {
+      // console.log('RecordOutputScreen Import xml Error: ', err);
       Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
         { text: t('okay'), style: 'cancel' },
       ]);
