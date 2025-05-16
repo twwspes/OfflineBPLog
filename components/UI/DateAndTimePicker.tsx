@@ -64,7 +64,7 @@ export const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
     <DateTimePicker
       value={date}
       mode={mode}
-      display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+      display={Platform.OS === 'ios' ? 'default' : 'default'}
       onChange={handleChange}
       style={{ backgroundColor: 'white' }}
       themeVariant={Platform.OS === 'ios' ? 'light' : undefined}
@@ -80,7 +80,9 @@ export const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
               <Text>Done</Text>
             </TouchableOpacity>
           </View>
-          <View style={{ backgroundColor: 'white' }}>{dateTimePicker}</View>
+          <View style={{ backgroundColor: 'white', height: 120 }}>
+            {dateTimePicker}
+          </View>
         </TouchableOpacity>
       </Modal>
     );
