@@ -81,6 +81,8 @@ export const es = {
   sorry: 'Error',
   error_occur_relaunch_apps:
     'Vuelva a iniciar la aplicación y vuelva a intentarlo',
+  error_occur_importing: 'Ocurrió un error durante la importación: ',
+  importing: 'Importando',
   cancelar: 'Cancelar',
   congrat: '¡Felicitaciones!',
   all_logs_imported: 'Todos los registros se han importado correctamente',

@@ -80,6 +80,8 @@ export const en = {
   sorry: 'Sorry!',
   error_occur_relaunch_apps:
     'Error occurs. Please relaunch the app and try again',
+  error_occur_importing: 'An error occurred during import: ',
+  importing: 'Importing',
   cancel: 'Cancel',
   congrat: 'Congratulations!',
   all_logs_imported: 'All records have been imported successfully"',

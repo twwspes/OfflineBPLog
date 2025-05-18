@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
@@ -54,6 +55,7 @@ interface BloodPressure {
 }
 
 export const RecordOutputScreen: React.FC = () => {
+  const [isImporting, setIsImporting] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>();
   const { t, locale2 } = useLocalisation();
@@ -65,6 +67,9 @@ export const RecordOutputScreen: React.FC = () => {
     (state) => state.bloodPressure.update,
   );
   moment.locale(locale2);
+
+  const [importTotal, setImportTotal] = useState(0);
+  const [importCount, setImportCount] = useState(0);
 
   const localePrefixes = ['zh', 'fr', 'es'] as const;
 
@@ -137,6 +142,7 @@ export const RecordOutputScreen: React.FC = () => {
 
   const onImportButtonPress = useCallback(async () => {
     try {
+      setIsImporting(true);
       setIsLoading(true);
       const result = await DocumentPicker.getDocumentAsync({
         copyToCacheDirectory: true,
@@ -174,9 +180,12 @@ export const RecordOutputScreen: React.FC = () => {
 
           let bloodPressuresReverseIndex = 0;
 
-          const promises: Promise<unknown>[] = [];
+          setImportTotal(importJsonArray.length);
+          setImportCount(0);
 
-          importJsonArray.forEach((item) => {
+          for (let i = 0; i < importJsonArray.length; i += 1) {
+            const item = importJsonArray[i];
+
             const date = new Date(
               item.Year,
               item.Month - 1,
@@ -195,7 +204,11 @@ export const RecordOutputScreen: React.FC = () => {
               item.Pulse > 20 &&
               item.Pulse < 250;
 
-            if (!isValid || !isInRange) return;
+            if (!isValid || !isInRange) {
+              setImportCount((prev) => prev + 1);
+              // eslint-disable-next-line no-continue
+              continue;
+            }
 
             const remark = item.Remark?.toString().substring(0, 300) || '';
             const dateValue = date.valueOf();
@@ -207,15 +220,14 @@ export const RecordOutputScreen: React.FC = () => {
                 return dateValue >= bpTimestamp;
               });
 
-            if (matchedIndex !== -1) {
-              const index = bloodPressuresReverseIndex + matchedIndex;
-              const bp = bloodPressuresReverse[index];
-              const bpTimestamp = Math.floor(Number(bp.id) / 1000) * 1000;
+            try {
+              if (matchedIndex !== -1) {
+                const index = bloodPressuresReverseIndex + matchedIndex;
+                const bp = bloodPressuresReverse[index];
+                const bpTimestamp = Math.floor(Number(bp.id) / 1000) * 1000;
+                const idToUse = dateValue === bpTimestamp ? bp.id : dateValue;
 
-              const idToUse = dateValue === bpTimestamp ? bp.id : dateValue;
-
-              promises.push(
-                bloodPressureActions.addBloodPressure(
+                await bloodPressureActions.addBloodPressure(
                   new Date(idToUse).toISOString(),
                   item.Systolic,
                   item.Diastolic,
@@ -223,13 +235,11 @@ export const RecordOutputScreen: React.FC = () => {
                   remark !== '',
                   true,
                   remark,
-                ),
-              );
+                );
 
-              bloodPressuresReverseIndex = index + 1;
-            } else {
-              promises.push(
-                bloodPressureActions.addBloodPressure(
+                bloodPressuresReverseIndex = index + 1;
+              } else {
+                await bloodPressureActions.addBloodPressure(
                   new Date(dateValue).toISOString(),
                   item.Systolic,
                   item.Diastolic,
@@ -237,34 +247,37 @@ export const RecordOutputScreen: React.FC = () => {
                   remark !== '',
                   true,
                   remark,
-                ),
-              );
+                );
+              }
+            } catch (e: unknown) {
+              if (e instanceof Error) {
+                Alert.alert(
+                  t('sorry'),
+                  `${t('error_occur_importing')}${i + 1}, ${e.message}`,
+                  [{ text: t('okay'), style: 'cancel' }],
+                );
+              } else {
+                Alert.alert(
+                  t('sorry'),
+                  `${t('error_occur_importing')}${i + 1}, Unknown`,
+                  [{ text: t('okay'), style: 'cancel' }],
+                );
+              }
             }
-          });
 
-          // wait for all the promises in the promises array to resolve
-          Promise.all(promises)
-            .then(() => {
-              Alert.alert(t('congrat'), t('all_logs_imported'), [
-                { text: t('okay'), style: 'cancel' },
-              ]);
-
-              bloodPressureActions.forceUpdateBPState();
-              setIsLoading(false);
-            })
-            .catch(() => {
-              Alert.alert(t('error_occur'), t('error_occur_relaunch_apps'), [
-                { text: t('okay'), style: 'cancel' },
-              ]);
-              setIsLoading(false);
-            });
+            setImportCount((prev) => prev + 1);
+          }
+          setIsImporting(false);
+          setIsLoading(false);
         } else {
           Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
             { text: t('okay'), style: 'cancel' },
           ]);
+          setIsImporting(false);
           setIsLoading(false);
         }
       } else {
+        setIsImporting(false);
         setIsLoading(false);
       }
     } catch (err) {
@@ -272,6 +285,7 @@ export const RecordOutputScreen: React.FC = () => {
       Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
         { text: t('okay'), style: 'cancel' },
       ]);
+      setIsImporting(false);
       setIsLoading(false);
     }
   }, [bloodPressuresReverse, t]);
@@ -430,9 +444,19 @@ export const RecordOutputScreen: React.FC = () => {
       onPress={Keyboard.dismiss}
       activeOpacity={1}
     >
-      {isLoading ? (
+      {isLoading && isImporting && (
+        <View style={{ alignItems: 'center', marginBottom: 10 }}>
+          <Text>
+            {t('importing')} {importCount} / {importTotal}
+          </Text>
+        </View>
+      )}
+
+      {isLoading && !isImporting && (
         <ActivityIndicator size="large" color={Colors.primary} />
-      ) : (
+      )}
+
+      {!isLoading && (
         <>
           <View style={styles.buttonContainer}>
             <MainButton

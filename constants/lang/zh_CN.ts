@@ -80,6 +80,8 @@ export const zh_CN = {
   delete_all_logs: '删除所有日志',
   sorry: '抱歉！ ',
   error_occur_relaunch_apps: '发生错误。请重新启动应用程序并重试',
+  error_occur_importing: '导入过程中发生错误: ',
+  importing: '正在导入',
   cancel: '取消',
   congrat: '恭喜！ ',
   all_logs_imported: '所有记录已成功导入',

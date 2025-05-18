@@ -82,6 +82,8 @@ export const fr = {
   delete_all_logs: 'Supprimer toutes les données',
   sorry: 'Erreur !',
   error_occur_relaunch_apps: "Veuillez relancer l'application et réessayer",
+  error_occur_importing: 'Une erreur s’est produite lors de l’importation: ',
+  importing: 'Importation',
   cancel: 'Annuler',
   congrat: 'Félicitation!',
   all_logs_imported: 'Tous les données ont été importés avec succès"',
