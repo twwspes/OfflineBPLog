@@ -14,11 +14,11 @@
     },
     "ios": {
       "bundleIdentifier": "com.spesnaiad.bplog",
-      "buildNumber": "18",
+      "buildNumber": "19",
       "supportsTablet": true,
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
-        "ITSAppUsesNonExemptEncryption": true
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "updates": {
@@ -42,7 +42,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.spesnaiad.bplog",
-      "versionCode": 18,
+      "versionCode": 19,
       "permissions": []
     },
     "web": {
