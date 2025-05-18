@@ -70,8 +70,6 @@ export const fetchBloodPressure = async (
       // console.log(messageJson);
       if (index !== -1) {
         loadedBloodPressures[index].remark = messageJson.remark;
-      } else {
-        loadedBloodPressures[index].remark = undefined;
       }
     });
   }
