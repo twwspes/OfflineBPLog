@@ -620,8 +620,9 @@ export const DashboardScreen: React.FC<Props> = () => {
   const renderSystolicChart = useMemo(() => {
     if (!shouldRenderSystolicChart) return null;
 
-    const minY = bloodPressuresAvgMaxMin[0].min_systolic_blood_pressure - 10;
-    const maxY = bloodPressuresAvgMaxMin[0].max_systolic_blood_pressure + 10;
+    const maxSysY = bloodPressuresAvgMaxMin[0].max_systolic_blood_pressure + 10;
+    const minDiaY =
+      bloodPressuresAvgMaxMin[0].min_diastolic_blood_pressure - 10;
 
     const renderAxis = () => {
       if (
@@ -676,8 +677,8 @@ export const DashboardScreen: React.FC<Props> = () => {
         <VictoryChart
           theme={VictoryTheme.material}
           scale={{ x: 'time' }}
-          maxDomain={{ y: maxY }}
-          minDomain={{ y: minY }}
+          maxDomain={{ y: maxSysY }}
+          minDomain={{ y: minDiaY }}
           domainPadding={10}
         >
           {renderAxis()}
@@ -711,19 +712,34 @@ export const DashboardScreen: React.FC<Props> = () => {
             />
           )}
           {!!bloodPressuresSystolicForChart[1] && (
-            <>
-              <VictoryLine
-                style={{
-                  data: { stroke: 'red' },
-                  parent: { border: '1px solid #ccc' },
-                }}
-                data={bloodPressuresSystolicForChart}
-              />
-              <VictoryScatter
-                data={bloodPressuresSystolicForChart}
-                style={{ data: { fill: 'red' } }}
-              />
-            </>
+            <VictoryLine
+              style={{
+                data: { stroke: 'red' },
+                parent: { border: '1px solid #ccc' },
+              }}
+              data={bloodPressuresSystolicForChart}
+            />
+          )}
+          {!!bloodPressuresSystolicForChart[1] && (
+            <VictoryScatter
+              data={bloodPressuresSystolicForChart}
+              style={{ data: { fill: 'red' } }}
+            />
+          )}
+          {!!bloodPressuresDiastolicForChart[1] && !hasDiastolicMinMax && (
+            <VictoryLine
+              style={{
+                data: { stroke: 'blue' },
+                parent: { border: '1px solid #ccc' },
+              }}
+              data={bloodPressuresDiastolicForChart}
+            />
+          )}
+          {!!bloodPressuresDiastolicForChart[1] && !hasDiastolicMinMax && (
+            <VictoryScatter
+              data={bloodPressuresDiastolicForChart}
+              style={{ data: { fill: 'blue' } }}
+            />
           )}
         </VictoryChart>
 
@@ -770,19 +786,19 @@ export const DashboardScreen: React.FC<Props> = () => {
               />
             )}
             {!!bloodPressuresDiastolicForChart[1] && (
-              <>
-                <VictoryLine
-                  style={{
-                    data: { stroke: 'blue' },
-                    parent: { border: '1px solid #ccc' },
-                  }}
-                  data={bloodPressuresDiastolicForChart}
-                />
-                <VictoryScatter
-                  data={bloodPressuresDiastolicForChart}
-                  style={{ data: { fill: 'blue' } }}
-                />
-              </>
+              <VictoryLine
+                style={{
+                  data: { stroke: 'blue' },
+                  parent: { border: '1px solid #ccc' },
+                }}
+                data={bloodPressuresDiastolicForChart}
+              />
+            )}
+            {!!bloodPressuresDiastolicForChart[1] && (
+              <VictoryScatter
+                data={bloodPressuresDiastolicForChart}
+                style={{ data: { fill: 'blue' } }}
+              />
             )}
           </VictoryChart>
         )}
