@@ -693,16 +693,29 @@ export const DashboardScreen: React.FC<Props> = () => {
               border: { stroke: 'black' },
               labels: { fontSize: FontSize.veryvarySmallContent },
             }}
-            data={[
-              {
-                name: `${t('systolic_blood_pressure')} (mmHg)`,
-                symbol: { fill: 'red' },
-              },
-              {
-                name: t('min_q1_mean_q3_max'),
-                symbol: { fill: 'grey' },
-              },
-            ]}
+            data={
+              bloodPressuresSystolicMinMaxForChart[1]
+                ? [
+                    {
+                      name: `${t('systolic_blood_pressure')} (mmHg)`,
+                      symbol: { fill: 'red' },
+                    },
+                    {
+                      name: t('min_q1_mean_q3_max'),
+                      symbol: { fill: 'grey' },
+                    },
+                  ]
+                : [
+                    {
+                      name: `${t('systolic_blood_pressure')} (mmHg)`,
+                      symbol: { fill: 'red' },
+                    },
+                    {
+                      name: `${t('diastolic_blood_pressure')} (mmHg)`,
+                      symbol: { fill: 'blue' },
+                    },
+                  ]
+            }
           />
           {!!bloodPressuresSystolicMinMaxForChart[1] && (
             <VictoryBoxPlot
