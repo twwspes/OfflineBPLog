@@ -13,6 +13,7 @@ import moment from 'moment/min/moment-with-locales';
 import { AntDesign } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
 import { BloodPressureStackParamList } from 'types/navigation';
+import { bloodPressureColorStyle } from 'constants/TrafficLightStyles';
 
 import * as bloodPressureActions from '../../store/actions/bloodPressure';
 import { MainButtonOutlineImage } from '../../components/UI/MainButtonOutlineImage';
@@ -210,7 +211,15 @@ const FlatListItem: React.FC<FlatListItemProps> = ({
       <View style={styles.dataContainer}>
         <View style={styles.digitContainer}>
           {itemData.item.systolic_blood_pressure !== undefined ? (
-            <Text style={{ ...styles.digit }}>
+            <Text
+              style={{
+                ...styles.digit,
+                ...bloodPressureColorStyle(
+                  itemData.item.systolic_blood_pressure,
+                  itemData.item.diastolic_blood_pressure,
+                ).customFontStyle,
+              }}
+            >
               {itemData.item.systolic_blood_pressure}
             </Text>
           ) : (
@@ -219,7 +228,15 @@ const FlatListItem: React.FC<FlatListItemProps> = ({
         </View>
         <View style={styles.digitContainer}>
           {itemData.item.diastolic_blood_pressure !== undefined ? (
-            <Text style={{ ...styles.digit }}>
+            <Text
+              style={{
+                ...styles.digit,
+                ...bloodPressureColorStyle(
+                  itemData.item.systolic_blood_pressure,
+                  itemData.item.diastolic_blood_pressure,
+                ).customFontStyle,
+              }}
+            >
               {itemData.item.diastolic_blood_pressure}
             </Text>
           ) : (
