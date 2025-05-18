@@ -1,19 +1,25 @@
 {
   "expo": {
-    "name": "BP Log",
+    "name": "BP-Log",
     "slug": "BP-Log",
-    "privacy": "unlisted",
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "version": "1.7.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#EBEBD3"
+    },
+    "ios": {
+      "bundleIdentifier": "com.spesnaiad.bplog",
+      "buildNumber": "20",
+      "supportsTablet": true,
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true,
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "updates": {
       "fallbackToCacheTimeout": 2000,
@@ -22,14 +28,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "bundleIdentifier": "com.spesnaiad.bplog",
-      "buildNumber": "18",
-      "supportsTablet": true,
-      "infoPlist": {
-        "CFBundleAllowMixedLocalizations": true
-      }
-    },
     "locales": {
       "zh-Hant": "./constants/lang/zhHK.json",
       "zh-Hans": "./constants/lang/zhCN.json",
@@ -40,11 +38,15 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#ffffff"
       },
+      "edgeToEdgeEnabled": true,
       "package": "com.spesnaiad.bplog",
-      "versionCode": 18,
+      "versionCode": 20,
       "permissions": []
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-localization"
