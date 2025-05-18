@@ -723,7 +723,7 @@ export const BloodPressureInputModal: React.FC<Props> = ({
             </MainButtonOutline>
             {showDatePicker && (
               <DateAndTimePicker
-                mode="datetime"
+                mode="date"
                 date={
                   formState.inputValues.date
                     ? parseISOString(formState.inputValues.date)

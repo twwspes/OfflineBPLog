@@ -355,6 +355,7 @@ export const BloodPressurePeriodModal: React.FC<Props> = ({ navigation }) => {
             </MainButtonOutline>
             {showDatePicker && (
               <DateAndTimePicker
+                mode="date"
                 date={
                   formState.inputValues.fromdate
                     ? parseISOString(formState.inputValues.fromdate)
@@ -362,14 +363,26 @@ export const BloodPressurePeriodModal: React.FC<Props> = ({ navigation }) => {
                 }
                 onClose={(date) => {
                   if (date && Platform.OS !== 'ios') {
+                    const startOfDay = new Date(date);
+                    startOfDay.setHours(0, 0, 0, 0);
                     setShowDatePicker(false);
-                    inputChangeHandler('fromdate', date.toISOString(), true);
+                    inputChangeHandler(
+                      'fromdate',
+                      startOfDay.toISOString(),
+                      true,
+                    );
                   } else {
                     setShowDatePicker(false);
                   }
                 }}
                 onChange={(d) => {
-                  inputChangeHandler('fromdate', d.toISOString(), true);
+                  const startOfDay = new Date(d);
+                  startOfDay.setHours(0, 0, 0, 0);
+                  inputChangeHandler(
+                    'fromdate',
+                    startOfDay.toISOString(),
+                    true,
+                  );
                 }}
               />
             )}
@@ -400,6 +413,7 @@ export const BloodPressurePeriodModal: React.FC<Props> = ({ navigation }) => {
             </MainButtonOutline>
             {showTimePicker && (
               <DateAndTimePicker
+                mode="date"
                 date={
                   formState.inputValues.todate
                     ? parseISOString(formState.inputValues.todate)
@@ -407,14 +421,18 @@ export const BloodPressurePeriodModal: React.FC<Props> = ({ navigation }) => {
                 }
                 onClose={(date) => {
                   if (date && Platform.OS !== 'ios') {
+                    const endOfDay = new Date(date);
+                    endOfDay.setHours(23, 59, 59, 999);
                     setShowTimePicker(false);
-                    inputChangeHandler('todate', date.toISOString(), true);
+                    inputChangeHandler('todate', endOfDay.toISOString(), true);
                   } else {
                     setShowTimePicker(false);
                   }
                 }}
                 onChange={(d) => {
-                  inputChangeHandler('todate', d.toISOString(), true);
+                  const endOfDay = new Date(d);
+                  endOfDay.setHours(23, 59, 59, 999);
+                  inputChangeHandler('todate', endOfDay.toISOString(), true);
                 }}
               />
             )}
