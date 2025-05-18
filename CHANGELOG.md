@@ -1,3 +1,5 @@
+v1.8.0 (Android version code 18) - prod-1.7 (expo 51), not published not released, adapting typescript
+
 v1.7.0 (Android version code 18) - prod-1.7 (expo 51), published and released, new expo-sqlite module applied, Android API 23+
 
 v1.6.0 (Android version code 17) - prod-1.6 (expo 50), published and released, java zulu-17 applied, Android API 23+
