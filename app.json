@@ -14,7 +14,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.spesnaiad.bplog",
-      "buildNumber": "19",
+      "buildNumber": "20",
       "supportsTablet": true,
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
@@ -42,7 +42,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.spesnaiad.bplog",
-      "versionCode": 19,
+      "versionCode": 20,
       "permissions": []
     },
     "web": {
