@@ -288,6 +288,7 @@ export const RecordOutputScreen: React.FC = () => {
       setIsImporting(false);
       setIsLoading(false);
     }
+    bloodPressureActions.forceUpdateBPState();
   }, [bloodPressuresReverse, t]);
 
   const onExportButtonPress = useCallback(async () => {
