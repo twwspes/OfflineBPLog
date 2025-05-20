@@ -2,7 +2,7 @@
   "expo": {
     "name": "BP-Log",
     "slug": "BP-Log",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -14,7 +14,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.spesnaiad.bplog",
-      "buildNumber": "20",
+      "buildNumber": "21",
       "supportsTablet": true,
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
@@ -42,7 +42,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.spesnaiad.bplog",
-      "versionCode": 20,
+      "versionCode": 21,
       "permissions": []
     },
     "web": {

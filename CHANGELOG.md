@@ -1,4 +1,6 @@
-v2.0.0 (version code 19-20) - prod-2.0 (expo 53), not published not released, Expo 53, React 19
+v2.0.1 (version code 21) - prod-2.0 (expo 53), not published not released, citation of categorisation of hypertension
+
+v2.0.0 (version code 19-20) - prod-2.0 (expo 53), published and released, Expo 53, React 19
 
 v1.8.0 (Android version code 18) - prod-1.8 (expo 51), not published not released, adapting typescript
 

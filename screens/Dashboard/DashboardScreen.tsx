@@ -1546,6 +1546,12 @@ export const DashboardScreen: React.FC<Props> = () => {
 
         {chartsAndTableSection}
 
+        <Text>
+          LeWine, H. E. (2024, March 26). Reading the new blood pressure
+          guidelines. Harvard Health Publishing.
+          https://www.health.harvard.edu/heart-health/reading-the-new-blood-pressure-guidelines
+        </Text>
+
         <View style={styles.footer} />
       </ScrollView>
     </SafeAreaView>
