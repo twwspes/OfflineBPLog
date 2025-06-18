@@ -3,10 +3,10 @@ import {
   TouchableOpacity,
   View,
   Platform,
-  Text,
   StyleSheet,
   Modal,
 } from 'react-native';
+import { Text } from '@/components/UI/Text';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';

@@ -1,7 +1,8 @@
 // MultipleChoiceRow.tsx
 
 import React from 'react';
-import { Text, StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+import { Text } from '@/components/UI/Text';
 import { MainButtonClearImage } from '../UI/MainButtonClearImage';
 import { FontSize } from '../../constants/FontSize';
 import { Colors } from '../../constants/Colors';

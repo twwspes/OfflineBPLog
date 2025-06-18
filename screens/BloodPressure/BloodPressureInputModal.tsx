@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import {
   View,
-  Text,
   Platform,
   KeyboardAvoidingView,
   Keyboard,
@@ -22,6 +21,7 @@ import {
   Pressable,
   PanResponderInstance,
 } from 'react-native';
+import { Text } from '@/components/UI/Text';
 import moment from 'moment/min/moment-with-locales';
 import { StackScreenProps } from '@react-navigation/stack';
 

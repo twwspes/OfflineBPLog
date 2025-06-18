@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Linking,
   ActivityIndicator,
@@ -10,6 +9,7 @@ import {
   TouchableOpacity,
   Keyboard,
 } from 'react-native';
+import { Text } from '@/components/UI/Text';
 import moment from 'moment/min/moment-with-locales';
 import * as DocumentPicker from 'expo-document-picker';
 import * as XLSX from 'xlsx';

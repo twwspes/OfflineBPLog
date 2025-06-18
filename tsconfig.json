@@ -2,7 +2,7 @@
   "extends": "expo/tsconfig.base",
   "baseUrl": ".",
   "paths": {
-    "@/*": ["src/*"]
+    "@/*": ["./*"]
   },
   "compilerOptions": {
     "allowJs": true,
@@ -18,6 +18,9 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext", "ScriptHost"],
     "module": "ESNext",
     "noEmit": true,
+    "paths": {
+      "@/*": ["./*"]
+    },
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
