@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   Platform,
   TouchableOpacity,
@@ -11,6 +10,7 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
+import { Text } from '@/components/UI/Text';
 
 import { Colors } from '../../constants/Colors';
 import { FontSize } from '../../constants/FontSize';

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
-  Text,
   ActivityIndicator,
   Alert,
   TouchableOpacity,
@@ -9,6 +8,7 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
+import { Text } from '@/components/UI/Text';
 import moment from 'moment/min/moment-with-locales';
 import { AntDesign } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';

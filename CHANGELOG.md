@@ -1,3 +1,5 @@
+v2.0.2 (version code 21) - prod-2.0 (expo 53), not published and not released, overriding text and inputtext auto scaling
+
 v2.0.1 (version code 21) - prod-2.0 (expo 53), published and released, citation of categorisation of hypertension
 
 v2.0.0 (version code 19-20) - prod-2.0 (expo 53), published and released, Expo 53, React 19

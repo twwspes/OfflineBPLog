@@ -1,13 +1,13 @@
 import React, { useReducer, useEffect, useCallback } from 'react';
 import {
   View,
-  Text,
-  TextInput,
   StyleSheet,
   TextStyle,
   Platform,
   TextInputProps,
 } from 'react-native';
+import { Text } from '@/components/UI/Text';
+import { TextInput } from '@/components/UI/TextInput';
 
 import { Colors } from '../../constants/Colors';
 import { FontSize } from '../../constants/FontSize';
