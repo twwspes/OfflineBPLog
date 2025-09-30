@@ -1,3 +1,9 @@
+v2.2.2 (version code 25) - prod-2.2 (expo 53), not published and not released, aligning DateAndTimePicker centre on iOS device
+
+v2.2.1 (version code 24) - prod-2.2 (expo 53), not published and not released, bumping up publish channel
+
+v2.2.0 (version code 23) - prod-2.1 (expo 53), not published and not released, increasing limit of records shown on dashboard to 20000
+
 v2.1.0 (version code 22) - prod-2.1 (expo 53), published and released, overriding text and inputtext auto scaling
 
 v2.0.2 (version code 21) - prod-2.0 (expo 53), not published and not released, overriding text and inputtext auto scaling

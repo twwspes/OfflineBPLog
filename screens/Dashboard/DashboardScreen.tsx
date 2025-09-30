@@ -300,6 +300,7 @@ const periodToValue: Record<string, number | null> = {
   three_months: 3,
   six_months: 6,
   one_year: 12,
+  all: 12,
 };
 
 type Props = BottomTabScreenProps<BottomTabsParamList, 'Dashboard'>;
@@ -401,7 +402,7 @@ export const DashboardScreen: React.FC<Props> = () => {
       try {
         setBloodPressures(
           await bloodPressureActions.fetchBloodPressureForChart(
-            5000,
+            20000,
             0,
             sinceDateISODateString,
             nowISODateString,

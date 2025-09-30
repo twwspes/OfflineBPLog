@@ -80,7 +80,15 @@ export const DateAndTimePicker: React.FC<DateAndTimePickerProps> = ({
               <Text>Done</Text>
             </TouchableOpacity>
           </View>
-          <View style={{ backgroundColor: 'white' }}>{dateTimePicker}</View>
+          <View
+            style={{
+              backgroundColor: 'white',
+              width: '100%',
+              alignItems: 'center',
+            }}
+          >
+            {dateTimePicker}
+          </View>
         </TouchableOpacity>
       </Modal>
     );
