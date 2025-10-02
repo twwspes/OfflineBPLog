@@ -4,18 +4,13 @@ module.exports = {
     es2021: true,
   },
   extends: [
-    'eslint:recommended',
-    'airbnb',
-    'airbnb/hooks',
-    'plugin:import/recommended',
-    'plugin:jsx-a11y/recommended',
+    'universe/native',
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
-    'plugin:react-hooks/recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking',
-    'airbnb-typescript',
+    'plugin:import/recommended',
+    'plugin:jsx-a11y/recommended',
+    'plugin:@typescript-eslint/recommended-type-checked',
+    'plugin:@typescript-eslint/stylistic-type-checked',
     'plugin:prettier/recommended',
   ],
   overrides: [],
@@ -70,6 +65,8 @@ module.exports = {
     // These don't work very well with TS.
     'react/prop-types': 'off',
     'react/require-default-props': 'off',
+
+    'react-hooks/exhaustive-deps': 'warn',
   },
   settings: {
     'import/resolver': {

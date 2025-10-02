@@ -280,7 +280,7 @@ export const RecordOutputScreen: React.FC = () => {
         setIsImporting(false);
         setIsLoading(false);
       }
-    } catch (err) {
+    } catch {
       // console.log('RecordOutputScreen Import xml Error: ', err);
       Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
         { text: t('okay'), style: 'cancel' },

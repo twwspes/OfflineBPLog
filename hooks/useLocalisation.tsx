@@ -18,7 +18,7 @@ export type LanguageType = 'zh_CN' | 'zh_HK' | 'fr' | 'es' | 'en';
 export type LanguageType2 = 'zh-cn' | 'zh-hk' | 'fr' | 'es' | 'en';
 
 interface LocalizationContextType {
-  t: (scope: i18n.Scope, options?: i18n.TranslateOptions | undefined) => string;
+  t: (scope: i18n.Scope, options?: i18n.TranslateOptions) => string;
   locale: LanguageType;
   locale2: LanguageType2;
   setLocale: React.Dispatch<React.SetStateAction<LanguageType>>;
@@ -89,7 +89,7 @@ export const LocalisationProvider: React.FC<ProviderProps> = ({ children }) => {
   }, [convertType1ToType2, locale]);
 
   const t = useCallback(
-    (scope: i18n.Scope, options?: i18n.TranslateOptions | undefined) =>
+    (scope: i18n.Scope, options?: i18n.TranslateOptions) =>
       i18n.t(scope, { locale, ...options }),
     [locale],
   );
