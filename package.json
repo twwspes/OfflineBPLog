@@ -20,6 +20,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "@types/i18n-js": "^3.8.9",
     "expo": "~53.0.9",
+    "expo-asset": "~11.1.7",
     "expo-document-picker": "~13.1.5",
     "expo-file-system": "~18.1.10",
     "expo-localization": "~16.1.5",
@@ -65,6 +66,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "globals": "^15.15.0",
+    "jiti": "^2.6.1",
     "prettier": "^3.6.2",
     "typescript": "~5.8.3"
   },
