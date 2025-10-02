@@ -140,7 +140,7 @@ export const SingleChoice: React.FC<Props> = ({
 
   useEffect(() => {
     onItemSelected(id, selected, true);
-  }, [selected, jsonOfItemsToBeSelected]);
+  }, [selected, jsonOfItemsToBeSelected, onItemSelected, id]);
 
   const selectToggleHandler = (value: string | number) => {
     setSelected(value);

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabaseAsync('bloodpressure.db');

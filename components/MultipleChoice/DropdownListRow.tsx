@@ -1,6 +1,6 @@
 // MultipleChoiceRow.tsx
 
-import React from 'react';
+import React, { memo } from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
 import { Text } from '@/components/UI/Text';
 import { MainButtonClearImage } from '../UI/MainButtonClearImage';
@@ -57,7 +57,7 @@ export const MultipleChoiceRow: React.FC<MultipleChoiceRowProps> = ({
 };
 
 // Export memoized version
-export const MemoizedMultipleChoiceRow = React.memo(
+export const MemoizedMultipleChoiceRow = memo(
   MultipleChoiceRow,
   (prev, next) => {
     return prev.title === next.title;

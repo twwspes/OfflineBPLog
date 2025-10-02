@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, {
   useState,
   useEffect,
@@ -147,7 +146,6 @@ export const BloodPressurePeriodModal: React.FC<Props> = ({ navigation }) => {
         return false;
       },
       onPanResponderGrant: () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, no-underscore-dangle
         pan.setOffset({
           x: (pan.x as unknown as { _value: number })._value,
           y: 0,
@@ -263,7 +261,6 @@ export const BloodPressurePeriodModal: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     if (onRelease) {
-      // eslint-disable-next-line no-underscore-dangle
       if (
         (pan.y as unknown as { _value: number })._value >
         screenHeight * 0.5 * 0.3

@@ -1,6 +1,14 @@
-import React, { useCallback, useState } from 'react';
+/* eslint-disable import/no-named-as-default-member */
+import React, {
+  useCallback,
+  useState,
+  createContext,
+  useEffect,
+  useMemo,
+  useContext,
+} from 'react';
 // import * as Localization from 'expo-localization'; // or whatever library you want
-import i18n from 'i18n-js'; // or whatever library you want
+import i18n, { t as i18nt } from 'i18n-js'; // or whatever library you want
 import * as Localization from 'expo-localization'; // or whatever library you want
 
 import { en } from '../constants/lang/en';
@@ -24,9 +32,7 @@ interface LocalizationContextType {
   setLocale: React.Dispatch<React.SetStateAction<LanguageType>>;
 }
 
-const LocalizationContext = React.createContext<LocalizationContextType | null>(
-  null,
-);
+const LocalizationContext = createContext<LocalizationContextType | null>(null);
 
 i18n.fallbacks = true;
 i18n.translations = { zh_HK, en, zh_CN, fr, es };
@@ -84,17 +90,17 @@ export const LocalisationProvider: React.FC<ProviderProps> = ({ children }) => {
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setLocale2(convertType1ToType2(locale));
   }, [convertType1ToType2, locale]);
 
   const t = useCallback(
     (scope: i18n.Scope, options?: i18n.TranslateOptions) =>
-      i18n.t(scope, { locale, ...options }),
+      i18nt(scope, { locale, ...options }),
     [locale],
   );
 
-  const localizationContext = React.useMemo(
+  const localizationContext = useMemo(
     () => ({
       t,
       locale,
@@ -112,7 +118,7 @@ export const LocalisationProvider: React.FC<ProviderProps> = ({ children }) => {
 };
 
 export const useLocalisation = () => {
-  const value = React.useContext(LocalizationContext);
+  const value = useContext(LocalizationContext);
 
   if (value === null) {
     throw new Error(

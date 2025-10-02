@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
@@ -206,7 +205,6 @@ export const RecordOutputScreen: React.FC = () => {
 
             if (!isValid || !isInRange) {
               setImportCount((prev) => prev + 1);
-              // eslint-disable-next-line no-continue
               continue;
             }
 
