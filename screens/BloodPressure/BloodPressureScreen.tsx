@@ -403,7 +403,7 @@ export const BloodPressureScreen: React.FC<Props> = ({ navigation, route }) => {
       <View style={styles.descriptionContainer}>
         <Text style={styles.LowerBtnsText}>
           {t('press')}{' '}
-          <AntDesign name="pluscircle" size={24} color={Colors.focus} />{' '}
+          <AntDesign name="plus-circle" size={24} color={Colors.focus} />{' '}
           {t('health_parameters_description')}
         </Text>
       </View>
