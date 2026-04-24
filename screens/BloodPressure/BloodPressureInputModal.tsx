@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, {
   useState,
   useEffect,
@@ -276,7 +275,6 @@ export const BloodPressureInputModal: React.FC<Props> = ({
       },
       onPanResponderGrant: () => {
         pan.setOffset({
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, no-underscore-dangle
           x: (pan.x as unknown as { _value: number })._value,
           y: 0,
         });
@@ -341,7 +339,6 @@ export const BloodPressureInputModal: React.FC<Props> = ({
         pulse: 90,
       }; // for firebase
       try {
-        // eslint-disable-next-line no-await-in-loop
         await replaceBloodPressureFromSQL(
           new Date(updatedbloodPressureData.timestamp).valueOf(),
           updatedbloodPressureData.systolic,
@@ -531,10 +528,8 @@ export const BloodPressureInputModal: React.FC<Props> = ({
       // console.log(screenHeight);
       Keyboard.dismiss();
       if (
-        // eslint-disable-next-line no-underscore-dangle
         (pan.y as unknown as { _value: number })._value >
           screenHeight * 0.5 * 0.5 ||
-        // eslint-disable-next-line no-underscore-dangle
         ((pan.y as unknown as { _value: number })._value >
           screenHeight * 0.5 * 0.1 &&
           timeDifference < 100)

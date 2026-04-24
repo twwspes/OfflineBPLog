@@ -1,12 +1,10 @@
-import React, { useReducer, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   FlatList,
   Modal,
   TouchableOpacity,
-  ScrollView,
   Dimensions,
 } from 'react-native';
 
@@ -142,7 +140,7 @@ export const SingleChoice: React.FC<Props> = ({
 
   useEffect(() => {
     onItemSelected(id, selected, true);
-  }, [selected, jsonOfItemsToBeSelected]);
+  }, [selected, jsonOfItemsToBeSelected, onItemSelected, id]);
 
   const selectToggleHandler = (value: string | number) => {
     setSelected(value);
@@ -150,14 +148,14 @@ export const SingleChoice: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (!!isModalActive) {
+    if (isModalActive) {
       if (activeModal) {
         isModalActive(true);
       } else {
         isModalActive(false);
       }
     }
-  }, [activeModal]);
+  }, [activeModal, isModalActive]);
 
   return (
     <View>

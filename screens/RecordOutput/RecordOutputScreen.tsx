@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
@@ -206,7 +205,6 @@ export const RecordOutputScreen: React.FC = () => {
 
             if (!isValid || !isInRange) {
               setImportCount((prev) => prev + 1);
-              // eslint-disable-next-line no-continue
               continue;
             }
 
@@ -280,7 +278,7 @@ export const RecordOutputScreen: React.FC = () => {
         setIsImporting(false);
         setIsLoading(false);
       }
-    } catch (err) {
+    } catch {
       // console.log('RecordOutputScreen Import xml Error: ', err);
       Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
         { text: t('okay'), style: 'cancel' },

@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const zh_CN = {
   appName: '血压记录',
   // AppNavigator
