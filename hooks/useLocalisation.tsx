@@ -7,6 +7,7 @@ import React, {
   useMemo,
   useContext,
 } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import * as Localization from 'expo-localization'; // or whatever library you want
 import i18n, { t as i18nt } from 'i18n-js'; // or whatever library you want
 import * as Localization from 'expo-localization'; // or whatever library you want
@@ -37,23 +38,39 @@ const LocalizationContext = createContext<LocalizationContextType | null>(null);
 i18n.fallbacks = true;
 i18n.translations = { zh_HK, en, zh_CN, fr, es };
 
+const localeStorageKey = 'BP_LOG_LOCALE';
+
+const isLanguageType = (value: string | null): value is LanguageType => {
+  return (
+    value === 'zh_CN' ||
+    value === 'zh_HK' ||
+    value === 'fr' ||
+    value === 'es' ||
+    value === 'en'
+  );
+};
+
+const getDeviceLocale = (): LanguageType => {
+  const languageTag = Localization.getLocales()[0].languageTag;
+
+  if (languageTag.includes('CN')) {
+    return 'zh_CN';
+  }
+  if (languageTag.includes('zh')) {
+    return 'zh_HK';
+  }
+  if (languageTag.includes('fr')) {
+    return 'fr';
+  }
+  if (languageTag.includes('es')) {
+    return 'es';
+  }
+  return 'en';
+};
+
 export const LocalisationProvider: React.FC<ProviderProps> = ({ children }) => {
-  const [locale, setLocale] = useState<LanguageType>(() => {
-    // console.log("Localization.locale value");
-    if (Localization.getLocales()[0].languageTag.includes('CN')) {
-      return 'zh_CN';
-    }
-    if (Localization.getLocales()[0].languageTag.includes('zh')) {
-      return 'zh_HK';
-    }
-    if (Localization.getLocales()[0].languageTag.includes('fr')) {
-      return 'fr';
-    }
-    if (Localization.getLocales()[0].languageTag.includes('es')) {
-      return 'es';
-    }
-    return 'en';
-  });
+  const [locale, setLocale] = useState<LanguageType>(getDeviceLocale);
+  const [hasLoadedStoredLocale, setHasLoadedStoredLocale] = useState(false);
   const [locale2, setLocale2] = useState<LanguageType2>(() => {
     // console.log("Localization.locale value");
     if (Localization.getLocales()[0].languageTag.includes('CN')) {
@@ -70,6 +87,32 @@ export const LocalisationProvider: React.FC<ProviderProps> = ({ children }) => {
     }
     return 'en';
   });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadStoredLocale = async () => {
+      try {
+        const storedLocale = await AsyncStorage.getItem(localeStorageKey);
+
+        if (!isMounted) return;
+
+        if (isLanguageType(storedLocale)) {
+          setLocale(storedLocale);
+        }
+      } finally {
+        if (isMounted) {
+          setHasLoadedStoredLocale(true);
+        }
+      }
+    };
+
+    void loadStoredLocale();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const convertType1ToType2 = useCallback<
     (type1: LanguageType) => LanguageType2
@@ -93,6 +136,12 @@ export const LocalisationProvider: React.FC<ProviderProps> = ({ children }) => {
   useEffect(() => {
     setLocale2(convertType1ToType2(locale));
   }, [convertType1ToType2, locale]);
+
+  useEffect(() => {
+    if (!hasLoadedStoredLocale) return;
+
+    void AsyncStorage.setItem(localeStorageKey, locale);
+  }, [hasLoadedStoredLocale, locale]);
 
   const t = useCallback(
     (scope: i18n.Scope, options?: i18n.TranslateOptions) =>

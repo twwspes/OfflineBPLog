@@ -68,6 +68,7 @@ export const zh_CN = {
   min_q1_mean_q3_max: '最小 Q1 中位 Q3 最高',
   // RecordOutput
   output: '传送资料',
+  language: '语言',
   email_for_data: '传送资料到此电邮地址',
   send: '传送csv格式资料',
   blood_pressure_record_csv: '血压记录csv档案',

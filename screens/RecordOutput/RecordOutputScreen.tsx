@@ -5,8 +5,6 @@ import {
   Linking,
   ActivityIndicator,
   Alert,
-  TouchableOpacity,
-  Keyboard,
 } from 'react-native';
 import { Text } from '@/components/UI/Text';
 import moment from 'moment/min/moment-with-locales';
@@ -15,11 +13,12 @@ import * as XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 
-import { useLocalisation } from 'hooks/useLocalisation';
+import { LanguageType, useLocalisation } from 'hooks/useLocalisation';
 import { useAppSelector } from 'hooks/useRedux';
 import * as bloodPressureActions from '../../store/actions/bloodPressure';
 
 import pkg from '../../app.json';
+import { SingleChoice } from '../../components/MultipleChoice/DropdownList';
 import { MainButton } from '../../components/UI/MainButton';
 import { MainButtonClear } from '../../components/UI/MainButtonClear';
 import { Colors } from '../../constants/Colors';
@@ -43,6 +42,22 @@ const styles = StyleSheet.create({
     width: '90%',
     marginVertical: 7,
   },
+  languageContainer: {
+    width: '90%',
+    marginBottom: 14,
+  },
+  languageLabel: {
+    color: Colors.grey,
+    fontSize: FontSize.smallContent,
+    marginBottom: 6,
+    textAlign: 'center',
+  },
+  languageButton: {
+    minHeight: 50,
+  },
+  languageButtonText: {
+    fontSize: FontSize.content,
+  },
 });
 
 interface BloodPressure {
@@ -57,7 +72,7 @@ export const RecordOutputScreen: React.FC = () => {
   const [isImporting, setIsImporting] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>();
-  const { t, locale2 } = useLocalisation();
+  const { t, locale, locale2, setLocale } = useLocalisation();
   const [bloodPressures, setBloodPressures] = useState<BloodPressure[]>([]);
   const [bloodPressuresReverse, setBloodPressuresReverse] = useState<
     BloodPressure[]
@@ -77,6 +92,15 @@ export const RecordOutputScreen: React.FC = () => {
   const privacyPolicyWebsite = foundPrefix
     ? `https://twwspes.github.io/OfflineBPLog-Intro/?lang=${foundPrefix}`
     : 'https://twwspes.github.io/OfflineBPLog-Intro/';
+
+  const onLanguageSelected = useCallback(
+    (_: string, value: string | number | null) => {
+      if (typeof value === 'string') {
+        setLocale(value as LanguageType);
+      }
+    },
+    [setLocale],
+  );
 
   useEffect(() => {
     if (error) {
@@ -438,11 +462,7 @@ export const RecordOutputScreen: React.FC = () => {
   }, []);
 
   return (
-    <TouchableOpacity
-      style={styles.screen}
-      onPress={Keyboard.dismiss}
-      activeOpacity={1}
-    >
+    <View style={styles.screen}>
       {isLoading && isImporting && (
         <View style={{ alignItems: 'center', marginBottom: 10 }}>
           <Text>
@@ -457,6 +477,23 @@ export const RecordOutputScreen: React.FC = () => {
 
       {!isLoading && (
         <>
+          <View style={styles.languageContainer}>
+            <Text style={styles.languageLabel}>{t('language')}</Text>
+            <SingleChoice
+              id="language"
+              onItemSelected={onLanguageSelected}
+              initialValue={locale}
+              items={[
+                { label: 'English', value: 'en' },
+                { label: 'Français', value: 'fr' },
+                { label: 'Español', value: 'es' },
+                { label: '繁體中文', value: 'zh_HK' },
+                { label: '简体中文', value: 'zh_CN' },
+              ]}
+              buttonStyle={styles.languageButton}
+              buttonTextStyle={styles.languageButtonText}
+            />
+          </View>
           <View style={styles.buttonContainer}>
             <MainButton
               onPress={() => {
@@ -503,6 +540,6 @@ export const RecordOutputScreen: React.FC = () => {
       >
         {t('privacy_policy')}
       </MainButtonClear>
-    </TouchableOpacity>
+    </View>
   );
 };
