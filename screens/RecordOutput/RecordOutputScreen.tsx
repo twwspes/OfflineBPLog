@@ -10,7 +10,7 @@ import { Text } from '@/components/UI/Text';
 import moment from 'moment/min/moment-with-locales';
 import * as DocumentPicker from 'expo-document-picker';
 import * as XLSX from 'xlsx';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 
 import { LanguageType, useLocalisation } from 'hooks/useLocalisation';

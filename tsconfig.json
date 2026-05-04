@@ -1,13 +1,8 @@
 {
   "extends": "expo/tsconfig.base",
-  "baseUrl": ".",
-  "paths": {
-    "@/*": ["./*"]
-  },
   "compilerOptions": {
     "allowJs": true,
     "alwaysStrict": true,
-    "baseUrl": ".",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
@@ -19,11 +14,13 @@
     "module": "ESNext",
     "noEmit": true,
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "*": ["./*"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "types": ["node"]
   }
 }

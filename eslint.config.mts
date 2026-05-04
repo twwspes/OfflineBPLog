@@ -51,6 +51,7 @@ export default [
       '**/vite.config.ts',
       '**/cypress/**/*.js',
       '**/eslint.config.mjs',
+      '**/babel.config.js',
       '**/.storybook/*',
     ],
   },
