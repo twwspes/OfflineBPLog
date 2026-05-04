@@ -7,7 +7,7 @@ export type BloodPressureStackParamList = {
   };
   BloodPressureInputModal:
     | {
-        id: number;
+        id?: number;
         systolic: number;
         diastolic: number;
         pulse: number;
