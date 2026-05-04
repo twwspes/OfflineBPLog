@@ -232,17 +232,18 @@ export const BloodPressureInputModal: React.FC<Props> = ({
   const [pulseRange, setpulseRange] = useState<Option[]>([]);
 
   const { t, locale2 } = useLocalisation();
-  const oldID = route.params ? route.params.id.toString() : '';
-  const oldSys = route.params ? route.params.systolic.toString() : '113';
-  const oldDia = route.params ? route.params.diastolic.toString() : '79';
-  const oldPul = route.params ? route.params.pulse.toString() : '63';
-  const oldDate = route.params
+  const isEditing = route.params?.id !== undefined;
+  const oldID = isEditing ? route.params.id.toString() : '';
+  const oldSys = route.params?.systolic?.toString() ?? '113';
+  const oldDia = route.params?.diastolic?.toString() ?? '79';
+  const oldPul = route.params?.pulse?.toString() ?? '63';
+  const oldDate = isEditing
     ? new Date(Number.parseInt(oldID, 10)).toISOString()
     : new Date().toISOString();
-  const oldTime = route.params
+  const oldTime = isEditing
     ? new Date(Number.parseInt(oldID, 10)).toISOString()
     : new Date().toISOString();
-  const oldRemark = route.params?.remark ?? '';
+  const oldRemark = isEditing ? (route.params?.remark ?? '') : '';
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -299,14 +300,14 @@ export const BloodPressureInputModal: React.FC<Props> = ({
       remark: oldRemark,
     },
     inputValidities: {
-      systolic: !!route.params,
-      diastolic: !!route.params,
-      pulse: !!route.params,
+      systolic: isEditing,
+      diastolic: isEditing,
+      pulse: isEditing,
       date: true,
       time: true,
       remark: true,
     },
-    formIsValid: !!route.params,
+    formIsValid: isEditing,
   });
 
   useEffect(() => {
@@ -443,7 +444,7 @@ export const BloodPressureInputModal: React.FC<Props> = ({
 
   const deleteBloodPressureHandler = async () => {
     Keyboard.dismiss();
-    if (route.params) {
+    if (isEditing) {
       try {
         await bloodPressureActions.deleteBloodPressure(
           new Date(Number.parseInt(oldID, 10)).toISOString(),
