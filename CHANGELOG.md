@@ -1,4 +1,4 @@
-v2.3.0 (version code 26) - prod-2.3 (expo 54), not published and not released, bumping up expo to 54
+v2.3.0 (version code 27) - prod-2.3 (expo 54), not published and not released, bumping up expo to 54
 
 v2.2.3 (version code 26) - prod-2.3 (expo 53), published and released, bumping up libraries and adding expo-asset
 

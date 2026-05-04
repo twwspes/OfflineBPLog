@@ -14,7 +14,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.spesnaiad.bplog",
-      "buildNumber": "26",
+      "buildNumber": "27",
       "supportsTablet": true,
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
@@ -42,7 +42,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.spesnaiad.bplog",
-      "versionCode": 26,
+      "versionCode": 27,
       "permissions": []
     },
     "web": {
@@ -51,7 +51,8 @@
     "plugins": [
       "expo-localization",
       "expo-asset",
-      "expo-font"
+      "expo-font",
+      "./plugins/withAndroidDisplayNameString"
     ],
     "extra": {
       "eas": {

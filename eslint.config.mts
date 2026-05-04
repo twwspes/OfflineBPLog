@@ -139,6 +139,7 @@ export default [
             '**/*.test.*',
             '**/*.stories.*',
             '**/*.spec.*',
+            'plugins/**/*.js',
             '**/test-utils/**',
             '**/__test__/**',
             '**/__tests__/**',
@@ -210,6 +211,20 @@ export default [
       '@typescript-eslint/no-unsafe-return': 'off',
       'no-void': 'off',
       'react/prop-types': 'off',
+    },
+  },
+  {
+    files: ['plugins/**/*.js'],
+
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+      sourceType: 'commonjs',
+    },
+
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
   {
