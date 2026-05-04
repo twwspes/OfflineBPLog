@@ -68,6 +68,7 @@ export const en = {
   min_q1_mean_q3_max: 'Min Q1 Med Q3 Max',
   // RecordOutput
   output: 'Log Export',
+  language: 'Language',
   email_for_data: 'Email for receiving log',
   send: 'Send in csv format',
   blood_pressure_record_csv: 'Blood Pressure Log in csv',

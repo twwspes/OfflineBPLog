@@ -71,6 +71,7 @@ export const fr = {
   min_q1_mean_q3_max: 'Min Q1 Méd Q3 Max',
   // RecordOutput
   output: 'Sortie',
+  language: 'Langue',
   email_for_data: 'Le courrier électronique',
   send: 'Envoyer des données csv',
   blood_pressure_record_csv: 'Tableau de tension artérielle csv',
