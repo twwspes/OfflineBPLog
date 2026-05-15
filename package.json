@@ -11,7 +11,10 @@
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run lint",
     "eas-build-pre-install": "pod repo update",
-    "prepare": "husky"
+    "prepare": "husky",
+    "prebuild": "expo prebuild --clean",
+    "android:build": "cd android && ./gradlew assembleDebug && cd ..",
+    "android:build:debug": "cd android && ./gradlew bundleRelease && cd .."
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
