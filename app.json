@@ -2,7 +2,7 @@
   "expo": {
     "name": "BP-Log",
     "slug": "BP-Log",
-    "version": "2.3.0",
+    "version": "2.4.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -42,7 +42,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.spesnaiad.bplog",
-      "versionCode": 27,
+      "versionCode": 28,
       "permissions": []
     },
     "web": {
