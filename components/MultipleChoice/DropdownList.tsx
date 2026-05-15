@@ -91,6 +91,17 @@ interface Props {
   isModalActive?: (active: boolean) => void;
 }
 
+const itemValueMatches = (
+  firstValue: string | number,
+  secondValue: string | number,
+) => {
+  if (typeof firstValue === 'number' && typeof secondValue === 'number') {
+    return firstValue === secondValue;
+  }
+
+  return firstValue.toString() === secondValue.toString();
+};
+
 export const SingleChoice: React.FC<Props> = ({
   onItemSelected,
   id,
@@ -122,7 +133,7 @@ export const SingleChoice: React.FC<Props> = ({
       listOfItemsToBeSelectedTemp.push({
         title: i.label,
         value: i.value,
-        selected: Number(i.value) === Number(selected) ? true : false,
+        selected: itemValueMatches(i.value, selected),
       });
       jsonOfItemsToBeSelectedTemp[i.value] = i.label;
     }
@@ -131,7 +142,7 @@ export const SingleChoice: React.FC<Props> = ({
     setInitialPosition(() => {
       return Math.max(
         items.findIndex((item) => {
-          return Number(item.value) === Number(selected);
+          return itemValueMatches(item.value, selected);
         }) - 3,
         0,
       );

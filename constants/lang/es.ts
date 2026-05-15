@@ -69,6 +69,7 @@ export const es = {
   min_q1_mean_q3_max: 'Mín Q1 Med Q3 Máx',
   // RecordOutput
   output: 'Salida',
+  language: 'Idioma',
   email_for_data: 'Correo electrónico',
   send: 'Enviar en formato csv',
   blood_pressure_record_csv: 'Registro de presión sanguínea csv',
