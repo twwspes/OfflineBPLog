@@ -52,7 +52,7 @@
     "redux-thunk": "^3.1.0",
     "victory-axis": "^37.3.6",
     "victory-native": "^36.6.8",
-    "xlsx": "file:vendor/xlsx-0.20.1.tgz"
+    "xlsx": "file:vendor/xlsx-0.20.3.tar"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
