@@ -26,7 +26,7 @@
       "channel": "preview"
     },
     "production": {
-      "channel": "prod-2.3"
+      "channel": "prod-2.4"
     }
   },
   "submit": {
