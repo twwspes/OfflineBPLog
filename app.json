@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -40,7 +39,6 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
       "package": "com.spesnaiad.bplog",
       "versionCode": 28,
       "permissions": []
@@ -52,7 +50,10 @@
       "expo-localization",
       "expo-asset",
       "expo-font",
-      "./plugins/withAndroidDisplayNameString"
+      "./plugins/withAndroidDisplayNameString",
+      "@react-native-community/datetimepicker",
+      "expo-sharing",
+      "expo-sqlite"
     ],
     "extra": {
       "eas": {

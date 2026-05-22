@@ -68,6 +68,11 @@ interface BloodPressure {
   remark?: string;
 }
 
+const XLSX_SHARING_OPTIONS = {
+  mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  UTI: 'org.openxmlformats.spreadsheetml.sheet',
+};
+
 export const RecordOutputScreen: React.FC = () => {
   const [isImporting, setIsImporting] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -374,6 +379,7 @@ export const RecordOutputScreen: React.FC = () => {
       if (isSharingAvailable) {
         await Sharing.shareAsync(
           `${FileSystem.documentDirectory}BloodPressure.xlsx`,
+          XLSX_SHARING_OPTIONS,
         );
       }
     }
@@ -456,6 +462,7 @@ export const RecordOutputScreen: React.FC = () => {
       if (isSharingAvailable) {
         await Sharing.shareAsync(
           `${FileSystem.documentDirectory}BloodPressure.xlsx`,
+          XLSX_SHARING_OPTIONS,
         );
       }
     }
