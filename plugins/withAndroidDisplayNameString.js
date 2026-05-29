@@ -1,4 +1,4 @@
-const { AndroidConfig, withStringsXml } = require('@expo/config-plugins');
+const { AndroidConfig, withStringsXml } = require('expo/config-plugins');
 
 const DISPLAY_NAME = 'BP Log';
 const DISPLAY_NAME_KEY = 'CFBundleDisplayName';

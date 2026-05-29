@@ -1,3 +1,5 @@
+v2.4.0 (version code 28) - prod-2.4 (expo 55), published and released, bumping up expo to 55
+
 v2.3.0 (version code 27) - prod-2.3 (expo 54), published and released, bumping up expo to 54
 
 v2.2.3 (version code 26) - prod-2.3 (expo 53), published and released, bumping up libraries and adding expo-asset
