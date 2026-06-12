@@ -62,14 +62,17 @@ export const fetchBloodPressure = async (
     );
 
     const loadedMessages = messageRows;
+    const bloodPressureById = new Map(
+      loadedBloodPressures.map((bloodPressureJson) => [
+        bloodPressureJson.id,
+        bloodPressureJson,
+      ]),
+    );
+
     loadedMessages.forEach((messageJson) => {
-      const index = loadedBloodPressures.findIndex(
-        (bloodPressureJson) => bloodPressureJson.id === messageJson.id,
-      );
-      // console.log("messageJson in fetchBloodPressure");
-      // console.log(messageJson);
-      if (index !== -1) {
-        loadedBloodPressures[index].remark = messageJson.remark;
+      const bloodPressureJson = bloodPressureById.get(messageJson.id);
+      if (bloodPressureJson !== undefined) {
+        bloodPressureJson.remark = messageJson.remark;
       }
     });
   }

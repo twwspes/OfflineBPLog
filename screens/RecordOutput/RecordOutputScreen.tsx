@@ -79,9 +79,6 @@ export const RecordOutputScreen: React.FC = () => {
   const [error, setError] = useState<string | undefined>();
   const { t, locale, locale2, setLocale } = useLocalisation();
   const [bloodPressures, setBloodPressures] = useState<BloodPressure[]>([]);
-  const [bloodPressuresReverse, setBloodPressuresReverse] = useState<
-    BloodPressure[]
-  >([]);
   const bloodPressuresUpdateIndicator = useAppSelector(
     (state) => state.bloodPressure.update,
   );
@@ -145,10 +142,6 @@ export const RecordOutputScreen: React.FC = () => {
 
     void downloadItems();
   }, [bloodPressuresUpdateIndicator, t]);
-
-  useEffect(() => {
-    setBloodPressuresReverse(bloodPressures);
-  }, [bloodPressures]);
 
   const deleteAllLogsHandler = () => {
     const handleDeleteAll = async () => {
@@ -240,7 +233,7 @@ export const RecordOutputScreen: React.FC = () => {
             const remark = item.Remark?.toString().substring(0, 300) || '';
             const dateValue = date.valueOf();
 
-            const matchedIndex = bloodPressuresReverse
+            const matchedIndex = bloodPressures
               .slice(bloodPressuresReverseIndex)
               .findIndex((bp) => {
                 const bpTimestamp = Math.floor(Number(bp.id) / 1000) * 1000;
@@ -250,7 +243,7 @@ export const RecordOutputScreen: React.FC = () => {
             try {
               if (matchedIndex !== -1) {
                 const index = bloodPressuresReverseIndex + matchedIndex;
-                const bp = bloodPressuresReverse[index];
+                const bp = bloodPressures[index];
                 const bpTimestamp = Math.floor(Number(bp.id) / 1000) * 1000;
                 const idToUse = dateValue === bpTimestamp ? bp.id : dateValue;
 
@@ -316,11 +309,11 @@ export const RecordOutputScreen: React.FC = () => {
       setIsLoading(false);
     }
     bloodPressureActions.forceUpdateBPState();
-  }, [bloodPressuresReverse, t]);
+  }, [bloodPressures, t]);
 
   const onExportButtonPress = useCallback(async () => {
     if (FileSystem.documentDirectory !== null) {
-      const bloodPressuresJson = bloodPressuresReverse.map((item) => {
+      const bloodPressuresJson = bloodPressures.map((item) => {
         const dateTemp = new Date(item.id);
         return {
           systolic: item.systolic_blood_pressure,
@@ -383,7 +376,7 @@ export const RecordOutputScreen: React.FC = () => {
         );
       }
     }
-  }, [bloodPressuresReverse]);
+  }, [bloodPressures]);
 
   const onDownloadSamplePress = useCallback(async () => {
     if (FileSystem.documentDirectory !== null) {
