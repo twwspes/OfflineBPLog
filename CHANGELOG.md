@@ -1,4 +1,6 @@
-v2.5.0 (version code 28) - prod-2.5 (expo 55), published and released
+v2.6.0 (version code 30) - prod-2.6 (expo 55), published and released
+
+v2.5.0 (version code 29) - prod-2.5 (expo 55), published and released
 
 v2.4.0 (version code 28) - prod-2.4 (expo 55), published and released, bumping up expo to 55
 

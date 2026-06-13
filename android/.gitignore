@@ -14,13 +14,3 @@ local.properties
 
 # Bundle artifacts
 *.jsbundle
-*.apk
-*.aab
-
-# Signing and service credentials
-*.jks
-*.keystore
-*.key
-*.p8
-*.p12
-google-services.json

@@ -24,3 +24,8 @@ dist/
 *.apk
 build-*.tar.gz
 *.app
+*.jsbundle
+
+# Signing and service credentials
+*.keystore
+google-services.json

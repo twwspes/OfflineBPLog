@@ -26,13 +26,5 @@ project.xcworkspace
 # Bundle artifacts
 *.jsbundle
 
-# Signing and service credentials
-*.cer
-*.key
-*.mobileprovision
-*.p8
-*.p12
-GoogleService-Info.plist
-
 # CocoaPods
 /Pods/

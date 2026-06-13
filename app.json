@@ -2,7 +2,7 @@
   "expo": {
     "name": "BP-Log",
     "slug": "BP-Log",
-    "version": "2.5.0",
+    "version": "2.6.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -13,7 +13,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.spesnaiad.bplog",
-      "buildNumber": "28",
+      "buildNumber": "30",
       "supportsTablet": true,
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
@@ -40,7 +40,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.spesnaiad.bplog",
-      "versionCode": 29,
+      "versionCode": 30,
       "permissions": []
     },
     "web": {
@@ -60,6 +60,6 @@
         "projectId": "1891fe1d-9241-4b16-8af9-a47fcda0e3c9"
       }
     },
-    "runtimeVersion": "2.5.0"
+    "runtimeVersion": "2.6.0"
   }
 }
