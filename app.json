@@ -13,7 +13,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.spesnaiad.bplog",
-      "buildNumber": "33",
+      "buildNumber": "34",
       "supportsTablet": true,
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
@@ -40,7 +40,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.spesnaiad.bplog",
-      "versionCode": 33,
+      "versionCode": 34,
       "permissions": []
     },
     "web": {
