@@ -44,7 +44,7 @@
     "expo-status-bar": "~55.0.6",
     "expo-updates": "~55.0.26",
     "i18n-js": "^3.8.0",
-    "moment": "^2.29.1",
+    "moment": "^2.31.0",
     "react": "19.2.0",
     "react-native": "0.83.10",
     "react-native-gesture-handler": "~2.30.0",
