@@ -125,8 +125,6 @@ export const BloodPressurePeriodModal: React.FC<Props> = ({ navigation }) => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [, setOnShow] = useState(false);
 
-  moment.locale(locale2);
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [onRelease, setOnRelease] = useState(true);
 
@@ -342,7 +340,9 @@ export const BloodPressurePeriodModal: React.FC<Props> = ({ navigation }) => {
               {formState.inputValues.fromdate ? (
                 <Text style={{ fontSize: FontSize.content }}>
                   {t('from') +
-                    moment(formState.inputValues.fromdate).format('ll')}
+                    moment(formState.inputValues.fromdate)
+                      .locale(locale2)
+                      .format('ll')}
                 </Text>
               ) : (
                 <Text style={{ color: '#bbb', fontSize: FontSize.content }}>
@@ -400,7 +400,10 @@ export const BloodPressurePeriodModal: React.FC<Props> = ({ navigation }) => {
             >
               {formState.inputValues.todate ? (
                 <Text style={{ fontSize: FontSize.content }}>
-                  {t('to') + moment(formState.inputValues.todate).format('ll')}
+                  {t('to') +
+                    moment(formState.inputValues.todate)
+                      .locale(locale2)
+                      .format('ll')}
                 </Text>
               ) : (
                 <Text style={{ color: '#bbb', fontSize: FontSize.content }}>

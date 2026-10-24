@@ -13,9 +13,14 @@ import {
 } from '../helpers/recordTimestamp.ts';
 import {
   createImportTimestampMatcher,
+  importRecordRows,
   parseImportRecord,
   toSpreadsheetRow,
 } from '../helpers/importRecords.ts';
+import {
+  encodeRecordWorkbook,
+  decodeRecordWorkbook,
+} from '../helpers/recordWorkbook.ts';
 import { runWithLoading } from '../helpers/runWithLoading.ts';
 
 await test('time-only and date-only edits replace the original ID; unchanged edits never delete it', async () => {
@@ -177,20 +182,8 @@ await test('XLSX export/import round trip preserves IDs, values and remarks even
     pulse: 65,
     remark: 'Quoted "remark", with\nnewline',
   }));
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(
-    workbook,
-    XLSX.utils.json_to_sheet(originals.map(toSpreadsheetRow)),
-    'Sheet1',
-  );
-  const encoded = XLSX.write(workbook, {
-    type: 'base64',
-    bookType: 'xlsx',
-  }) as string;
-  const decoded = XLSX.read(encoded, { type: 'base64' });
-  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(
-    decoded.Sheets.Sheet1,
-  );
+  const encoded = encodeRecordWorkbook(originals.map(toSpreadsheetRow));
+  const rows = decodeRecordWorkbook(encoded);
   const match = createImportTimestampMatcher(originals);
   assert.deepEqual(
     rows.map((row) => {
@@ -300,4 +293,55 @@ await test('deletion failure clears loading, reports the error and allows a succ
   assert.equal(rows.size, 0);
   assert.deepEqual(loading, [true, false, true, false]);
   assert.deepEqual(errors, [failure]);
+});
+
+await test('workbook encoding retains headers for an empty export and rejects a missing worksheet', () => {
+  const empty = encodeRecordWorkbook([]);
+  assert.deepEqual(decodeRecordWorkbook(empty), []);
+  const workbook = XLSX.read(empty, { type: 'base64' });
+  assert.equal(workbook.Sheets.Sheet1.A1.v, 'Systolic');
+  assert.equal(workbook.Sheets.Sheet1.K1.v, 'Milliseconds');
+  const wrongSheet = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(
+    wrongSheet,
+    XLSX.utils.aoa_to_sheet([['Year']]),
+    'Other',
+  );
+  assert.throws(
+    () =>
+      decodeRecordWorkbook(
+        XLSX.write(wrongSheet, { type: 'base64', bookType: 'xlsx' }) as string,
+      ),
+    /Missing Sheet1/,
+  );
+});
+
+await test('batch import preserves progress, skips invalid rows and continues after a failed write', async () => {
+  const progress: number[][] = [];
+  const errors: number[] = [];
+  const ids: number[] = [];
+  const timestamp = parse(validRow).timestamp;
+  await importRecordRows(
+    [validRow, { ...validRow, Date: 31 }, { ...validRow, Date: 28 }],
+    [{ id: timestamp + 123 }],
+    (record) => {
+      ids.push(record.timestamp);
+      return ids.length === 1
+        ? Promise.reject(new Error('write failed'))
+        : Promise.resolve();
+    },
+    (done, total) => progress.push([done, total]),
+    (rowNumber) => errors.push(rowNumber),
+  );
+  assert.deepEqual(progress, [
+    [0, 3],
+    [1, 3],
+    [2, 3],
+    [3, 3],
+  ]);
+  assert.deepEqual(errors, [1]);
+  assert.deepEqual(ids, [
+    timestamp + 123,
+    parse({ ...validRow, Date: 28 }).timestamp,
+  ]);
 });

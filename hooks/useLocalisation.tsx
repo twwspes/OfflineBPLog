@@ -8,9 +8,8 @@ import React, {
   useContext,
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import * as Localization from 'expo-localization'; // or whatever library you want
-import i18n, { t as i18nt } from 'i18n-js'; // or whatever library you want
-import * as Localization from 'expo-localization'; // or whatever library you want
+import i18n, { t as i18nt } from 'i18n-js';
+import * as Localization from 'expo-localization';
 
 import { en } from '../constants/lang/en';
 import { zh_HK } from '../constants/lang/zh_HK';
@@ -39,6 +38,14 @@ i18n.fallbacks = true;
 i18n.translations = { zh_HK, en, zh_CN, fr, es };
 
 const localeStorageKey = 'BP_LOG_LOCALE';
+
+const localeFormats: Record<LanguageType, LanguageType2> = {
+  zh_CN: 'zh-cn',
+  zh_HK: 'zh-hk',
+  fr: 'fr',
+  es: 'es',
+  en: 'en',
+};
 
 const isLanguageType = (value: string | null): value is LanguageType => {
   return (
@@ -71,22 +78,7 @@ const getDeviceLocale = (): LanguageType => {
 export const LocalisationProvider: React.FC<ProviderProps> = ({ children }) => {
   const [locale, setLocale] = useState<LanguageType>(getDeviceLocale);
   const [hasLoadedStoredLocale, setHasLoadedStoredLocale] = useState(false);
-  const [locale2, setLocale2] = useState<LanguageType2>(() => {
-    // console.log("Localization.locale value");
-    if (Localization.getLocales()[0].languageTag.includes('CN')) {
-      return 'zh-cn';
-    }
-    if (Localization.getLocales()[0].languageTag.includes('zh')) {
-      return 'zh-hk';
-    }
-    if (Localization.getLocales()[0].languageTag.includes('fr')) {
-      return 'fr';
-    }
-    if (Localization.getLocales()[0].languageTag.includes('es')) {
-      return 'es';
-    }
-    return 'en';
-  });
+  const locale2 = localeFormats[locale];
 
   useEffect(() => {
     let isMounted = true;
@@ -113,29 +105,6 @@ export const LocalisationProvider: React.FC<ProviderProps> = ({ children }) => {
       isMounted = false;
     };
   }, []);
-
-  const convertType1ToType2 = useCallback<
-    (type1: LanguageType) => LanguageType2
-  >((type1) => {
-    switch (type1) {
-      case 'zh_CN':
-        return 'zh-cn';
-      case 'zh_HK':
-        return 'zh-hk';
-      case 'fr':
-        return 'fr';
-      case 'es':
-        return 'es';
-      case 'en':
-        return 'en';
-      default:
-        return 'en';
-    }
-  }, []);
-
-  useEffect(() => {
-    setLocale2(convertType1ToType2(locale));
-  }, [convertType1ToType2, locale]);
 
   useEffect(() => {
     if (!hasLoadedStoredLocale) return;

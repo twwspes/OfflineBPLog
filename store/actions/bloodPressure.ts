@@ -19,11 +19,6 @@ import {
 } from '../../helpers/dbMessage';
 import { store } from '../store';
 
-export const SET_BLOODPRESSURE = 'SET_BLOODPRESSURE';
-export const BLOODPRESSURE_UPDATE = 'BLOODPRESSURE_UPDATE';
-export const SET_TODATE = 'SET_TODATE';
-export const SET_FROMDATE = 'SET_FROMDATE';
-
 export const fetchBloodPressure = async (
   limit: number,
   offset: number,

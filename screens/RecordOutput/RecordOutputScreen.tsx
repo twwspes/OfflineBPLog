@@ -7,11 +7,6 @@ import {
   Alert,
 } from 'react-native';
 import { Text } from '@/components/UI/Text';
-import moment from 'moment/min/moment-with-locales';
-import * as DocumentPicker from 'expo-document-picker';
-import * as XLSX from 'xlsx';
-import * as FileSystem from 'expo-file-system/legacy';
-import * as Sharing from 'expo-sharing';
 
 import { LanguageType, useLocalisation } from 'hooks/useLocalisation';
 import { useAppSelector } from 'hooks/useRedux';
@@ -23,11 +18,8 @@ import { MainButton } from '../../components/UI/MainButton';
 import { MainButtonClear } from '../../components/UI/MainButtonClear';
 import { Colors } from '../../constants/Colors';
 import { FontSize } from '../../constants/FontSize';
-import {
-  createImportTimestampMatcher,
-  parseImportRecord,
-  toSpreadsheetRow,
-} from '../../helpers/importRecords';
+import { importRecordRows } from '../../helpers/importRecords';
+import { pickRecordRows, shareRecordFile } from '../../services/recordFiles';
 import { runWithLoading } from '../../helpers/runWithLoading';
 
 const styles = StyleSheet.create({
@@ -73,11 +65,6 @@ interface BloodPressure {
   remark?: string;
 }
 
-const XLSX_SHARING_OPTIONS = {
-  mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  UTI: 'org.openxmlformats.spreadsheetml.sheet',
-};
-
 export const RecordOutputScreen: React.FC = () => {
   const [isImporting, setIsImporting] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -87,7 +74,6 @@ export const RecordOutputScreen: React.FC = () => {
   const bloodPressuresUpdateIndicator = useAppSelector(
     (state) => state.bloodPressure.update,
   );
-  moment.locale(locale2);
 
   const [importTotal, setImportTotal] = useState(0);
   const [importCount, setImportCount] = useState(0);
@@ -171,230 +157,80 @@ export const RecordOutputScreen: React.FC = () => {
   };
 
   const onImportButtonPress = useCallback(async () => {
+    setIsImporting(true);
+    setIsLoading(true);
+    setImportCount(0);
+    setImportTotal(0);
     try {
-      setIsImporting(true);
-      setIsLoading(true);
-      const result = await DocumentPicker.getDocumentAsync({
-        copyToCacheDirectory: true,
-        type: [
-          'application/vnd.ms-excel',
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        ],
-      });
-      // console.log('RecordOutputScreen result', result);
-
-      if (!result.canceled && !!result.assets[0].uri) {
-        const path = result.assets[0].uri;
-
-        const b64 = await FileSystem.readAsStringAsync(path, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-        const workbook = XLSX.read(b64, { type: 'base64' });
-
-        if (!workbook.Sheets.Sheet1)
-          throw new Error('Missing Sheet1 worksheet.');
-        const importJsonArray = XLSX.utils.sheet_to_json<
-          Record<string, unknown>
-        >(workbook.Sheets.Sheet1);
-        // console.log("RecordOutputScreen json", importJsonArray);
-
-        if (importJsonArray !== undefined) {
-          // console.log('RecordOutputScreen json is valid');
-
-          // Use fresh IDs rather than a possibly stale screen snapshot.
-          const existing = await bloodPressureActions.fetchBloodPressure(
-            -1,
-            -1,
-            '0001-01-01T00:00:00.000Z',
-            '9999-12-31T23:59:59.999Z',
-            null,
-          );
-          const matchTimestamp = createImportTimestampMatcher(existing);
-
-          setImportTotal(importJsonArray.length);
-          setImportCount(0);
-
-          for (let i = 0; i < importJsonArray.length; i += 1) {
-            const record = parseImportRecord(importJsonArray[i]);
-            if (!record) {
-              setImportCount((prev) => prev + 1);
-              continue;
-            }
-            try {
-              await bloodPressureActions.addBloodPressure(
-                new Date(matchTimestamp(record)).toISOString(),
-                record.systolic,
-                record.diastolic,
-                record.pulse,
-                true,
-                true,
-                record.remark,
-              );
-            } catch (e: unknown) {
-              if (e instanceof Error) {
-                Alert.alert(
-                  t('sorry'),
-                  `${t('error_occur_importing')}${i + 1}, ${e.message}`,
-                  [{ text: t('okay'), style: 'cancel' }],
-                );
-              } else {
-                Alert.alert(
-                  t('sorry'),
-                  `${t('error_occur_importing')}${i + 1}, Unknown`,
-                  [{ text: t('okay'), style: 'cancel' }],
-                );
-              }
-            }
-
-            setImportCount((prev) => prev + 1);
-          }
-          setIsImporting(false);
-          setIsLoading(false);
-        } else {
-          Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
-            { text: t('okay'), style: 'cancel' },
-          ]);
-          setIsImporting(false);
-          setIsLoading(false);
-        }
-      } else {
-        setIsImporting(false);
-        setIsLoading(false);
-      }
+      const rows = await pickRecordRows();
+      if (rows === null) return;
+      const existing = await bloodPressureActions.fetchBloodPressure(
+        -1,
+        -1,
+        '0001-01-01T00:00:00.000Z',
+        '9999-12-31T23:59:59.999Z',
+        null,
+      );
+      await importRecordRows(
+        rows,
+        existing,
+        (record) =>
+          bloodPressureActions.addBloodPressure(
+            new Date(record.timestamp).toISOString(),
+            record.systolic,
+            record.diastolic,
+            record.pulse,
+            true,
+            true,
+            record.remark,
+          ),
+        (done, total) => {
+          setImportCount(done);
+          setImportTotal(total);
+        },
+        (rowNumber, error) =>
+          Alert.alert(
+            t('sorry'),
+            `${t('error_occur_importing')}${rowNumber}, ${error instanceof Error ? error.message : 'Unknown'}`,
+            [{ text: t('okay'), style: 'cancel' }],
+          ),
+      );
     } catch {
-      // console.log('RecordOutputScreen Import xml Error: ', err);
       Alert.alert(t('sorry'), t('error_occur_relaunch_apps'), [
         { text: t('okay'), style: 'cancel' },
       ]);
+    } finally {
       setIsImporting(false);
       setIsLoading(false);
+      bloodPressureActions.forceUpdateBPState();
     }
-    bloodPressureActions.forceUpdateBPState();
   }, [t]);
 
-  const onExportButtonPress = useCallback(async () => {
-    if (FileSystem.documentDirectory !== null) {
-      const bloodPressuresJson = bloodPressures.map(toSpreadsheetRow);
-      /* generate worksheet and workbook */
-      const worksheet = XLSX.utils.json_to_sheet(bloodPressuresJson);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+  const onExportButtonPress = useCallback(
+    () => shareRecordFile(bloodPressures),
+    [bloodPressures],
+  );
 
-      /* fix headers */
-      XLSX.utils.sheet_add_aoa(
-        worksheet,
-        [
-          [
-            'Systolic',
-            'Diastolic',
-            'Pulse',
-            'Year',
-            'Month',
-            'Date',
-            'Hours',
-            'Minutes',
-            'Seconds',
-            'Remark',
-            'Milliseconds',
-          ],
-        ],
-        { origin: 'A1' },
-      );
-
-      /* calculate column width */
-      // const max_width = bloodPressuresJson.reduce((w, r) => Math.max(w, r.name.length), 10);
-      // worksheet["!cols"] = [{ wch: max_width }];
-      const b64 = XLSX.write(workbook, {
-        type: 'base64',
-        bookType: 'xlsx',
-      }) as string;
-      // /* b64 is a Base64 string */
-      await FileSystem.writeAsStringAsync(
-        `${FileSystem.documentDirectory}BloodPressure.xlsx`,
-        b64,
-        { encoding: FileSystem.EncodingType.Base64 },
-      );
-
-      const isSharingAvailable = await Sharing.isAvailableAsync();
-
-      if (isSharingAvailable) {
-        await Sharing.shareAsync(
-          `${FileSystem.documentDirectory}BloodPressure.xlsx`,
-          XLSX_SHARING_OPTIONS,
-        );
-      }
-    }
-  }, [bloodPressures]);
-
-  const onDownloadSamplePress = useCallback(async () => {
-    if (FileSystem.documentDirectory !== null) {
-      const sampleBloodPressureLog = [
+  const onDownloadSamplePress = useCallback(
+    () =>
+      shareRecordFile([
         {
-          id: new Date().valueOf(),
+          id: Date.now(),
           systolic_blood_pressure: 113,
           diastolic_blood_pressure: 79,
           pulse: 63,
           remark: 'Left Arm',
         },
         {
-          id: new Date().valueOf() - 12 * 60 * 60 * 1000,
+          id: Date.now() - 12 * 60 * 60 * 1000,
           systolic_blood_pressure: 116,
           diastolic_blood_pressure: 75,
           pulse: 64,
           remark: 'Right Arm',
         },
-      ];
-      const bloodPressuresJson = sampleBloodPressureLog.map(toSpreadsheetRow);
-      /* generate worksheet and workbook */
-      const worksheet = XLSX.utils.json_to_sheet(bloodPressuresJson);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-
-      /* fix headers */
-      XLSX.utils.sheet_add_aoa(
-        worksheet,
-        [
-          [
-            'Systolic',
-            'Diastolic',
-            'Pulse',
-            'Year',
-            'Month',
-            'Date',
-            'Hours',
-            'Minutes',
-            'Seconds',
-            'Remark',
-            'Milliseconds',
-          ],
-        ],
-        { origin: 'A1' },
-      );
-
-      /* calculate column width */
-      // const max_width = bloodPressuresJson.reduce((w, r) => Math.max(w, r.name.length), 10);
-      // worksheet["!cols"] = [{ wch: max_width }];
-      const b64 = XLSX.write(workbook, {
-        type: 'base64',
-        bookType: 'xlsx',
-      }) as string;
-      // /* b64 is a Base64 string */
-      await FileSystem.writeAsStringAsync(
-        `${FileSystem.documentDirectory}BloodPressure.xlsx`,
-        b64,
-        { encoding: FileSystem.EncodingType.Base64 },
-      );
-
-      const isSharingAvailable = await Sharing.isAvailableAsync();
-
-      if (isSharingAvailable) {
-        await Sharing.shareAsync(
-          `${FileSystem.documentDirectory}BloodPressure.xlsx`,
-          XLSX_SHARING_OPTIONS,
-        );
-      }
-    }
-  }, []);
+      ]),
+    [],
+  );
 
   return (
     <View style={styles.screen}>

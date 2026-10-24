@@ -1,14 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface BloodPressureState {
-  bloodPressures: unknown[]; // Remplace `any[]` par un type spécifique si possible
   update: number;
-  todate: string; // ISOString ou chaîne vide
-  fromdate: string; // ISOString ou chaîne vide
+  todate: string;
+  fromdate: string;
 }
 
 const initialState: BloodPressureState = {
-  bloodPressures: [],
   update: 0,
   todate: '',
   fromdate: '',
@@ -30,6 +28,5 @@ export const bloodPressureSlice = createSlice({
   },
 });
 
-// Export des actions générées automatiquement
 export const { bloodPressureUpdate, setToDate, setFromDate } =
   bloodPressureSlice.actions;

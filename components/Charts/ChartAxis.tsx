@@ -4,46 +4,13 @@ import { VictoryAxis } from 'victory-native';
 import { VictoryAxisProps } from 'victory-axis';
 import { useLocalisation } from '../../hooks/useLocalisation';
 
-type Period =
-  | 'one_day'
-  | 'one_week'
-  | 'one_month'
-  | 'three_months'
-  | 'six_months'
-  | 'one_year'
-  | 'all';
-
 interface ChartAxisProps extends VictoryAxisProps {
   minValue: number;
   maxValue: number;
-  // Add any other props you intend to pass to VictoryAxis
-  // [key: string]: any;
 }
 
 export const ChartAxis: React.FC<ChartAxisProps> = (props) => {
   const { locale2 } = useLocalisation();
-  moment.locale(locale2);
-
-  function periodValueMapping(period: Period): number {
-    switch (period) {
-      case 'one_day':
-        return 1000 * 60 * 60 * 24;
-      case 'one_week':
-        return 1000 * 60 * 60 * 24 * 7;
-      case 'one_month':
-        return 1000 * 60 * 60 * 24 * 31;
-      case 'three_months':
-        return 1000 * 60 * 60 * 24 * 31 * 3;
-      case 'six_months':
-        return 1000 * 60 * 60 * 24 * 31 * 6;
-      case 'one_year':
-        return 1000 * 60 * 60 * 24 * 366;
-      case 'all':
-        return 1593633109356;
-      default:
-        return 1000 * 60 * 60 * 24;
-    }
-  }
 
   const { maxValue, minValue, ...otherProps } = props;
 
@@ -56,9 +23,9 @@ export const ChartAxis: React.FC<ChartAxisProps> = (props) => {
       {...otherProps}
       tickValues={tickValues}
       tickFormat={(t: number) => {
-        const date = moment(t);
+        const date = moment(t).locale(locale2);
         const isLongRange =
-          Math.abs(maxValue - minValue) > periodValueMapping('one_week');
+          Math.abs(maxValue - minValue) > 1000 * 60 * 60 * 24 * 7;
 
         let timeLabel: string;
 

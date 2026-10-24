@@ -105,6 +105,27 @@ export const createImportTimestampMatcher = (records: { id: number }[]) => {
   };
 };
 
+export const importRecordRows = async (
+  rows: Record<string, unknown>[],
+  existing: { id: number }[],
+  save: (record: ImportedRecord) => Promise<unknown>,
+  onProgress: (done: number, total: number) => void,
+  onRowError: (rowNumber: number, error: unknown) => void,
+) => {
+  const matchTimestamp = createImportTimestampMatcher(existing);
+  onProgress(0, rows.length);
+  for (const [index, row] of rows.entries()) {
+    const record = parseImportRecord(row);
+    try {
+      if (record) await save({ ...record, timestamp: matchTimestamp(record) });
+    } catch (error) {
+      onRowError(index + 1, error);
+    } finally {
+      onProgress(index + 1, rows.length);
+    }
+  }
+};
+
 export const toSpreadsheetRow = (record: {
   id: number;
   systolic_blood_pressure: number;

@@ -192,6 +192,7 @@ const FlatListItem: React.FC<FlatListItemProps> = ({
   onFlatListItemPress,
   noRecordLocalisedString,
 }) => {
+  const { locale2 } = useLocalisation();
   return (
     <MainButtonOutlineImage
       onPress={() => onFlatListItemPress(itemData)}
@@ -203,7 +204,7 @@ const FlatListItem: React.FC<FlatListItemProps> = ({
       <View style={styles.dateContainer}>
         {itemData.item.id ? (
           <Text style={styles.title}>
-            {moment(itemData.item.id).format('lll')}
+            {moment(itemData.item.id).locale(locale2).format('lll')}
           </Text>
         ) : (
           <Text style={styles.title}>{noRecordLocalisedString}</Text>
@@ -264,7 +265,7 @@ const FlatListItem: React.FC<FlatListItemProps> = ({
 type Props = StackScreenProps<BloodPressureStackParamList, 'BloodPressure'>;
 
 export const BloodPressureScreen: React.FC<Props> = ({ navigation, route }) => {
-  const { t, locale2 } = useLocalisation();
+  const { t } = useLocalisation();
 
   const bloodPressuresUpdateIndicator = useAppSelector(
     (state) => state.bloodPressure.update,
@@ -273,7 +274,6 @@ export const BloodPressureScreen: React.FC<Props> = ({ navigation, route }) => {
   const todate = useAppSelector((state) => state.bloodPressure.todate);
 
   const isFiltered = !!route.params?.filtered;
-  moment.locale(locale2);
 
   const fetchPage = useCallback(
     (limit: number, offset: number) =>

@@ -35,7 +35,6 @@ import { DateAndTimePicker } from '../../components/UI/DateAndTimePicker';
 import { SingleChoice } from '../../components/MultipleChoice/DropdownList';
 import { useLocalisation } from '../../hooks/useLocalisation';
 import { BloodPressureStackParamList } from '../../types/navigation';
-import { replaceBloodPressureFromSQL } from '../../helpers/dbBloodPressure';
 import {
   combineRecordTimestamp,
   saveRecordTimestamp,
@@ -253,8 +252,6 @@ export const BloodPressureInputModal: React.FC<Props> = ({
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
-  moment.locale(locale2);
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [onRelease, setOnRelease] = useState(true);
 
@@ -326,41 +323,6 @@ export const BloodPressureInputModal: React.FC<Props> = ({
   function parseISOString(s: string): Date {
     return new Date(s);
   }
-
-  function getRandomInt(max: number) {
-    return Math.floor(Math.random() * max);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const generate1000Records = async () => {
-    setError(null);
-    setIsLoading(true);
-    for (let i = 0; i < 2000; i += 1) {
-      const updatedbloodPressureData = {
-        timestamp: new Date(
-          new Date().valueOf() - 1000 * 60 * 60 * 24 * 182 + 3110400 * 5 * i,
-        ).toISOString(),
-        systolic: getRandomInt(70) + 90,
-        diastolic: getRandomInt(70) + 60,
-        pulse: 90,
-      }; // for firebase
-      try {
-        await replaceBloodPressureFromSQL(
-          new Date(updatedbloodPressureData.timestamp).valueOf(),
-          updatedbloodPressureData.systolic,
-          updatedbloodPressureData.diastolic,
-          updatedbloodPressureData.pulse,
-        );
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('An unknown error occurred.');
-        }
-      }
-    }
-    setIsLoading(false);
-  };
 
   const saveNewBloodPressureHandler = async () => {
     Keyboard.dismiss();
@@ -698,7 +660,9 @@ export const BloodPressureInputModal: React.FC<Props> = ({
             >
               {formState.inputValues.date ? (
                 <Text style={{ fontSize: FontSize.content }}>
-                  {moment(formState.inputValues.date).format('ll')}
+                  {moment(formState.inputValues.date)
+                    .locale(locale2)
+                    .format('ll')}
                 </Text>
               ) : (
                 <Text style={{ color: '#bbb', fontSize: FontSize.content }}>
@@ -744,7 +708,9 @@ export const BloodPressureInputModal: React.FC<Props> = ({
             >
               {formState.inputValues.time ? (
                 <Text style={{ fontSize: FontSize.content }}>
-                  {moment(formState.inputValues.time).format('LT')}
+                  {moment(formState.inputValues.time)
+                    .locale(locale2)
+                    .format('LT')}
                 </Text>
               ) : (
                 <Text style={{ color: '#bbb', fontSize: FontSize.content }}>

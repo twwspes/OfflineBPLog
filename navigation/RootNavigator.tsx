@@ -36,14 +36,6 @@ const defaultNavOptions: StackNavigationOptions = {
 export const navigationRef =
   React.createRef<NavigationContainerRef<BottomTabsParamList>>();
 
-// export function navigate<RouteName extends string = string>(
-//   ...args: RouteName extends string
-//     ? [screen: RouteName] | [screen: RouteName, params: Record<string, any>]
-//     : never
-// ): void {
-//   navigationRef.current?.navigate(...args);
-// }
-
 const BloodPressureStack = createStackNavigator<BloodPressureStackParamList>();
 
 export const BloodPressureNavigator: React.FC = () => {
