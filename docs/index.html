@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title lang="en">Offline Blood Pressure Log</title>
+    <title lang="fr">Le journal de tension artérielle</title>
+    <title lang="es">Registro de Presión Sanguínea</title>
+    <title lang="zh">離線血壓記錄</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat|Ubuntu"
+      rel="stylesheet"
+    />
+
+    <!-- CSS Stylesheets -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <!-- Font Awesome -->
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"
+    ></script>
+
+    <!-- Bootstrap Scripts -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <section class="colored-section" id="title">
+      <div class="container-fluid">
+        <!-- Nav Bar -->
+
+        <nav class="navbar navbar-expand-lg navbar-dark">
+          <a lang="en" class="navbar-brand" href=""
+            >Offline Blood Pressure Log</a
+          >
+          <a lang="fr" class="navbar-brand" href=""
+            >Le journal de tension artérielle</a
+          >
+          <a lang="es" class="navbar-brand" href=""
+            >Registro de Presión Sanguínea</a
+          >
+          <a lang="zh" class="navbar-brand" href="">離線血壓記錄</a>
+
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarTogglerDemo02"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="dropdown">
+            <button
+              lang="en"
+              class="btn btn-outline-light dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              English
+            </button>
+            <button
+              lang="fr"
+              class="btn btn-outline-light dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Français
+            </button>
+            <button
+              lang="es"
+              class="btn btn-outline-light dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Español
+            </button>
+            <button
+              lang="zh"
+              class="btn btn-outline-light dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              中文
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li>
+                <button class="dropdown-item" onclick="select_language('en')">
+                  English
+                </button>
+              </li>
+              <li>
+                <button class="dropdown-item" onclick="select_language('fr')">
+                  Français
+                </button>
+              </li>
+              <li>
+                <button class="dropdown-item" onclick="select_language('es')">
+                  Español
+                </button>
+              </li>
+              <li>
+                <button class="dropdown-item" onclick="select_language('zh')">
+                  中文
+                </button>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <!-- Title -->
+
+        <div class="row">
+          <div class="col-lg-6">
+            <h1 lang="en" class="big-heading">
+              A Real Offline Blood Pressure Log
+            </h1>
+            <h1 lang="fr" class="big-heading">
+              Le journal de tension artérielle qui ne vend pas vos données
+            </h1>
+            <h1 lang="es" class="big-heading">Registro de Presión Sanguínea</h1>
+            <h1 lang="zh" class="big-heading">不會出賣您個人資料的血壓記錄</h1>
+            <img
+              lang="en"
+              onclick="window.location.href='https://apps.apple.com/sn/app/offline-bp-log/id1568093579'"
+              class="btn btn-lg download-button"
+              src="images/DownloadOnAppleEn.png"
+              alt="iphone-download"
+            />
+            <img
+              lang="en"
+              onclick="window.location.href='https://play.google.com/store/apps/details?id=com.spesnaiad.bplog'"
+              class="btn btn-lg download-button"
+              src="images/DownloadOnGoogleEn.png"
+              alt="google-download"
+            />
+            <img
+              lang="fr"
+              onclick="window.location.href='https://apps.apple.com/sn/app/offline-bp-log/id1568093579'"
+              class="btn btn-lg download-button"
+              src="images/DownloadOnAppleFr.png"
+              alt="iphone-download"
+            />
+            <img
+              lang="fr"
+              onclick="window.location.href='https://play.google.com/store/apps/details?id=com.spesnaiad.bplog'"
+              class="btn btn-lg download-button"
+              src="images/DownloadOnGoogleFr.png"
+              alt="google-download"
+            />
+            <img
+              lang="es"
+              onclick="window.location.href='https://apps.apple.com/sn/app/offline-bp-log/id1568093579'"
+              class="btn btn-lg download-button"
+              src="images/DownloadOnAppleEs.png"
+              alt="iphone-download"
+            />
+            <img
+              lang="es"
+              onclick="window.location.href='https://play.google.com/store/apps/details?id=com.spesnaiad.bplog'"
+              class="btn btn-lg download-button"
+              src="images/DownloadOnGoogleEs.png"
+              alt="google-download"
+            />
+            <img
+              lang="zh"
+              onclick="window.location.href='https://apps.apple.com/sn/app/offline-bp-log/id1568093579'"
+              class="btn btn-lg download-button"
+              src="images/DownloadOnAppleZh.png"
+              alt="iphone-download"
+            />
+            <img
+              lang="zh"
+              onclick="window.location.href='https://play.google.com/store/apps/details?id=com.spesnaiad.bplog'"
+              class="btn btn-lg download-button"
+              src="images/DownloadOnGoogleZh.png"
+              alt="google-download"
+            />
+          </div>
+
+          <div class="col-lg-6">
+            <div
+              lang="en"
+              id="carouselExampleSlidesOnly"
+              class="carousel slide"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img
+                    src="images/iosScreenEn1.png"
+                    class="d-block w-100"
+                    alt="iosScreenEn1"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenEn2.png"
+                    class="d-block w-100"
+                    alt="iosScreenEn2"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenEn3.png"
+                    class="d-block w-100"
+                    alt="iosScreenEn3"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenEn4.png"
+                    class="d-block w-100"
+                    alt="iosScreenEn4"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenEn5.png"
+                    class="d-block w-100"
+                    alt="iosScreenEn5"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenEn6.png"
+                    class="d-block w-100"
+                    alt="iosScreenEn6"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              lang="fr"
+              id="carouselExampleSlidesOnly"
+              class="carousel slide"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img
+                    src="images/iosScreenFr1.png"
+                    class="d-block w-100"
+                    alt="iosScreenFr1"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenFr2.png"
+                    class="d-block w-100"
+                    alt="iosScreenFr2"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenFr3.png"
+                    class="d-block w-100"
+                    alt="iosScreenFr3"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenFr4.png"
+                    class="d-block w-100"
+                    alt="iosScreenFr4"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenFr5.png"
+                    class="d-block w-100"
+                    alt="iosScreenFr5"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenFr6.png"
+                    class="d-block w-100"
+                    alt="iosScreenFr6"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              lang="es"
+              id="carouselExampleSlidesOnly"
+              class="carousel slide"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img
+                    src="images/iosScreenEs1.png"
+                    class="d-block w-100"
+                    alt="iosScreenEs1"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenEs2.png"
+                    class="d-block w-100"
+                    alt="iosScreenEs2"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenEs3.png"
+                    class="d-block w-100"
+                    alt="iosScreenEs3"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenEs4.png"
+                    class="d-block w-100"
+                    alt="iosScreenEs4"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenEs5.png"
+                    class="d-block w-100"
+                    alt="iosScreenEs5"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenEs6.png"
+                    class="d-block w-100"
+                    alt="iosScreenEs6"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              lang="zh"
+              id="carouselExampleSlidesOnly"
+              class="carousel slide"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img
+                    src="images/iosScreenZh1.png"
+                    class="d-block w-100"
+                    alt="iosScreenZh1"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenZh2.png"
+                    class="d-block w-100"
+                    alt="iosScreenZh2"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenZh3.png"
+                    class="d-block w-100"
+                    alt="iosScreenZh3"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenZh4.png"
+                    class="d-block w-100"
+                    alt="iosScreenZh4"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenZh5.png"
+                    class="d-block w-100"
+                    alt="iosScreenZh5"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="images/iosScreenZh6.png"
+                    class="d-block w-100"
+                    alt="iosScreenZh6"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Intro -->
+
+    <section lang="en" class="white-section" id="features">
+      <div class="container-fluid">
+        <h3>Why this app</h3>
+        <p>
+          This app makes blood pressure logging simple and offline. No accounts,
+          no clutter — your data stays only on your device. It was also created
+          to explore and refine new development skills.
+        </p>
+      </div>
+    </section>
+
+    <section lang="fr" class="white-section" id="features">
+      <div class="container-fluid">
+        <h3>Pourquoi cette application</h3>
+        <p>
+          Cette application rend l’enregistrement de la tension simple et hors
+          ligne. Aucun compte requis, aucune complexité — vos données restent
+          uniquement sur votre appareil. Elle a aussi été conçue pour
+          expérimenter et perfectionner des compétences de développement.
+        </p>
+      </div>
+    </section>
+
+    <section lang="es" class="white-section" id="features">
+      <div class="container-fluid">
+        <h3>Por qué esta app</h3>
+        <p>
+          Esta aplicación permite registrar la presión arterial de forma
+          sencilla y sin conexión. No requiere cuentas ni pasos innecesarios;
+          los datos permanecen solo en tu dispositivo. También sirve como
+          proyecto para mejorar habilidades de desarrollo.
+        </p>
+      </div>
+    </section>
+
+    <section lang="zh" class="white-section" id="features">
+      <div class="container-fluid">
+        <h3>應用緣起</h3>
+        <p>
+          此應用務求簡明，無須註冊，專記血壓，悉藏於機，不外泄。亦以是試新術，習程式之藝。
+        </p>
+      </div>
+    </section>
+
+    <!-- Intro -->
+
+    <section lang="en" class="white-section" id="features">
+      <div class="container-fluid">
+        <h3>Privacy & Terms</h3>
+        <p>
+          This is a free app, provided as-is. Your blood pressure data stays
+          only on your device; we do not collect it. Third-party services (e.g.,
+          Google Play, Expo) may support the app’s code but do not access your
+          data. No external links. Contact:
+          <span class="contact-email"></span>
+          <noscript
+            ><span>spes</span
+            >[at]<span>connect</span>[dot]<span>hku</span>[dot]<span
+              >hk</span
+            ></noscript
+          >. English text prevails. Policies may change.
+        </p>
+      </div>
+    </section>
+
+    <section lang="fr" class="white-section" id="features">
+      <div class="container-fluid">
+        <h3>Confidentialité & Conditions</h3>
+        <p>
+          Application gratuite, fournie « telle quelle ». Vos données de tension
+          restent sur votre appareil, non collectées. Certains services tiers
+          (Google Play, Expo) soutiennent le code de l’application mais
+          n’accèdent pas à vos données. Pas de liens externes. Contact :
+          <span class="contact-email"></span>
+          <noscript
+            ><span>spes</span
+            >[arobase]<span>connect</span>[point]<span>hku</span>[point]<span
+              >hk</span
+            ></noscript
+          >. La version anglaise prévaut. Politique sujette à changement.
+        </p>
+      </div>
+    </section>
+
+    <section lang="es" class="white-section" id="features">
+      <div class="container-fluid">
+        <h3>Privacidad y Términos</h3>
+        <p>
+          App gratuita, ofrecida tal cual. Tus datos de presión se guardan solo
+          en tu dispositivo, no se recopilan. Servicios de terceros (Google
+          Play, Expo) apoyan el código de la aplicación pero no acceden a tus
+          datos. Sin enlaces externos. Contacto:
+          <span class="contact-email"></span>
+          <noscript
+            ><span>spes</span
+            >[arroba]<span>connect</span>[punto]<span>hku</span>[punto]<span
+              >hk</span
+            ></noscript
+          >. La versión en inglés prevalece. La política puede cambiar.
+        </p>
+      </div>
+    </section>
+
+    <section lang="zh" class="white-section" id="features">
+      <div class="container-fluid">
+        <h3>私隱撮要</h3>
+        <p>
+          本應用免費，如其所是而用。血壓數據僅存於機，吾不收取。或用第三方程式（如
+          Google、Expo），助運行程式之碼，然不觸用戶之數據。無外鏈。若有疑，電郵
+          <span class="contact-email"></span>
+          <noscript
+            ><span>spes</span
+            >[at]<span>connect</span>[dot]<span>hku</span>[dot]<span
+              >hk</span
+            ></noscript
+          >。 英文本為準，條款或時有改。
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+
+    <footer class="colored-section" id="footer">
+      <div class="container-fluid">
+        <h4>© Copyright <span id="copyright-year"></span> Tak Wai WONG</h4>
+      </div>
+    </footer>
+
+    <script>
+      // get the paramater from the url request
+      var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+          sURLVariables = sPageURL.split("&"),
+          sParameterName,
+          i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+          sParameterName = sURLVariables[i].split("=");
+
+          if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined
+              ? true
+              : decodeURIComponent(sParameterName[1]);
+          }
+        }
+        return false;
+      };
+
+      var lang = getUrlParameter("lang") ? getUrlParameter("lang") : "en";
+
+      console.log("lang", lang);
+
+      function select_language(language) {
+        $("[lang]").each(function () {
+          if ($(this).attr("lang") == language) $(this).show();
+          else $(this).hide();
+        });
+      }
+
+      select_language(lang);
+    </script>
+
+    <script>
+      const startYear = 2021; // first year you published/released
+      const currentYear = new Date().getFullYear();
+      document.getElementById("copyright-year").textContent =
+        startYear === currentYear ? startYear : startYear + "–" + currentYear;
+    </script>
+
+    <script>
+      (function () {
+        // "spes@connect.hku.hk" as character codes (no raw email in source)
+        var codes = [
+          115, 112, 101, 115, 64, 99, 111, 110, 110, 101, 99, 116, 46, 104, 107,
+          117, 46, 104, 107,
+        ];
+        var email = String.fromCharCode.apply(null, codes);
+
+        document.querySelectorAll(".contact-email").forEach(function (holder) {
+          var a = document.createElement("a");
+          a.href = "mailto:" + email;
+          a.textContent = email;
+          holder.replaceWith(a);
+        });
+      })();
+    </script>
+  </body>
+</html>
