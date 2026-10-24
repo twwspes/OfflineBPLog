@@ -21,10 +21,9 @@ After committing and pushing these files to `main`, open the OfflineBPLog
 repository's **Settings → Pages**. Under **Build and deployment**, select
 **Deploy from a branch**, choose `main` and `/docs`, and save.
 
-The expected address is https://twwspes.github.io/OfflineBPLog/.
+The website and privacy policy address is https://twwspes.github.io/OfflineBPLog/.
 No npm build or app dependencies are required.
-The original https://twwspes.github.io/OfflineBPLog-Intro/ remains separate;
-keep it available until links in store listings and other places are updated.
+Use this address in app store listings and other references to the privacy policy.
 
 ## Editing
 

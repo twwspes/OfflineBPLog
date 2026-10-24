@@ -83,8 +83,8 @@ export const RecordOutputScreen: React.FC = () => {
   const foundPrefix = localePrefixes.find((prefix) => locale2.includes(prefix));
 
   const privacyPolicyWebsite = foundPrefix
-    ? `https://twwspes.github.io/OfflineBPLog-Intro/?lang=${foundPrefix}`
-    : 'https://twwspes.github.io/OfflineBPLog-Intro/';
+    ? `https://twwspes.github.io/OfflineBPLog/?lang=${foundPrefix}`
+    : 'https://twwspes.github.io/OfflineBPLog/';
 
   const onLanguageSelected = useCallback(
     (_: string, value: string | number | null) => {
