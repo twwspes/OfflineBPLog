@@ -237,6 +237,13 @@ export default [
     },
   },
   {
+    files: ['scripts/*.mts'],
+    rules: {
+      // Node executes these scripts directly and requires source extensions.
+      'import/extensions': 'off',
+    },
+  },
+  {
     files: ['**/*.stories.@(js|jsx|ts|tsx)'],
 
     rules: {

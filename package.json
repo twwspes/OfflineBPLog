@@ -19,8 +19,9 @@
     "release:preview": "release-it --dry-run",
     "build:bump": "node scripts/bump-build.mts",
     "test:release": "node --test scripts/bump-build.test.mts",
-    "test:records": "node --test scripts/records.test.mts scripts/recordPager.test.mts",
-    "test": "node --test scripts/*.test.mts"
+    "test:records": "node --test scripts/records.test.mts scripts/recordPager.test.mts scripts/chartAggregation.test.mts",
+    "test": "node --test scripts/*.test.mts",
+    "benchmark:charts": "node scripts/benchmark-charts.mts"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",

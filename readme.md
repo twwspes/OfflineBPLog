@@ -11,6 +11,11 @@ category calculations, pagination, and deletion error recovery. Run `npm test`
 for all tests. Tests use synthetic records and an in-memory SQLite database;
 they do not access the app's stored records. CI and release preparation run them.
 
+Run `npm run benchmark:charts` to compare the previous and optimized chart
+queries on 1,000, 5,000, and 20,000 synthetic records. The benchmark checks that
+their results match. Timings use in-memory SQLite and exclude the mobile native
+bridge; they are not measurements of dashboard load time on a phone.
+
 New spreadsheet exports include an optional `Milliseconds` column to retain
 timestamp precision. Older spreadsheets still import using matching within each
 second. Keep the new column when available, especially for records saved within
@@ -38,7 +43,7 @@ npm run release -- minor
 
 Use `patch`, `minor`, or `major`, or omit the argument to use the interactive
 version selection. Preview shows planned changes without writing files; run
-`npm run check` and `npm run test:release` separately to validate before previewing.
+`npm run check` and `npm test` separately to validate before previewing.
 The actual release runs these checks, updates `package.json`, `package-lock.json`,
 `expo.version`, and `expo.runtimeVersion`, increments both local build numbers,
 updates `CHANGELOG.md`, and prompts to commit, tag, push, and create a **draft**
