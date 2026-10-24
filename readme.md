@@ -27,63 +27,89 @@ To simplify the maintenance process, I choose to apply expo over react-native an
 # Versions and local releases
 
 Use Node.js 24.15+ (recommended), 22.22.2+, or 26+ as specified in
-`package.json`, then run `npm ci`. Version management stays
-local: `eas.json` uses `appVersionSource: "local"`.
+`package.json`, then run `npm ci`. EAS uses local app versions and build numbers.
+Use Conventional Commits such as `feat: add monthly summaries` and
+`fix: correct date filtering` to generate release notes.
 
-Use Conventional Commits, for example `fix: correct date filtering` or
-`feat: add monthly summaries`. These generate release notes and suggest patch or
-minor versions; a marked breaking change suggests a major version.
+## 1. Prepare a release branch
 
-Start from a clean, committed `main` branch that is up to date with the remote:
+Start from an up-to-date `main` with a clean working tree. Choose the intended
+version, for example:
 
 ```sh
-npm run release:preview -- minor
-npm run release -- minor
+git switch -c release/2.7.0
+npm run release:preview -- 2.7.0
+npm run release:prepare -- 2.7.0
 ```
 
-Use `patch`, `minor`, or `major`, or omit the argument to use the interactive
-version selection. Preview shows planned changes without writing files; run
-`npm run check` and `npm test` separately to validate before previewing.
-The actual release runs these checks, updates `package.json`, `package-lock.json`,
-`expo.version`, and `expo.runtimeVersion`, increments both local build numbers,
-updates `CHANGELOG.md`, and prompts to commit, tag, push, and create a **draft**
-GitHub release. npm publishing is disabled. Review generated public release notes
-before publishing the draft.
+Preparation runs checks and tests, synchronizes `package.json`, its lockfile,
+`expo.version`, and `expo.runtimeVersion`, increments both platform build numbers,
+updates `CHANGELOG.md`, and prompts to make a local commit. It creates no tag or
+GitHub release and does not push. The version must match the branch name and be
+newer than the current app version. `npm run release` is an alias for preparation.
+Commit the preparation changes before building if you decline its commit prompt.
 
-GitHub release creation requires `GITHUB_TOKEN` in your shell environment with
-access to create releases in the repository. Git push uses your existing Git
-credentials. Keep tokens and signing credentials outside tracked files; never
-paste their values into documentation or commits.
+Preview does not modify files. Run `npm run check` and `npm test` separately when
+you want validation before previewing. Push the release branch normally whenever
+you want a remote backup.
 
-Build locally, one platform at a time:
+## 2. Build and test locally
 
 ```sh
 eas build --local --platform ios --profile production
 eas build --local --platform android --profile production
 ```
 
-Test the builds, submit through the usual store process, and publish the GitHub
-draft when the release is available. Release preparation does not run EAS builds,
-submit to stores, or publish EAS Updates.
+Install and test the builds, including through TestFlight as appropriate. These
+commands do not submit to stores. Update channels remain a separate decision:
+review the production channel in `eas.json` before building a new release.
 
-For a replacement build of the **same app version**:
+## 3. Prepare replacement builds
+
+Commit any fixes first, then increment only the build numbers and refresh notes:
 
 ```sh
 npm run build:bump -- --dry-run
 npm run build:bump
-git add app.json
-git commit -m "chore: increment build numbers"
+npm run release:notes
+git add app.json CHANGELOG.md
+git commit -m "chore: prepare replacement build"
 ```
 
-Then build again. This increments both platform counters without changing the app
-version or generating another release. Do not also bump manually before a normal
-`npm run release`, which already increments them.
+Build and test again. The app version stays the same while both platform build
+numbers increase. Do not repeat `release:prepare` for the same release.
+`release:notes` replaces the current version's entry rather than duplicating it;
+older handwritten release records are preserved. Review the generated public notes.
+If you already bumped this release's version manually, skip preparation and use
+`release:notes` after ensuring the package, lockfile, app, and runtime versions all
+match the release branch.
+
+## 4. Finalize after the store release
+
+Run finalization on the clean release-branch commit used for the approved build:
+
+```sh
+npm run release:finalize:preview
+npm run release:finalize
+```
+
+Finalization checks versions and notes, runs checks and tests, and prompts to tag
+that exact commit, push the release branch and tag, and create a **draft** GitHub
+release. It does not change files, create a new commit, or increment versions or
+build numbers. Stale notes must be refreshed, reviewed, and committed before the
+final build. Review and publish the GitHub draft after the store release.
+
+Automated GitHub release creation uses `GITHUB_TOKEN` from your shell environment.
+Without it, release-it can open GitHub's release form instead. Git push uses your
+existing Git credentials. Keep token values and signing credentials outside
+tracked files and documentation. npm publishing is disabled.
+
+## 5. Merge back to main
+
+Merge the released branch through your usual pull-request process. Use a merge
+commit to preserve the tested, tagged release commit in `main`'s history. The next
+release starts from the updated `main`; build numbers continue increasing.
 
 The runtime version follows the app version. Native compatibility changes require
-a new app version and store build before publishing matching EAS Updates. Update
-channels are maintained separately: review the production channel in `eas.json`
-when planning a release; these commands deliberately leave it unchanged.
-
-The first generated changelog entry uses the available history since the repository
-restart; earlier handwritten release records remain below it. The version in
-`package.json` is the starting point even when there are no release tags yet.
+a new app version and store build before publishing matching EAS Updates. Release
+scripts do not build apps, submit to stores, publish EAS Updates, or merge branches.

@@ -1,22 +1,22 @@
 {
   "git": {
-    "requireBranch": "main",
+    "requireBranch": "release/*",
     "requireCleanWorkingDir": true,
-    "commitMessage": "chore: release v${version}",
+    "requireUpstream": false,
+    "commitMessage": "chore: prepare release v${version}",
+    "tag": false,
+    "push": false,
     "tagName": "v${version}"
   },
   "npm": {
     "publish": false
   },
   "github": {
-    "release": true,
-    "draft": true,
-    "releaseName": "v${version}"
+    "release": false
   },
   "plugins": {
     "@release-it/conventional-changelog": {
-      "preset": "conventionalcommits",
-      "infile": "CHANGELOG.md"
+      "preset": "conventionalcommits"
     },
     "@release-it/bumper": {
       "out": {
@@ -27,10 +27,12 @@
   },
   "hooks": {
     "before:init": [
+      "node scripts/release-guard.mts prepare",
       "npm run build:bump -- --check",
       "npm run check",
       "npm test"
     ],
-    "after:bump": "npm run build:bump"
+    "before:bump": "node scripts/release-guard.mts prepare ${version}",
+    "after:bump": ["npm run build:bump", "npm run release:notes"]
   }
 }

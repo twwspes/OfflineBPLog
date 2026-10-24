@@ -140,6 +140,7 @@ export default [
             '**/*.stories.*',
             '**/*.spec.*',
             'plugins/**/*.js',
+            'scripts/**/*.mts',
             '**/test-utils/**',
             '**/__test__/**',
             '**/__tests__/**',
