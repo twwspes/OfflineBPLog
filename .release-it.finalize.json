@@ -1,0 +1,28 @@
+{
+  "increment": false,
+  "git": {
+    "requireBranch": "release/*",
+    "requireCleanWorkingDir": true,
+    "requireUpstream": false,
+    "commit": false,
+    "tag": true,
+    "tagName": "v${version}",
+    "push": true,
+    "changelog": "node scripts/release-notes.mts --print"
+  },
+  "npm": { "publish": false },
+  "github": {
+    "release": true,
+    "draft": true,
+    "releaseName": "v${version}"
+  },
+  "hooks": {
+    "before:init": [
+      "node scripts/release-guard.mts finalize",
+      "node scripts/release-notes.mts --check",
+      "npm run check",
+      "npm test"
+    ],
+    "before:bump": "node scripts/release-guard.mts finalize ${version}"
+  }
+}
