@@ -1,3 +1,14 @@
+# Changelog
+
+## 2.7.0 (2026-10-24)
+
+### Bug Fixes
+
+* clean up ([7f2ec83](https://github.com/twwspes/OfflineBPLog/commit/7f2ec83fbb69a9744c58de1d8ad0036e4fa84072))
+* database performance upgrade. Chart aggregation now avoids repeatedly counting earlier records while preserving the tested results. ([64f0856](https://github.com/twwspes/OfflineBPLog/commit/64f0856fa31e8a6dd0ddfac664566d25882bd879))
+* Timestamp edits replace the original record correctly. ([d057e0d](https://github.com/twwspes/OfflineBPLog/commit/d057e0d13f840078272b7654b938bce67b262a44))
+* update release-it script ([e43585d](https://github.com/twwspes/OfflineBPLog/commit/e43585d198981e13e1f7fa77209fcb5f316a9ff5))
+
 v2.6.0 (version code 31) - prod-2.6 (expo 55), published and released
 
 v2.6.0 (version code 30) - prod-2.6 (expo 55), not published and not released
