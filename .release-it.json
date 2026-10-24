@@ -1,0 +1,36 @@
+{
+  "git": {
+    "requireBranch": "main",
+    "requireCleanWorkingDir": true,
+    "commitMessage": "chore: release v${version}",
+    "tagName": "v${version}"
+  },
+  "npm": {
+    "publish": false
+  },
+  "github": {
+    "release": true,
+    "draft": true,
+    "releaseName": "v${version}"
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": "conventionalcommits",
+      "infile": "CHANGELOG.md"
+    },
+    "@release-it/bumper": {
+      "out": {
+        "file": "app.json",
+        "path": ["expo.version", "expo.runtimeVersion"]
+      }
+    }
+  },
+  "hooks": {
+    "before:init": [
+      "npm run build:bump -- --check",
+      "npm run check",
+      "npm run test:release"
+    ],
+    "after:bump": "npm run build:bump"
+  }
+}
