@@ -23,7 +23,12 @@ import { MainButton } from '../../components/UI/MainButton';
 import { MainButtonClear } from '../../components/UI/MainButtonClear';
 import { Colors } from '../../constants/Colors';
 import { FontSize } from '../../constants/FontSize';
-import { isValidDate } from '../../helpers/isValidDate';
+import {
+  createImportTimestampMatcher,
+  parseImportRecord,
+  toSpreadsheetRow,
+} from '../../helpers/importRecords';
+import { runWithLoading } from '../../helpers/runWithLoading';
 
 const styles = StyleSheet.create({
   screen: {
@@ -145,9 +150,13 @@ export const RecordOutputScreen: React.FC = () => {
 
   const deleteAllLogsHandler = () => {
     const handleDeleteAll = async () => {
-      setIsLoading(true);
-      await bloodPressureActions.deleteAllBloodPressures();
-      setIsLoading(false);
+      await runWithLoading(
+        bloodPressureActions.deleteAllBloodPressures,
+        setIsLoading,
+        (error) => {
+          setError(error instanceof Error ? error.message : t('error_occur'));
+        },
+      );
     };
 
     Alert.alert(t('warning'), t('all_logs_removed_warning'), [
@@ -182,93 +191,45 @@ export const RecordOutputScreen: React.FC = () => {
         });
         const workbook = XLSX.read(b64, { type: 'base64' });
 
-        const importJsonArray = XLSX.utils.sheet_to_json<{
-          Year: number;
-          Month: number;
-          Date: number;
-          Hours: number;
-          Minutes: number;
-          Seconds: number;
-          Systolic: number;
-          Diastolic: number;
-          Pulse: number;
-          Remark: string | undefined;
-        }>(workbook.Sheets.Sheet1);
+        if (!workbook.Sheets.Sheet1)
+          throw new Error('Missing Sheet1 worksheet.');
+        const importJsonArray = XLSX.utils.sheet_to_json<
+          Record<string, unknown>
+        >(workbook.Sheets.Sheet1);
         // console.log("RecordOutputScreen json", importJsonArray);
 
         if (importJsonArray !== undefined) {
           // console.log('RecordOutputScreen json is valid');
 
-          let bloodPressuresReverseIndex = 0;
+          // Use fresh IDs rather than a possibly stale screen snapshot.
+          const existing = await bloodPressureActions.fetchBloodPressure(
+            -1,
+            -1,
+            '0001-01-01T00:00:00.000Z',
+            '9999-12-31T23:59:59.999Z',
+            null,
+          );
+          const matchTimestamp = createImportTimestampMatcher(existing);
 
           setImportTotal(importJsonArray.length);
           setImportCount(0);
 
           for (let i = 0; i < importJsonArray.length; i += 1) {
-            const item = importJsonArray[i];
-
-            const date = new Date(
-              item.Year,
-              item.Month - 1,
-              item.Date,
-              item.Hours,
-              item.Minutes,
-              item.Seconds,
-            );
-
-            const isValid = isValidDate(date);
-            const isInRange =
-              item.Systolic > 20 &&
-              item.Systolic < 250 &&
-              item.Diastolic > 20 &&
-              item.Diastolic < 250 &&
-              item.Pulse > 20 &&
-              item.Pulse < 250;
-
-            if (!isValid || !isInRange) {
+            const record = parseImportRecord(importJsonArray[i]);
+            if (!record) {
               setImportCount((prev) => prev + 1);
               continue;
             }
-
-            const remark = item.Remark?.toString().substring(0, 300) || '';
-            const dateValue = date.valueOf();
-
-            const matchedIndex = bloodPressures
-              .slice(bloodPressuresReverseIndex)
-              .findIndex((bp) => {
-                const bpTimestamp = Math.floor(Number(bp.id) / 1000) * 1000;
-                return dateValue >= bpTimestamp;
-              });
-
             try {
-              if (matchedIndex !== -1) {
-                const index = bloodPressuresReverseIndex + matchedIndex;
-                const bp = bloodPressures[index];
-                const bpTimestamp = Math.floor(Number(bp.id) / 1000) * 1000;
-                const idToUse = dateValue === bpTimestamp ? bp.id : dateValue;
-
-                await bloodPressureActions.addBloodPressure(
-                  new Date(idToUse).toISOString(),
-                  item.Systolic,
-                  item.Diastolic,
-                  item.Pulse,
-                  remark !== '',
-                  true,
-                  remark,
-                );
-
-                bloodPressuresReverseIndex = index + 1;
-              } else {
-                await bloodPressureActions.addBloodPressure(
-                  new Date(dateValue).toISOString(),
-                  item.Systolic,
-                  item.Diastolic,
-                  item.Pulse,
-                  remark !== '',
-                  true,
-                  remark,
-                );
-              }
+              await bloodPressureActions.addBloodPressure(
+                new Date(matchTimestamp(record)).toISOString(),
+                record.systolic,
+                record.diastolic,
+                record.pulse,
+                true,
+                true,
+                record.remark,
+              );
             } catch (e: unknown) {
               if (e instanceof Error) {
                 Alert.alert(
@@ -309,25 +270,11 @@ export const RecordOutputScreen: React.FC = () => {
       setIsLoading(false);
     }
     bloodPressureActions.forceUpdateBPState();
-  }, [bloodPressures, t]);
+  }, [t]);
 
   const onExportButtonPress = useCallback(async () => {
     if (FileSystem.documentDirectory !== null) {
-      const bloodPressuresJson = bloodPressures.map((item) => {
-        const dateTemp = new Date(item.id);
-        return {
-          systolic: item.systolic_blood_pressure,
-          diastolic: item.diastolic_blood_pressure,
-          pulse: item.pulse,
-          year: dateTemp.getFullYear(),
-          month: dateTemp.getMonth() + 1,
-          date: dateTemp.getDate(),
-          hours: dateTemp.getHours(),
-          minutes: dateTemp.getMinutes(),
-          seconds: dateTemp.getSeconds(),
-          remark: item.remark ?? '',
-        };
-      });
+      const bloodPressuresJson = bloodPressures.map(toSpreadsheetRow);
       /* generate worksheet and workbook */
       const worksheet = XLSX.utils.json_to_sheet(bloodPressuresJson);
       const workbook = XLSX.utils.book_new();
@@ -348,6 +295,7 @@ export const RecordOutputScreen: React.FC = () => {
             'Minutes',
             'Seconds',
             'Remark',
+            'Milliseconds',
           ],
         ],
         { origin: 'A1' },
@@ -396,21 +344,7 @@ export const RecordOutputScreen: React.FC = () => {
           remark: 'Right Arm',
         },
       ];
-      const bloodPressuresJson = sampleBloodPressureLog.map((item) => {
-        const dateTemp = new Date(item.id);
-        return {
-          systolic: item.systolic_blood_pressure,
-          diastolic: item.diastolic_blood_pressure,
-          pulse: item.pulse,
-          year: dateTemp.getFullYear(),
-          month: dateTemp.getMonth() + 1,
-          date: dateTemp.getDate(),
-          hours: dateTemp.getHours(),
-          minutes: dateTemp.getMinutes(),
-          seconds: dateTemp.getSeconds(),
-          remark: item.remark ?? '',
-        };
-      });
+      const bloodPressuresJson = sampleBloodPressureLog.map(toSpreadsheetRow);
       /* generate worksheet and workbook */
       const worksheet = XLSX.utils.json_to_sheet(bloodPressuresJson);
       const workbook = XLSX.utils.book_new();
@@ -431,6 +365,7 @@ export const RecordOutputScreen: React.FC = () => {
             'Minutes',
             'Seconds',
             'Remark',
+            'Milliseconds',
           ],
         ],
         { origin: 'A1' },

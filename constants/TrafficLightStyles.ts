@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from './Colors';
+import { bloodPressureCategory } from '../helpers/bloodPressureCategory';
 
 const greenStyles = StyleSheet.create({
   customFontStyle: { color: Colors.darkGreen },
@@ -50,33 +51,10 @@ export const bmiColorStyle = (bmi: number | null) => {
 export const bloodPressureColorStyle = (
   systolic: number | null,
   diastolic: number | null,
-) => {
-  if (
-    systolic !== null &&
-    diastolic !== null &&
-    !(Number.isNaN(systolic) || Number.isNaN(diastolic))
-  ) {
-    if (systolic < 120 && diastolic < 80) {
-      return greenStyles;
-    }
-    if (systolic >= 120 && systolic < 130 && diastolic < 80) {
-      return yellowStyles;
-    }
-    if (
-      (systolic >= 130 && systolic < 140) ||
-      (diastolic >= 80 && diastolic < 90)
-    ) {
-      return orangeStyles;
-    }
-    if (
-      (systolic >= 140 && systolic < 180) ||
-      (diastolic >= 90 && diastolic < 120)
-    ) {
-      return pinkStyles;
-    }
-  }
-  return redStyles;
-};
+) =>
+  [greenStyles, yellowStyles, orangeStyles, pinkStyles, redStyles][
+    bloodPressureCategory(systolic, diastolic)
+  ];
 
 export const systolicColorStyle = (systolic: number | null) => {
   if (systolic !== null && !Number.isNaN(systolic)) {

@@ -29,7 +29,7 @@
     "before:init": [
       "npm run build:bump -- --check",
       "npm run check",
-      "npm run test:release"
+      "npm test"
     ],
     "after:bump": "npm run build:bump"
   }

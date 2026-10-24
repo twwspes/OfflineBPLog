@@ -169,16 +169,16 @@ export const addBloodPressure = async (
 export const deleteBloodPressure = async (
   timestamp: string,
   withRemark: boolean,
+  shouldStopInstantUpdate = false,
 ) => {
   const timestampMilli = new Date(timestamp).valueOf();
 
-  await deleteBloodPressureFromLocal(timestampMilli);
-
-  if (withRemark) {
-    await deleteMessageFromLocal(timestampMilli);
+  try {
+    await deleteBloodPressureFromLocal(timestampMilli);
+    if (withRemark) await deleteMessageFromLocal(timestampMilli);
+  } finally {
+    if (!shouldStopInstantUpdate) store.dispatch(bloodPressureUpdate());
   }
-
-  store.dispatch(bloodPressureUpdate());
 };
 
 export const forceUpdateBPState = () => {
@@ -186,9 +186,12 @@ export const forceUpdateBPState = () => {
 };
 
 export const deleteAllBloodPressures = async () => {
-  await deleteBloodPressuresFromLocal();
-  await deleteMessagesFromLocal();
-  store.dispatch(bloodPressureUpdate());
+  try {
+    await deleteBloodPressuresFromLocal();
+    await deleteMessagesFromLocal();
+  } finally {
+    store.dispatch(bloodPressureUpdate());
+  }
 };
 
 export const setFromdate = (dateISOString: string) => {

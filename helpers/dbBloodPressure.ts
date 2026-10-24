@@ -1,5 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
+import { bloodPressureStatisticsQuery } from './bloodPressureCategory';
+
 const db = SQLite.openDatabaseAsync('bloodpressure.db');
 
 /*
@@ -338,25 +340,7 @@ export const fetchBloodPressureFromSQLBtwDateMilliForStats = async (
 ): Promise<BloodPressureTypeForStatistics[]> => {
   const allRows = await (
     await db
-  ).getAllAsync(
-    `SELECT AVG(systolic_blood_pressure) AS systolic_blood_pressure,
-                    MAX(systolic_blood_pressure) AS max_systolic_blood_pressure,
-                    MIN(systolic_blood_pressure) AS min_systolic_blood_pressure,
-                    AVG(diastolic_blood_pressure) AS diastolic_blood_pressure,
-                    MAX(diastolic_blood_pressure) AS max_diastolic_blood_pressure,
-                    MIN(diastolic_blood_pressure) AS min_diastolic_blood_pressure,
-                    AVG(pulse) AS pulse,
-                    MAX(pulse) AS max_pulse,
-                    MIN(pulse) AS min_pulse,
-                    SUM(CASE WHEN systolic_blood_pressure < 120 AND diastolic_blood_pressure < 80 THEN 1 ELSE 0 END) AS percent0,
-                    SUM(CASE WHEN systolic_blood_pressure >= 120 AND systolic_blood_pressure < 130 AND diastolic_blood_pressure < 80 THEN 1 ELSE 0 END) AS percent1,
-                    SUM(CASE WHEN (systolic_blood_pressure >= 130 AND systolic_blood_pressure < 140) OR (diastolic_blood_pressure >= 80 AND diastolic_blood_pressure < 90) THEN 1 ELSE 0 END) AS percent2,
-                    SUM(CASE WHEN (systolic_blood_pressure >= 140 AND systolic_blood_pressure < 180) OR (diastolic_blood_pressure >= 90 AND diastolic_blood_pressure < 120) THEN 1 ELSE 0 END) AS percent3,
-                    SUM(CASE WHEN systolic_blood_pressure >= 180 OR diastolic_blood_pressure >= 120 THEN 1 ELSE 0 END) AS percent4,
-                    COUNT(id) AS count
-                    FROM bloodpressure WHERE id <= ? AND id >= ? LIMIT ? OFFSET ?;`,
-    [until, from, limit, offset],
-  );
+  ).getAllAsync(bloodPressureStatisticsQuery, [until, from, limit, offset]);
   return allRows as BloodPressureTypeForStatistics[];
 };
 

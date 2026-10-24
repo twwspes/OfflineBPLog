@@ -4,6 +4,18 @@ BP Log was created out of the need of my mum to log her daily blood pressure on 
 # Localised Languages
 The app currently supports English, French, Spanish, Traditional Chinese and Simplified Chinese.  All of the localisation work is done by me alone.  Some of the translations may not be accurate in the perspective of native speakers.  You are more than welcome to suggest any improvements on the languages.
 
+# Correctness checks
+
+Run `npm run test:records` for record editing, spreadsheet import/export,
+category calculations, pagination, and deletion error recovery. Run `npm test`
+for all tests. Tests use synthetic records and an in-memory SQLite database;
+they do not access the app's stored records. CI and release preparation run them.
+
+New spreadsheet exports include an optional `Milliseconds` column to retain
+timestamp precision. Older spreadsheets still import using matching within each
+second. Keep the new column when available, especially for records saved within
+the same second.
+
 # Expo managed workflow
 To simplify the maintenance process, I choose to apply expo over react-native and let expo to manage the building process.  This allows me to focus more time on the matters of user experience rather than dealing with tangled messy npm packages.  One shortcoming is that the compiled app tends to be bigger in size (around 30 MB, compared with native apps of similar category with just a few MB).
 

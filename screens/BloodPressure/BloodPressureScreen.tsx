@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   ActivityIndicator,
@@ -21,6 +21,7 @@ import { Colors } from '../../constants/Colors';
 import { useLocalisation } from '../../hooks/useLocalisation';
 import { FontSize } from '../../constants/FontSize';
 import { useAppSelector } from '../../hooks/useRedux';
+import { usePaginatedRecords } from '../../hooks/usePaginatedRecords';
 
 const styles = StyleSheet.create({
   screen: {
@@ -263,8 +264,6 @@ const FlatListItem: React.FC<FlatListItemProps> = ({
 type Props = StackScreenProps<BloodPressureStackParamList, 'BloodPressure'>;
 
 export const BloodPressureScreen: React.FC<Props> = ({ navigation, route }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const { t, locale2 } = useLocalisation();
 
   const bloodPressuresUpdateIndicator = useAppSelector(
@@ -273,90 +272,38 @@ export const BloodPressureScreen: React.FC<Props> = ({ navigation, route }) => {
   const fromdate = useAppSelector((state) => state.bloodPressure.fromdate);
   const todate = useAppSelector((state) => state.bloodPressure.todate);
 
-  const [bloodPressures, setBloodPressures] = useState<BloodPressureItem[]>([]);
-  const [bloodPressuresReverse, setBloodPressuresReverse] = useState<
-    BloodPressureItem[]
-  >([]);
-  const [currentOffset, setCurrentOffset] = useState(0);
-  const [latestBloodPressures, setLatestBloodPressures] = useState<
-    BloodPressureItem[]
-  >([]);
-  const [isFiltered, setIsFiltered] = useState(false);
-
+  const isFiltered = !!route.params?.filtered;
   moment.locale(locale2);
 
-  const flatListPaginationIncrement = 100;
+  const fetchPage = useCallback(
+    (limit: number, offset: number) =>
+      bloodPressureActions.fetchBloodPressure(
+        limit,
+        offset,
+        fromdate || '1970-01-01T00:00:00.000Z',
+        todate || new Date().toISOString(),
+        null,
+      ),
+    [fromdate, todate],
+  );
+  const {
+    records: bloodPressures,
+    isLoading,
+    error,
+    clearError,
+    loadMore: onEndReached,
+  } = usePaginatedRecords(
+    fetchPage,
+    `${bloodPressuresUpdateIndicator}:${route.params?.feedbackTimestamp ?? ''}`,
+  );
 
   useEffect(() => {
     if (error) {
-      Alert.alert(t('error_occur'), error, [
-        { text: t('okay'), onPress: () => setError(null) },
+      Alert.alert(t('error_occur'), error.message, [
+        { text: t('okay'), onPress: clearError },
       ]);
     }
-  }, [error, t]);
-
-  useEffect(() => {
-    if (route.params?.filtered) {
-      setBloodPressures([]);
-      setIsFiltered(true);
-    } else {
-      setIsFiltered(false);
-    }
-  }, [route.params?.filtered, route.params?.feedbackTimestamp]);
-
-  useEffect(() => {
-    setBloodPressures([]);
-  }, [bloodPressuresUpdateIndicator]);
-
-  const downloadItems = useCallback(async () => {
-    try {
-      setError(null);
-      setIsLoading(true);
-      const nowISO = new Date().toISOString();
-      const longAgoISO = '1970-01-01T00:00:00.000Z';
-
-      const newPressures = await bloodPressureActions.fetchBloodPressure(
-        flatListPaginationIncrement,
-        currentOffset,
-        fromdate || longAgoISO,
-        todate || nowISO,
-        null,
-      );
-
-      setLatestBloodPressures(newPressures);
-
-      setBloodPressures((prev) => {
-        const merged = [...prev, ...newPressures];
-        merged.sort((a, b) => b.id - a.id);
-        return merged.filter(
-          (v, i, a) =>
-            a.findIndex((mergedItem) => mergedItem.id === v.id) === i,
-        );
-      });
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError(t('error_occur'));
-      }
-    }
-    setIsLoading(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bloodPressuresUpdateIndicator, currentOffset, fromdate, t, todate]);
-
-  useEffect(() => {
-    void downloadItems();
-  }, [downloadItems]);
-
-  const onEndReached = useCallback(() => {
-    if (latestBloodPressures.length >= flatListPaginationIncrement) {
-      setCurrentOffset((prev) => prev + flatListPaginationIncrement);
-    }
-  }, [latestBloodPressures.length]);
-
-  useEffect(() => {
-    setBloodPressuresReverse(bloodPressures);
-  }, [bloodPressures]);
+  }, [error, t, clearError]);
 
   const onFlatListItemPress = useCallback(
     (itemData: { item: BloodPressureItem }) => {
@@ -387,13 +334,13 @@ export const BloodPressureScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [bloodPressures, navigation]);
 
   const listContent = useMemo(() => {
-    if (bloodPressuresReverse.length > 0) {
+    if (bloodPressures.length > 0) {
       return (
         <FlatList
           onEndReached={onEndReached}
           onEndReachedThreshold={0.1}
           showsVerticalScrollIndicator={false}
-          data={bloodPressuresReverse}
+          data={bloodPressures}
           keyExtractor={(item) => item.id.toString()}
           renderItem={(itemData) => (
             <FlatListItem
@@ -423,7 +370,7 @@ export const BloodPressureScreen: React.FC<Props> = ({ navigation, route }) => {
         </Text>
       </View>
     );
-  }, [bloodPressuresReverse, isLoading, onEndReached, onFlatListItemPress, t]);
+  }, [bloodPressures, isLoading, onEndReached, onFlatListItemPress, t]);
 
   return (
     <View

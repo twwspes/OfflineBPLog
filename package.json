@@ -18,7 +18,9 @@
     "release": "release-it",
     "release:preview": "release-it --dry-run",
     "build:bump": "node scripts/bump-build.mts",
-    "test:release": "node --test scripts/bump-build.test.mts"
+    "test:release": "node --test scripts/bump-build.test.mts",
+    "test:records": "node --test scripts/records.test.mts scripts/recordPager.test.mts",
+    "test": "node --test scripts/*.test.mts"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",

@@ -36,6 +36,11 @@ import { SingleChoice } from '../../components/MultipleChoice/DropdownList';
 import { useLocalisation } from '../../hooks/useLocalisation';
 import { BloodPressureStackParamList } from '../../types/navigation';
 import { replaceBloodPressureFromSQL } from '../../helpers/dbBloodPressure';
+import {
+  combineRecordTimestamp,
+  saveRecordTimestamp,
+} from '../../helpers/recordTimestamp';
+import { runWithLoading } from '../../helpers/runWithLoading';
 
 const styles = StyleSheet.create({
   container: {
@@ -388,49 +393,33 @@ export const BloodPressureInputModal: React.FC<Props> = ({
       ]);
       return;
     }
-    const date = new Date(formState.inputValues.date);
-    const hours = new Date(formState.inputValues.time).getHours();
-    const minutes = new Date(formState.inputValues.time).getMinutes();
-    date.setHours(hours);
-    date.setMinutes(minutes);
-    // update / create a records with selected date
-    const updatedbloodPressureData = {
-      timestamp: date.toISOString(),
-      systolic: Number.parseInt(formState.inputValues.systolic, 10),
-      diastolic: Number.parseInt(formState.inputValues.diastolic, 10),
-      pulse: Number.parseInt(formState.inputValues.pulse, 10),
-    }; // for firebase
     setError(null);
     setIsLoading(true);
     try {
-      // await dispatch(bloodPressureActions.updateBloodPressure(updatedbloodPressureData)); // for firebase
-      // scheduleNoti(updatedbloodPressureData.systolic, updatedbloodPressureData.diastolic);
-      //   console.log('updatedbloodPressureData to be saved');
-      //   console.log(updatedbloodPressureData);
-      //   console.log(formState.inputValues.remark);
-      await bloodPressureActions.addBloodPressure(
-        updatedbloodPressureData.timestamp,
-        updatedbloodPressureData.systolic,
-        updatedbloodPressureData.diastolic,
-        updatedbloodPressureData.pulse,
-        oldRemark !== '',
-        false,
-        formState.inputValues.remark,
+      const timestamp = combineRecordTimestamp(
+        formState.inputValues.date,
+        formState.inputValues.time,
       );
-
-      // delete old record if users change the date of old records
-      // since new record has just been created above
-      if (oldID) {
-        if (
-          new Date(formState.inputValues.date).valueOf() !==
-          new Date(Number.parseInt(oldID, 10)).valueOf()
-        ) {
-          await bloodPressureActions.deleteBloodPressure(
-            new Date(Number.parseInt(oldID, 10)).toISOString(),
-            oldRemark !== '',
-          );
-        }
-      }
+      await saveRecordTimestamp(
+        timestamp,
+        isEditing ? Number(oldID) : undefined,
+        (id) =>
+          bloodPressureActions.addBloodPressure(
+            new Date(id).toISOString(),
+            Number.parseInt(formState.inputValues.systolic, 10),
+            Number.parseInt(formState.inputValues.diastolic, 10),
+            Number.parseInt(formState.inputValues.pulse, 10),
+            true,
+            true,
+            formState.inputValues.remark,
+          ),
+        (id) =>
+          bloodPressureActions.deleteBloodPressure(
+            new Date(id).toISOString(),
+            true,
+            true,
+          ),
+      );
       navigation.goBack();
     } catch (err) {
       if (err instanceof Error) {
@@ -439,27 +428,27 @@ export const BloodPressureInputModal: React.FC<Props> = ({
         setError('An unknown error occurred.');
       }
     }
+    // Refresh even when a multi-step edit only partially completed.
+    bloodPressureActions.forceUpdateBPState();
     setIsLoading(false);
   };
 
   const deleteBloodPressureHandler = async () => {
     Keyboard.dismiss();
     if (isEditing) {
-      try {
-        await bloodPressureActions.deleteBloodPressure(
-          new Date(Number.parseInt(oldID, 10)).toISOString(),
-          oldRemark !== '',
-        );
-
-        navigation.goBack();
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('An unknown error occurred.');
-        }
-      }
-      setIsLoading(false);
+      await runWithLoading(
+        async () => {
+          await bloodPressureActions.deleteBloodPressure(
+            new Date(Number(oldID)).toISOString(),
+            true,
+          );
+          navigation.goBack();
+        },
+        setIsLoading,
+        (error) => {
+          setError(error instanceof Error ? error.message : t('error_occur'));
+        },
+      );
     }
   };
 

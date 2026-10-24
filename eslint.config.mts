@@ -232,6 +232,8 @@ export default [
 
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+      // Node's native TypeScript test runner requires explicit source extensions.
+      'import/extensions': 'off',
     },
   },
   {
