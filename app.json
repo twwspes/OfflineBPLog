@@ -1,0 +1,65 @@
+{
+  "expo": {
+    "name": "BP-Log",
+    "slug": "BP-Log",
+    "version": "2.6.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#EBEBD3"
+    },
+    "ios": {
+      "bundleIdentifier": "com.spesnaiad.bplog",
+      "buildNumber": "31",
+      "supportsTablet": true,
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true,
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 2000,
+      "url": "https://u.expo.dev/1891fe1d-9241-4b16-8af9-a47fcda0e3c9"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "locales": {
+      "zh-Hant": "./constants/lang/zhHK.json",
+      "zh-Hans": "./constants/lang/zhCN.json",
+      "en": "./constants/lang/en.json",
+      "fr": "./constants/lang/fr.json",
+      "es": "./constants/lang/es.json"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.spesnaiad.bplog",
+      "versionCode": 31,
+      "permissions": []
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-localization",
+      "expo-asset",
+      "expo-font",
+      "./plugins/withAndroidDisplayNameString",
+      "@react-native-community/datetimepicker",
+      "expo-sharing",
+      "expo-sqlite"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "1891fe1d-9241-4b16-8af9-a47fcda0e3c9"
+      }
+    },
+    "runtimeVersion": "2.6.0"
+  }
+}

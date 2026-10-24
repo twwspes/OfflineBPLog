@@ -1,0 +1,33 @@
+node_modules/
+.expo/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+.expo-shared
+
+certs/
+.env
+.secret
+web-build/
+
+# macOS
+.DS_Store
+
+# built apps
+dist/
+*.ipa
+*.aab
+*.apk
+build-*.tar.gz
+*.app
+*.jsbundle
+
+# Signing and service credentials
+*.keystore
+google-services.json
+/ios/
+/android/
